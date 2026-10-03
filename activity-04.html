@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 4: Vektor Sokongan · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Vektor Sokongan dengan Canvas Drawing.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    overflow: hidden;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  /* PAGE WRAP */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ACTIVITY HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(244,196,48,0.2), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* STEPS BAR */
+  .steps-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+  .step-item.done {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+  }
+  .step-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* CONTENT GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.4rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--red); font-size: 0.9rem; }
+
+  /* PROBLEM BOX */
+  .problem-box {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .problem-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--red);
+    margin-bottom: 0.8rem;
+  }
+  .problem-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+  }
+  .problem-desc {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .concept-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .concept-icon {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .concept-content { flex: 1; }
+  .concept-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+  .concept-desc {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.4;
+  }
+
+  /* CANVAS */
+  .canvas-instructions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+    background: rgba(244, 196, 48, 0.1);
+    border: 1px solid rgba(244, 196, 48, 0.3);
+    border-radius: 12px;
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .canvas-instructions i { color: var(--gold); margin-right: 0.3rem; }
+  .canvas-instructions span { display: inline-flex; align-items: center; }
+
+  .canvas-container {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    border: 2px solid var(--line);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    touch-action: none;
+  }
+  .canvas-element {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .canvas-toolbar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 0.4rem;
+    background: rgba(255,255,255,0.95);
+    padding: 0.4rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    flex-wrap: wrap;
+    max-width: 220px;
+  }
+  .tool-btn {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .tool-btn:hover { background: var(--paper); color: var(--maroon); }
+  .tool-btn.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+  }
+  .tool-btn[data-color]::after {
+    content: "";
+    position: absolute;
+    bottom: 4px; right: 4px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--tool-color);
+    border: 1.5px solid #fff;
+  }
+  .tool-btn.color-red { --tool-color: #C8102E; }
+  .tool-btn.color-navy { --tool-color: #0B2E4E; }
+  .tool-btn.color-gold { --tool-color: #F4C430; }
+  .tool-btn.color-green { --tool-color: #10B981; }
+
+  .canvas-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 46, 78, 0.9);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.3s;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+  .canvas-hint i { color: var(--gold); }
+
+  /* VECTOR INFO PANEL */
+  .vector-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .vector-info-item {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .vector-info-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(200, 16, 46, 0.1);
+    color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .vector-info-icon.navy { background: rgba(11, 46, 78, 0.1); color: var(--navy); }
+  .vector-info-icon.gold { background: rgba(244, 196, 48, 0.15); color: #B45309; }
+  .vector-info-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .vector-info-content { flex: 1; }
+  .vector-info-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.1rem;
+  }
+  .vector-info-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(200, 16, 46, 0.45); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--maroon);
+    color: var(--maroon);
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+  }
+  .feedback-msg.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #B91C1C;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+  .feedback-msg.info {
+    background: rgba(244, 196, 48, 0.1);
+    color: #92400E;
+    border: 1px solid rgba(244, 196, 48, 0.3);
+  }
+
+  /* SIDE CONTENT */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--success);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 0.7rem 0.9rem;
+    background: var(--paper);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+  }
+  .formula-box strong {
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* REFLECTION */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    border-color: var(--red);
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-vector-square"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 4</strong>
+        <span>Vektor Sokongan</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 4</small>
+      </div>
+      <div class="nav-avatar" id="navAvatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-shield-alt"></i> Daya Tahan
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Vektor 2D
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Vektor Sokongan 🧭</h1>
+        <p class="activity-subtitle">
+          Lukis <strong>vektor sokongan hidup anda</strong> — dari "Saya Sekarang" ke "Matlamat Saya". 
+          Setiap vektor melambangkan orang & usaha yang menggerakkan anda ke hadapan.
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statVectors">0</div>
+          <div class="activity-stat-label">Vektor</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statTime">0:00</div>
+          <div class="activity-stat-label">Masa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Fahami Vektor</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Lukis Sokongan</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Label Vektor</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar4">
+      <div class="step-icon">4</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <div class="content-grid">
+
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <div class="problem-box">
+        <div class="problem-label">
+          <i class="fas fa-bullseye"></i> Objektif
+        </div>
+        <div class="problem-title">Vektor Sokongan Hidup Saya</div>
+        <div class="problem-desc">
+          Lukis anak panah vektor yang mewakili <strong>sokongan</strong> dalam hidup anda. 
+          Gunakan konsep vektor (arah + magnitud) untuk menunjukkan siapa/apa yang menggerakkan anda ke hadapan.
+        </div>
+
+        <div class="concept-box">
+          <div class="concept-icon"><i class="fas fa-arrow-right"></i></div>
+          <div class="concept-content">
+            <div class="concept-title">Vektor = Arah + Magnitud</div>
+            <div class="concept-desc">Setiap vektor ada titik mula, titik akhir, arah dan panjang (magnitud).</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="canvas-instructions">
+        <span><i class="fas fa-hand-pointer"></i> Klik & drag untuk lukis vektor</span>
+        <span><i class="fas fa-palette"></i> Pilih warna berbeza</span>
+        <span><i class="fas fa-tag"></i> Label setiap vektor (Ibu, Guru, Rakan, dll)</span>
+      </div>
+
+      <div class="canvas-container">
+        <canvas class="canvas-element" id="vectorCanvas" width="800" height="500"></canvas>
+
+        <div class="canvas-toolbar">
+          <button class="tool-btn active color-red" onclick="setVectorColor('#C8102E', this)" title="Vektor 1 - Utama">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="tool-btn color-navy" onclick="setVectorColor('#0B2E4E', this)" title="Vektor 2">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="tool-btn color-gold" onclick="setVectorColor('#F4C430', this)" title="Vektor 3">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="tool-btn color-green" onclick="setVectorColor('#10B981', this)" title="Vektor 4">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button class="tool-btn" onclick="undoLastVector()" title="Padam vektor terakhir">
+            <i class="fas fa-undo"></i>
+          </button>
+          <button class="tool-btn" onclick="clearAllVectors()" title="Padam semua">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div class="canvas-hint" id="canvasHint">
+          <i class="fas fa-mouse-pointer"></i>
+          <span id="canvasHintText">Klik & drag dari titik A ke titik B</span>
+        </div>
+      </div>
+
+      <div class="vector-info">
+        <div class="vector-info-item">
+          <div class="vector-info-icon"><i class="fas fa-arrows-alt-h"></i></div>
+          <div class="vector-info-content">
+            <div class="vector-info-label">Bilangan Vektor</div>
+            <div class="vector-info-value"><span id="vectorCount">0</span> / 4</div>
+          </div>
+        </div>
+        <div class="vector-info-item">
+          <div class="vector-info-icon navy"><i class="fas fa-ruler"></i></div>
+          <div class="vector-info-content">
+            <div class="vector-info-label">Jumlah Magnitud</div>
+            <div class="vector-info-value" id="totalMagnitude">0.0</div>
+          </div>
+        </div>
+        <div class="vector-info-item">
+          <div class="vector-info-icon gold"><i class="fas fa-list"></i></div>
+          <div class="vector-info-content">
+            <div class="vector-info-label">Label Digunakan</div>
+            <div class="vector-info-value" id="labelCount">0</div>
+          </div>
+        </div>
+        <div class="vector-info-item">
+          <div class="vector-info-icon green"><i class="fas fa-check-circle"></i></div>
+          <div class="vector-info-content">
+            <div class="vector-info-label">Status</div>
+            <div class="vector-info-value" id="statusText">Belum cukup</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetCanvas()">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveDrawing()" disabled>
+          <i class="fas fa-check"></i> Simpan & Teruskan
+        </button>
+      </div>
+
+    </div>
+
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Fahami konsep vektor (arah + magnitud)</li>
+          <li>Lukis vektor yang mewakili sokongan hidup</li>
+          <li>Kenal pasti siapa & apa yang menggerakkan anda</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Contoh Vektor
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-users"></i>
+            <span><strong>Ibu Bapa</strong> — sokongan emosi & material</span>
+          </li>
+          <li>
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span><strong>Guru</strong> — bimbingan & ilmu</span>
+          </li>
+          <li>
+            <i class="fas fa-user-friends"></i>
+            <span><strong>Rakan</strong> — semangat & kerjasama</span>
+          </li>
+          <li>
+            <i class="fas fa-heart"></i>
+            <span><strong>Diri Sendiri</strong> — usaha & doa</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Formula Vektor
+        </div>
+        <div class="formula-box">
+          <strong>Magnitud</strong>
+          |v| = √(x² + y²)
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.6;">
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">Vektor ⃗AB</strong> = B - A = (x₂-x₁, y₂-y₁)</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">Arah</strong> = arah anak panah</div>
+          <div><strong style="color: var(--navy);">Magnitud</strong> = panjang anak panah</div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Vektor Dilukis</span>
+            <strong id="sideVectors" style="color: var(--red);">0 / 4</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Masa</span>
+            <strong id="sideTime" style="color: var(--navy);">0:00</strong>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda berjaya melukis vektor sokongan hidup anda!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalVectors">0</div>
+        <div class="modal-stat-label">Vektor</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalTime">0:00</div>
+        <div class="modal-stat-label">Masa</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Diri
+      </button>
+      <button class="btn btn-outline" onclick="closeModal()" style="flex: none;">
+        <i class="fas fa-times"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan & pemikiran tentang vektor sokongan anda</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Siapa vektor sokongan terbesar anda? Mengapa?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Ibu saya — dia selalu beri semangat bila saya susah..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // METADATA
+  const ACTIVITY_ID = '4';
+  const ACTIVITY_NUMBER = 4;
+  const ACTIVITY_TITLE = 'Vektor Sokongan';
+  const ACTIVITY_KONSTRUK = 'Daya Tahan';
+  const NEXT_ACTIVITY_NUMBER = 5;
+  const NEXT_ACTIVITY_FILE = 'activity-05.html';
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // STATE
+  const canvas = document.getElementById('vectorCanvas');
+  const ctx = canvas.getContext('2d');
+  const vectorColors = ['#C8102E', '#0B2E4E', '#F4C430', '#10B981'];
+  const vectorLabels = ['Vektor Utama', 'Ibu/Bapa', 'Guru', 'Rakan', 'Diri Sendiri', 'Doa'];
+
+  let vectors = [];
+  let isDrawing = false;
+  let startPoint = null;
+  let currentPoint = null;
+  let currentColor = vectorColors[0];
+  let currentLabelIndex = 0;
+  let currentUser = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+  let selectedEmotion = null;
+
+  const MIN_VECTORS = 4;
+
+  // TIMER
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      const el = document.getElementById('statTime');
+      const el2 = document.getElementById('sideTime');
+      const timeStr = `${m}:${String(s).padStart(2, '0')}`;
+      if (el) el.textContent = timeStr;
+      if (el2) el2.textContent = timeStr;
+    }, 1000);
+  }
+
+  // DRAW
+  function drawCanvas() {
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#FDF9F0');
+    grad.addColorStop(1, '#F8F4EA');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = '#EEF2F7';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x <= W; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= H; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = '#0B2E4E';
+    ctx.font = 'bold 18px "Playfair Display", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🦁 Vektor Sokongan Hidup Saya', W / 2, 40);
+
+    drawReferencePoints();
+
+    vectors.forEach((v) => {
+      drawVector(v.x1, v.y1, v.x2, v.y2, v.color, v.label, false);
+    });
+
+    if (isDrawing && startPoint && currentPoint) {
+      drawVector(startPoint.x, startPoint.y, currentPoint.x, currentPoint.y, currentColor, 'Lukis...', true);
+    }
+
+    if (vectors.length === 0 && !isDrawing) {
+      ctx.fillStyle = 'rgba(11, 46, 78, 0.35)';
+      ctx.font = 'bold 20px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✏️ Klik & drag untuk lukis vektor pertama', W / 2, H / 2);
+      ctx.font = '14px Inter, sans-serif';
+      ctx.fillText('Tarik dari titik A (kiri bawah) ke arah matlamat anda', W / 2, H / 2 + 30);
+    }
+  }
+
+  function drawReferencePoints() {
+    const W = canvas.width;
+    const H = canvas.height;
+
+    const aX = 120;
+    const aY = H - 100;
+    ctx.fillStyle = '#C8102E';
+    ctx.beginPath();
+    ctx.arc(aX, aY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(aX, aY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#C8102E';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('A', aX, aY - 20);
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.fillText('Saya Sekarang', aX, aY + 32);
+
+    const bX = W - 120;
+    const bY = 100;
+    ctx.fillStyle = '#10B981';
+    ctx.beginPath();
+    ctx.arc(bX, bY, 12, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(bX, bY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#10B981';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('B', bX, bY - 20);
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.fillText('Matlamat Saya', bX, bY + 32);
+  }
+
+  function drawVector(x1, y1, x2, y2, color, label, isDrawing) {
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const headLen = 18;
+    const headWidth = Math.PI / 7;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = isDrawing ? 3 : 4;
+    ctx.lineCap = 'round';
+    ctx.setLineDash(isDrawing ? [8, 6] : []);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(
+      x2 - headLen * Math.cos(angle - headWidth),
+      y2 - headLen * Math.sin(angle - headWidth)
+    );
+    ctx.lineTo(
+      x2 - headLen * Math.cos(angle + headWidth),
+      y2 - headLen * Math.sin(angle + headWidth)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x1, y1, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(x1, y1, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const magnitude = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) / 40;
+
+    if (!isDrawing && magnitude > 0.2) {
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 4;
+      ctx.strokeText(`|v|=${magnitude.toFixed(1)}`, mx, my - 8);
+      ctx.fillText(`|v|=${magnitude.toFixed(1)}`, mx, my - 8);
+    }
+
+    if (label && label !== 'Lukis...') {
+      ctx.fillStyle = color;
+      ctx.font = 'bold 13px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      const labelY = y2 + (y2 > y1 ? 28 : -28);
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 4;
+      ctx.strokeText(label, x2, labelY);
+      ctx.fillText(label, x2, labelY);
+    }
+  }
+
+  // EVENTS
+  function getCanvasCoords(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    let clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if (e.changedTouches) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  function startDraw(e) {
+    e.preventDefault();
+    if (vectors.length >= 6) {
+      showFeedback('error', '⚠️ Maksimum 6 vektor. Padam satu dahulu jika perlu.');
+      return;
+    }
+    isDrawing = true;
+    startPoint = getCanvasCoords(e);
+    currentPoint = { ...startPoint };
+    drawCanvas();
+  }
+
+  function moveDraw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    currentPoint = getCanvasCoords(e);
+    drawCanvas();
+  }
+
+  function endDraw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+
+    const endPoint = getCanvasCoords(e);
+    const dist = Math.sqrt(
+      (endPoint.x - startPoint.x) ** 2 + (endPoint.y - startPoint.y) ** 2
+    );
+
+    if (dist > 30) {
+      const label = prompt(
+        'Label vektor ini (contoh: Ibu, Guru, Rakan, Doa, Usaha):',
+        vectorLabels[vectors.length + 1] || 'Vektor'
+      );
+
+      vectors.push({
+        x1: startPoint.x,
+        y1: startPoint.y,
+        x2: endPoint.x,
+        y2: endPoint.y,
+        color: currentColor,
+        label: (label || 'Vektor').trim().slice(0, 20)
+      });
+
+      currentColor = vectorColors[vectors.length % vectorColors.length];
+      updateToolbarActive();
+
+      showFeedback('success', `✅ Vektor "${label || 'Vektor'}" ditambah!`);
+    }
+
+    isDrawing = false;
+    startPoint = null;
+    currentPoint = null;
+    drawCanvas();
+    updateStatus();
+    checkReady();
+  }
+
+  // TOOLBAR
+  window.setVectorColor = function(color, btn) {
+    currentColor = color;
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+
+  function updateToolbarActive() {
+    const btns = document.querySelectorAll('.tool-btn[data-color]');
+    btns.forEach((btn, i) => {
+      btn.classList.toggle('active', vectorColors[i] === currentColor);
+    });
+  }
+
+  document.querySelectorAll('.tool-btn.color-red, .tool-btn.color-navy, .tool-btn.color-gold, .tool-btn.color-green').forEach((btn, i) => {
+    btn.setAttribute('data-color', vectorColors[i]);
+  });
+
+  window.undoLastVector = function() {
+    if (vectors.length === 0) return;
+    const removed = vectors.pop();
+    showFeedback('info', `🔄 Vektor "${removed.label}" dipadam.`);
+    drawCanvas();
+    updateStatus();
+    checkReady();
+  };
+
+  window.clearAllVectors = function() {
+    if (vectors.length === 0) return;
+    if (!confirm('Padam semua vektor?')) return;
+    vectors = [];
+    showFeedback('info', '🔄 Semua vektor dipadam.');
+    drawCanvas();
+    updateStatus();
+    checkReady();
+  };
+
+  window.resetCanvas = function() {
+    if (vectors.length > 0 && !confirm('Reset akan padam semua vektor. Teruskan?')) return;
+    vectors = [];
+    drawCanvas();
+    updateStatus();
+    checkReady();
+    hideFeedback();
+  };
+
+  // STATUS
+  function updateStatus() {
+    const totalMag = vectors.reduce((sum, v) => {
+      return sum + Math.sqrt((v.x2 - v.x1) ** 2 + (v.y2 - v.y1) ** 2) / 40;
+    }, 0);
+
+    const uniqueLabels = new Set(vectors.map(v => v.label.toLowerCase())).size;
+
+    document.getElementById('vectorCount').textContent = vectors.length;
+    document.getElementById('statVectors').textContent = vectors.length;
+    document.getElementById('navScore').textContent = vectors.length;
+    document.getElementById('totalMagnitude').textContent = totalMag.toFixed(1);
+    document.getElementById('labelCount').textContent = uniqueLabels;
+
+    const statusEl = document.getElementById('statusText');
+    const sideVectors = document.getElementById('sideVectors');
+
+    if (sideVectors) sideVectors.textContent = `${vectors.length} / 4`;
+
+    if (vectors.length >= MIN_VECTORS) {
+      statusEl.textContent = '✅ Sedia!';
+      statusEl.style.color = 'var(--success)';
+    } else {
+      statusEl.textContent = `Perlu ${MIN_VECTORS - vectors.length} lagi`;
+      statusEl.style.color = 'var(--warning)';
+    }
+  }
+
+  function checkReady() {
+    document.getElementById('saveBtn').disabled = vectors.length < MIN_VECTORS;
+  }
+
+  // SAVE
+  window.saveDrawing = async function() {
+    if (vectors.length < MIN_VECTORS) {
+      showFeedback('error', `❌ Perlu sekurang-kurangnya ${MIN_VECTORS} vektor.`);
+      return;
+    }
+
+    showFeedback('success', '🎉 Hebat! Sedia untuk refleksi.');
+
+    setTimeout(() => {
+      showResultModal();
+    }, 800);
+  };
+
+  // FEEDBACK
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 4000);
+  }
+
+  function hideFeedback() {
+    document.getElementById('feedbackMsg').classList.remove('active');
+  }
+
+  // MODAL
+  function showResultModal() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+
+    document.getElementById('modalVectors').textContent = vectors.length;
+    document.getElementById('modalTime').textContent = `${m}:${String(s).padStart(2, '0')}`;
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  // REFLECTION
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+    try {
+      if (currentUser) {
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+        await setDoc(progressRef, {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          refleksi: text,
+          emosi: selectedEmotion,
+          badge: { earned: true, type: 'activity_complete' },
+          vectorCount: vectors.length,
+          vectors: vectors.map(v => ({ label: v.label, color: v.color })),
+          timeSpent: elapsed,
+          activityTitle: ACTIVITY_TITLE,
+          konstruk: ACTIVITY_KONSTRUK
+        }, { merge: true });
+
+        // Auto-unlock next
+        if (NEXT_ACTIVITY_NUMBER) {
+          const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+          const nextDoc = await getDoc(nextRef);
+          if (!nextDoc.exists()) {
+            await setDoc(nextRef, {
+              status: 'in_progress',
+              startedAt: serverTimestamp()
+            }, { merge: true });
+          }
+        }
+
+        console.log('✅ Progress saved');
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan & Selesai';
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon good';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai! 🎉';
+    document.getElementById('modalSub').textContent = 'Refleksi anda telah disimpan. Teruskan ke aktiviti seterusnya!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="${NEXT_ACTIVITY_FILE}" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-arrow-right"></i> Aktiviti Seterusnya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // ATTACH
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', moveDraw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', moveDraw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+
+  setTimeout(() => { hideLoader(); }, 2000);
+
+  // AUTH
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        let nama = data.nama;
+        if (!nama || nama.trim() === '' || nama === 'Pengguna') {
+          nama = data.emel?.split('@')[0] || 'Murid';
+        }
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+
+        if (data.avatar) {
+          const navAvatar = document.getElementById('navAvatar');
+          navAvatar.innerHTML = `<img src="${data.avatar}" alt="${nama}">`;
+        }
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    drawCanvas();
+    updateStatus();
+    startTimer();
+    hideLoader();
+  });
+
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 4 · Vektor Sokongan ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+</script>
+
+</body>
+</html>

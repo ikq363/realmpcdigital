@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log Masuk · REAL-MPC</title>
+<meta name="description" content="Log masuk atau daftar akaun platform pembelajaran REAL-MPC untuk murid pintar cerdas.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --danger: #EF4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  body {
+    background: var(--cream);
+    display: flex;
+    height: 100vh;
+    width: 100%;
+  }
+
+  .login-left::-webkit-scrollbar,
+  .login-right::-webkit-scrollbar { width: 8px; }
+
+  .login-left::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+  .login-left::-webkit-scrollbar-thumb { background: rgba(244, 196, 48, 0.4); border-radius: 10px; }
+  .login-left::-webkit-scrollbar-thumb:hover { background: rgba(244, 196, 48, 0.7); }
+
+  .login-right::-webkit-scrollbar-track { background: rgba(139, 30, 63, 0.05); }
+  .login-right::-webkit-scrollbar-thumb { background: rgba(139, 30, 63, 0.25); border-radius: 10px; }
+  .login-right::-webkit-scrollbar-thumb:hover { background: rgba(139, 30, 63, 0.5); }
+
+  /* LEFT — BRANDING */
+  .login-left {
+    flex: 1;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem;
+    height: 100vh;
+    scroll-behavior: smooth;
+  }
+
+  .math-pattern { position: absolute; inset: 0; opacity: 0.14; pointer-events: none; }
+
+  .float-formula {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    color: rgba(244, 196, 48, 0.15);
+    pointer-events: none;
+    user-select: none;
+    animation: floatAnim 14s ease-in-out infinite;
+  }
+
+  .ff1 { top: 10%; left: 8%; font-size: 5rem; animation-delay: 0s; }
+  .ff2 { top: 40%; right: 10%; font-size: 4rem; animation-delay: 2s; color: rgba(255,255,255,0.08); }
+  .ff3 { bottom: 20%; left: 15%; font-size: 6rem; animation-delay: 4s; }
+  .ff4 { top: 65%; right: 20%; font-size: 3.5rem; animation-delay: 1s; color: rgba(255,255,255,0.1); }
+
+  @keyframes floatAnim {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(6deg); }
+  }
+
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(80px);
+    pointer-events: none; opacity: 0.4;
+  }
+
+  .orb-1 { width: 300px; height: 300px; background: var(--gold); top: -100px; right: -100px; animation: pulseOrb 8s ease-in-out infinite; }
+  .orb-2 { width: 250px; height: 250px; background: var(--red-bright); bottom: -80px; left: -80px; animation: pulseOrb 10s ease-in-out infinite 2s; }
+
+  @keyframes pulseOrb {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.15); opacity: 0.55; }
+  }
+
+  .login-left-top {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0; margin-bottom: 2rem;
+    gap: 1rem; flex-wrap: wrap;
+  }
+
+  .back-home {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: #fff; font-size: 0.82rem; font-weight: 600;
+    text-decoration: none; backdrop-filter: blur(10px);
+    transition: all 0.25s;
+  }
+
+  .back-home:hover { background: rgba(255, 255, 255, 0.2); transform: translateX(-4px); }
+  .back-home i { font-size: 0.75rem; }
+
+  .upm-badge {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 1px; color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+  }
+
+  .upm-mini {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 0.72rem; color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .login-left-content {
+    position: relative; z-index: 2;
+    max-width: 520px; flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center; padding: 1rem 0;
+  }
+
+  .login-brand { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+
+  .login-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.3rem; color: #fff;
+    box-shadow: 0 16px 40px rgba(200, 16, 46, 0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.15);
+    flex-shrink: 0;
+  }
+
+  .login-brand-text { display: flex; flex-direction: column; }
+
+  .login-brand-text strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900;
+    letter-spacing: -0.01em;
+  }
+
+  .login-brand-text span {
+    font-size: 0.78rem; color: rgba(255,255,255,0.7);
+    letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600;
+  }
+
+  .login-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 900; line-height: 1.15;
+    letter-spacing: -0.02em; margin-bottom: 1rem;
+    background: linear-gradient(90deg, #fff 0%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .login-tagline {
+    font-size: 1rem; color: rgba(255,255,255,0.8);
+    line-height: 1.6; margin-bottom: 2rem;
+  }
+
+  .login-features { display: flex; flex-direction: column; gap: 1rem; }
+
+  .feature-item {
+    display: flex; align-items: center; gap: 0.9rem;
+    font-size: 0.9rem; color: rgba(255,255,255,0.9);
+  }
+
+  .feature-icon {
+    width: 38px; height: 38px;
+    background: rgba(244, 196, 48, 0.15);
+    border: 1px solid rgba(244, 196, 48, 0.3);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 0.95rem; flex-shrink: 0;
+  }
+
+  .login-left-bottom {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    font-size: 0.78rem; color: rgba(255,255,255,0.6);
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+
+  .login-left-bottom span { display: flex; align-items: center; gap: 0.4rem; }
+  .login-left-bottom i { color: var(--gold); }
+
+  /* RIGHT — FORM */
+  .login-right {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3rem 2rem;
+    background: var(--cream);
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100vh;
+    scroll-behavior: smooth;
+  }
+
+  .login-right::before {
+    content: ""; position: fixed; inset: 0; left: 50%;
+    background-image:
+      linear-gradient(rgba(139, 30, 63, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 30, 63, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .login-form-wrap {
+    width: 100%; max-width: 420px;
+    position: relative; z-index: 1;
+    margin: auto 0; padding: 1rem 0;
+    animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-tabs {
+    display: flex; background: #fff;
+    border-radius: 16px; padding: 0.35rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  }
+
+  .auth-tab {
+    flex: 1; padding: 0.75rem 1rem;
+    background: transparent; border: none;
+    border-radius: 12px; font-family: inherit;
+    font-size: 0.85rem; font-weight: 700;
+    color: var(--ink-soft); cursor: pointer;
+    transition: all 0.25s;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .auth-tab:hover { color: var(--maroon); }
+
+  .auth-tab.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+
+  .auth-tab i { font-size: 0.8rem; }
+
+  .form-header { text-align: center; margin-bottom: 2rem; }
+
+  .form-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 900;
+    color: var(--navy); letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+  }
+
+  .form-header p { font-size: 0.88rem; color: var(--ink-soft); }
+
+  .form-group { margin-bottom: 1.2rem; position: relative; }
+
+  .form-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.8rem; font-weight: 700; color: var(--navy);
+    margin-bottom: 0.5rem; letter-spacing: 0.2px;
+  }
+
+  .form-label span.hint { font-weight: 500; color: var(--ink-soft); font-size: 0.75rem; }
+
+  .form-label a {
+    color: var(--red); text-decoration: none;
+    font-weight: 600; font-size: 0.78rem; cursor: pointer;
+  }
+
+  .form-label a:hover { text-decoration: underline; }
+
+  .input-wrap { position: relative; display: flex; align-items: center; }
+
+  .input-icon {
+    position: absolute; left: 1rem;
+    color: var(--ink-soft); font-size: 0.9rem;
+    pointer-events: none; transition: color 0.2s; z-index: 1;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.9rem 1rem 0.9rem 2.7rem;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    font-family: inherit; font-size: 0.9rem;
+    color: var(--ink); background: #fff;
+    transition: all 0.25s; outline: none;
+  }
+
+  .form-input::placeholder { color: #94A3B8; }
+  .form-input:hover { border-color: #CBD5E1; }
+
+  .form-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  .input-wrap:focus-within .input-icon { color: var(--red); }
+
+  .form-input.has-error {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08);
+  }
+
+  .password-toggle {
+    position: absolute; right: 0.8rem;
+    background: transparent; border: none;
+    color: var(--ink-soft); font-size: 0.85rem;
+    cursor: pointer; padding: 0.5rem;
+    border-radius: 8px; transition: all 0.2s; z-index: 1;
+  }
+
+  .password-toggle:hover { color: var(--maroon); background: var(--paper); }
+
+  .role-options {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.7rem; margin-top: 0.3rem;
+  }
+
+  .role-option {
+    padding: 1rem 0.8rem;
+    border: 2px solid var(--line);
+    border-radius: 14px; background: #fff;
+    cursor: pointer; transition: all 0.25s;
+    text-align: center; font-family: inherit;
+  }
+
+  .role-option:hover { border-color: #CBD5E1; transform: translateY(-2px); }
+
+  .role-option.selected {
+    border-color: var(--red);
+    background: linear-gradient(135deg, rgba(200,16,46,0.04), rgba(244,196,48,0.04));
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.1);
+  }
+
+  .role-option i {
+    display: block; font-size: 1.4rem;
+    color: var(--ink-soft); margin-bottom: 0.4rem;
+    transition: color 0.25s;
+  }
+
+  .role-option.selected i { color: var(--red); }
+
+  .role-option strong {
+    display: block; font-size: 0.88rem;
+    color: var(--navy); font-weight: 700;
+    margin-bottom: 0.15rem;
+  }
+
+  .role-option span { display: block; font-size: 0.72rem; color: var(--ink-soft); }
+
+  .checkbox-wrap {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    font-size: 0.82rem; color: var(--ink-soft);
+    margin-bottom: 1.5rem; line-height: 1.5;
+  }
+
+  .checkbox-wrap input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--red); cursor: pointer;
+    margin-top: 2px; flex-shrink: 0;
+  }
+
+  .checkbox-wrap a {
+    color: var(--red); font-weight: 600; text-decoration: none;
+  }
+
+  .checkbox-wrap a:hover { text-decoration: underline; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 0.6rem; padding: 0.9rem 1.4rem;
+    border-radius: 14px; font-family: inherit;
+    font-size: 0.92rem; font-weight: 700;
+    border: none; cursor: pointer;
+    transition: all 0.25s; text-decoration: none; width: 100%;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+    position: relative; overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--maroon), var(--red));
+    opacity: 0; transition: opacity 0.3s;
+  }
+
+  .btn-primary:hover::before { opacity: 1; }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(200, 16, 46, 0.4);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-primary:disabled {
+    opacity: 0.7; cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .btn-primary span, .btn-primary i { position: relative; z-index: 1; }
+
+  .btn-google {
+    background: #fff; color: var(--ink);
+    border: 2px solid var(--line); margin-bottom: 0.8rem;
+  }
+
+  .btn-google:hover {
+    border-color: #CBD5E1; background: var(--paper);
+    transform: translateY(-1px);
+  }
+
+  .btn-google i { color: #EA4335; }
+
+  .divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 1.5rem 0; color: var(--ink-soft);
+    font-size: 0.78rem; font-weight: 600;
+  }
+
+  .divider::before, .divider::after {
+    content: ""; flex: 1; height: 1px; background: var(--line);
+  }
+
+  .alert {
+    display: none; align-items: flex-start;
+    gap: 0.7rem; padding: 0.9rem 1rem;
+    border-radius: 12px; font-size: 0.85rem;
+    margin-bottom: 1.2rem; line-height: 1.5;
+    animation: slideDown 0.3s ease;
+  }
+
+  .alert.active { display: flex; }
+  .alert i { font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+
+  .alert-error {
+    background: rgba(239, 68, 68, 0.08);
+    color: #B91C1C;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .alert-success {
+    background: rgba(16, 185, 129, 0.08);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .form-footer {
+    text-align: center; margin-top: 2rem;
+    font-size: 0.82rem; color: var(--ink-soft);
+  }
+
+  .form-footer a {
+    color: var(--red); font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+
+  .form-footer a:hover { text-decoration: underline; }
+
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .strength-meter { display: flex; gap: 4px; margin-top: 0.5rem; }
+
+  .strength-bar {
+    flex: 1; height: 4px;
+    background: var(--line); border-radius: 4px;
+    transition: background 0.3s;
+  }
+
+  .strength-bar.active-weak { background: #EF4444; }
+  .strength-bar.active-medium { background: #F59E0B; }
+  .strength-bar.active-strong { background: #10B981; }
+
+  .strength-text {
+    font-size: 0.72rem; margin-top: 0.3rem;
+    color: var(--ink-soft); font-weight: 600;
+  }
+
+  .form-section {
+    display: none;
+    animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .form-section.active { display: block; }
+
+  @media (max-width: 900px) {
+    html, body { overflow: auto; height: auto; }
+    body { flex-direction: column; height: auto; }
+
+    .login-left {
+      min-height: auto; height: auto;
+      padding: 2rem 1.5rem 3rem;
+      flex: none; overflow: visible;
+    }
+
+    .login-left-content {
+      max-width: 100%; justify-content: flex-start; padding: 0;
+    }
+
+    .login-headline { font-size: 1.8rem; }
+    .login-features { display: none; }
+    .login-left-bottom { display: none; }
+
+    .login-right {
+      padding: 2rem 1.5rem 3rem;
+      flex: 1; height: auto;
+      overflow: visible; align-items: flex-start;
+    }
+
+    .login-right::before { position: absolute; }
+    .login-form-wrap { margin: 0 auto; }
+  }
+
+  @media (max-width: 480px) {
+    .login-left { padding: 1.5rem 1.25rem 2.5rem; }
+    .login-logo { width: 60px; height: 60px; font-size: 1.1rem; }
+    .login-brand-text strong { font-size: 1.3rem; }
+    .login-headline { font-size: 1.5rem; }
+    .login-right { padding: 1.5rem 1.25rem 2rem; }
+    .form-header h1 { font-size: 1.6rem; }
+    .auth-tab { font-size: 0.78rem; padding: 0.65rem 0.5rem; }
+    .role-options { gap: 0.5rem; }
+    .role-option { padding: 0.8rem 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LEFT -->
+<section class="login-left">
+  <svg class="math-pattern" viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+        <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#fff" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="800" height="1200" fill="url(#grid)"/>
+
+    <path d="M 50 400 Q 200 200 400 350 T 750 300" fill="none" stroke="#F4C430" stroke-width="2" opacity="0.6"/>
+    <path d="M 30 600 Q 250 350 500 550 T 780 450" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
+    <path d="M 100 800 Q 300 600 500 750 T 750 650" fill="none" stroke="#F4C430" stroke-width="1.5" opacity="0.4"/>
+
+    <circle cx="650" cy="200" r="80" fill="none" stroke="#F4C430" stroke-width="1.5" opacity="0.5"/>
+    <circle cx="650" cy="200" r="40" fill="none" stroke="#fff" stroke-width="1" opacity="0.4"/>
+    <circle cx="120" cy="900" r="100" fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+
+    <polygon points="500,900 700,900 700,700" fill="none" stroke="#F4C430" stroke-width="1.5" opacity="0.5"/>
+    <text x="590" y="920" fill="#F4C430" font-family="serif" font-size="20" opacity="0.7" font-style="italic">θ</text>
+
+    <line x1="0" y1="1050" x2="800" y2="1050" stroke="#fff" stroke-width="1" opacity="0.2"/>
+    <line x1="400" y1="0" x2="400" y2="1200" stroke="#fff" stroke-width="1" opacity="0.2"/>
+
+    <text x="480" y="120" fill="#F4C430" font-family="serif" font-size="26" opacity="0.6" font-style="italic">y = ax² + bx + c</text>
+    <text x="80" y="1080" fill="#fff" font-family="serif" font-size="20" opacity="0.4" font-style="italic">∫ f(x) dx</text>
+    <text x="550" y="1150" fill="#F4C430" font-family="serif" font-size="18" opacity="0.5" font-style="italic">lim Δx → 0</text>
+  </svg>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="float-formula ff1">∑</div>
+  <div class="float-formula ff2">√</div>
+  <div class="float-formula ff3">π</div>
+  <div class="float-formula ff4">∫</div>
+
+  <div class="login-left-top">
+    <a href="index.html" class="back-home">
+      <i class="fas fa-arrow-left"></i> Kembali Utama
+    </a>
+    <div class="upm-badge">
+      <div class="upm-mini">UPM</div>
+      <span>Universiti Putra Malaysia</span>
+    </div>
+  </div>
+
+  <div class="login-left-content">
+    <div class="login-brand">
+      <div class="login-logo">RM</div>
+      <div class="login-brand-text">
+        <strong>REAL-MPC</strong>
+        <span>Modul Interaktif · Add Math</span>
+      </div>
+    </div>
+
+    <h1 class="login-headline">Perkasa Psikologi,<br>Kuasai Add Math.</h1>
+    <p class="login-tagline">
+      Platform pembelajaran interaktif untuk memperkasa daya tahan, efikasi kendiri dan
+      kesedaran kendiri murid pintar cerdas dalam Matematik Tambahan.
+    </p>
+
+    <div class="login-features">
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <span>12 aktiviti interaktif merentas 3 submodul psikologi</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <span>Jejak perkembangan peribadi secara real-time</span>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-award"></i></div>
+        <span>Sistem lencana & refleksi berstruktur</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-left-bottom">
+    <span><i class="fas fa-graduation-cap"></i> Shuhaimi bin Abu Seman · GS68451</span>
+    <span><i class="fas fa-flask"></i> Design & Development Research</span>
+  </div>
+</section>
+
+<!-- RIGHT -->
+<section class="login-right">
+  <div class="login-form-wrap">
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login" onclick="switchTab('login')">
+        <i class="fas fa-sign-in-alt"></i> Log Masuk
+      </button>
+      <button class="auth-tab" data-tab="register" onclick="switchTab('register')">
+        <i class="fas fa-user-plus"></i> Daftar
+      </button>
+    </div>
+
+    <div class="alert alert-error" id="alertBox">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="alertText"></span>
+    </div>
+
+    <!-- LOGIN -->
+    <form class="form-section active" id="loginSection" onsubmit="handleLogin(event)" autocomplete="on">
+      <div class="form-header">
+        <h1>Selamat Kembali</h1>
+        <p>Log masuk untuk teruskan pembelajaran anda</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="loginEmail">
+          <span>Emel</span>
+        </label>
+        <div class="input-wrap">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="loginEmail" class="form-input" placeholder="nama@contoh.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="loginPassword">
+          <span>Kata Laluan</span>
+          <a onclick="showForgot()">Lupa kata laluan?</a>
+        </label>
+        <div class="input-wrap">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="rememberMe" checked>
+        <label for="rememberMe">Ingat saya di peranti ini</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="loginBtn">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Log Masuk</span>
+      </button>
+
+      <div class="divider">ATAU</div>
+
+      <button type="button" class="btn btn-google" onclick="handleGoogleLogin()">
+        <i class="fab fa-google"></i>
+        <span>Teruskan dengan Google</span>
+      </button>
+
+      <div class="form-footer">
+        Belum ada akaun?
+        <a onclick="switchTab('register')">Daftar sekarang</a>
+      </div>
+    </form>
+
+    <!-- REGISTER -->
+    <form class="form-section" id="registerSection" onsubmit="handleRegister(event)" autocomplete="on">
+      <div class="form-header">
+        <h1>Cipta Akaun</h1>
+        <p>Sertai platform REAL-MPC hari ini</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="regName">
+          <span>Nama Penuh</span>
+        </label>
+        <div class="input-wrap">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="regName" class="form-input" placeholder="Nama anda" autocomplete="name" required minlength="3">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="regEmail">
+          <span>Emel</span>
+        </label>
+        <div class="input-wrap">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="regEmail" class="form-input" placeholder="nama@contoh.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="regPassword">
+          <span>Kata Laluan</span>
+          <span class="hint">Min 6 aksara</span>
+        </label>
+        <div class="input-wrap">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="regPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" required minlength="6" oninput="checkPasswordStrength(this.value)">
+          <button type="button" class="password-toggle" onclick="togglePassword('regPassword', this)">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="strength-meter" id="strengthMeter">
+          <div class="strength-bar"></div>
+          <div class="strength-bar"></div>
+          <div class="strength-bar"></div>
+          <div class="strength-bar"></div>
+        </div>
+        <div class="strength-text" id="strengthText"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span>Saya adalah</span>
+        </label>
+        <div class="role-options">
+          <button type="button" class="role-option selected" data-role="murid" onclick="selectRole('murid', this)">
+            <i class="fas fa-user-graduate"></i>
+            <strong>Murid</strong>
+            <span>Belajar & buat aktiviti</span>
+          </button>
+          <button type="button" class="role-option" data-role="guru" onclick="selectRole('guru', this)">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <strong>Guru</strong>
+            <span>Pantau & bimbing</span>
+          </button>
+        </div>
+        <input type="hidden" id="regRole" value="murid">
+      </div>
+
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="agreeTerms" required>
+        <label for="agreeTerms">
+          Saya bersetuju dengan
+          <a onclick="event.preventDefault(); showTerms()">Terma & Syarat</a>
+          dan
+          <a onclick="event.preventDefault(); showPrivacy()">Dasar Privasi</a>.
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="registerBtn">
+        <i class="fas fa-user-plus"></i>
+        <span>Daftar Akaun</span>
+      </button>
+
+      <div class="form-footer">
+        Sudah ada akaun?
+        <a onclick="switchTab('login')">Log masuk</a>
+      </div>
+    </form>
+
+    <!-- FORGOT -->
+    <form class="form-section" id="forgotSection" onsubmit="handleForgot(event)">
+      <div class="form-header">
+        <h1>Lupa Kata Laluan?</h1>
+        <p>Kami akan hantar pautan reset ke emel anda</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="forgotEmail">
+          <span>Emel Berdaftar</span>
+        </label>
+        <div class="input-wrap">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="forgotEmail" class="form-input" placeholder="nama@contoh.com" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="forgotBtn">
+        <i class="fas fa-paper-plane"></i>
+        <span>Hantar Pautan Reset</span>
+      </button>
+
+      <div class="form-footer">
+        <a onclick="switchTab('login')">← Kembali ke log masuk</a>
+      </div>
+    </form>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE SDK + LOGIC
+     ═══════════════════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendPasswordResetEmail,
+    updateProfile,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, serverTimestamp, collection, getDocs, query, where
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  // ═════════════════════════════════════════════════
+  // FLAG: Elak race condition antara onAuthStateChanged
+  // dan handleRegister. Bila true, onAuthStateChanged
+  // akan LANGKAU penciptaan dokumen.
+  // ═════════════════════════════════════════════════
+  window._isRegistering = false;
+
+  // ═════════════════════════════════════════════════
+  // GENERATE TEACHER CODE (6 aksara unik)
+  // ═════════════════════════════════════════════════
+  function generateTeacherCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  }
+
+  async function generateUniqueTeacherCode() {
+    let attempts = 0;
+    while (attempts < 10) {
+      const code = generateTeacherCode();
+      try {
+        const q = query(collection(db, 'users'), where('teacherCode', '==', code));
+        const snap = await getDocs(q);
+        if (snap.empty) return code;
+      } catch (e) {
+        console.warn('Code check error:', e);
+        return code; // fallback
+      }
+      attempts++;
+    }
+    return generateTeacherCode();
+  }
+
+  // ═════════════════════════════════════════════════
+  // SAVE USER KE FIRESTORE
+  // ═════════════════════════════════════════════════
+  async function saveUserToFirestore(user, namaOverride = null, roleOverride = null) {
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      console.log('✅ User doc sudah wujud');
+      const existing = userSnap.data();
+
+      if ((!existing.nama || existing.nama === 'Pengguna' || existing.nama.trim() === '') && namaOverride) {
+        try {
+          await setDoc(userRef, { nama: namaOverride }, { merge: true });
+          console.log('✅ Nama dikemaskini:', namaOverride);
+          existing.nama = namaOverride;
+        } catch (e) {
+          console.warn('Gagal update nama:', e);
+        }
+      }
+
+      // ⚠️ JANGAN tulis semula role di sini.
+      return existing;
+    }
+
+    const role = roleOverride || 'murid';
+
+    const namaFinal = (namaOverride && namaOverride.trim())
+      || (user.displayName && user.displayName.trim())
+      || '';
+
+    const userData = {
+      uid: user.uid,
+      nama: namaFinal,
+      emel: user.email,
+      role: role,
+      avatar: user.photoURL || '',
+      classId: null,
+      provider: user.providerData[0]?.providerId || 'password',
+      createdAt: serverTimestamp(),
+      lastLogin: serverTimestamp()
+    };
+
+    if (role === 'guru') {
+      userData.teacherCode = await generateUniqueTeacherCode();
+    }
+
+    await setDoc(userRef, userData);
+    console.log('✅ User doc berjaya disimpan:', userData);
+    return userData;
+  }
+
+  // ═════════════════════════════════════════════════
+  // REDIRECT BY ROLE
+  // ═════════════════════════════════════════════════
+  async function redirectByRole(user) {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      let role = 'murid';
+      if (userDoc.exists()) {
+        role = userDoc.data().role || 'murid';
+      }
+      console.log(`🔀 Redirect: role=${role}`);
+      window.location.href = role === 'guru' ? 'dashboard-guru.html' : 'dashboard-murid.html';
+    } catch (e) {
+      console.warn('Redirect role error:', e);
+      window.location.href = 'dashboard-murid.html';
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // TAB SWITCHING
+  // ═════════════════════════════════════════════════
+  window.switchTab = function(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tab);
+    });
+    document.getElementById('loginSection').classList.toggle('active', tab === 'login');
+    document.getElementById('registerSection').classList.toggle('active', tab === 'register');
+    document.getElementById('forgotSection').classList.toggle('active', tab === 'forgot');
+    hideAlert();
+    document.querySelector('.login-right').scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      const firstInput = document.querySelector(`#${tab}Section .form-input`);
+      if (firstInput) firstInput.focus();
+    }, 100);
+  };
+
+  window.showForgot = function() { switchTab('forgot'); };
+
+  window.togglePassword = function(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  };
+
+  window.checkPasswordStrength = function(pwd) {
+    const bars = document.querySelectorAll('#strengthMeter .strength-bar');
+    const text = document.getElementById('strengthText');
+
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10) score++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    bars.forEach(b => b.className = 'strength-bar');
+
+    if (!pwd) { text.textContent = ''; return; }
+
+    if (score <= 1) {
+      bars[0].classList.add('active-weak');
+      text.textContent = 'Lemah';
+      text.style.color = '#EF4444';
+    } else if (score === 2) {
+      bars[0].classList.add('active-weak');
+      bars[1].classList.add('active-medium');
+      text.textContent = 'Sederhana';
+      text.style.color = '#F59E0B';
+    } else if (score === 3) {
+      bars[0].classList.add('active-medium');
+      bars[1].classList.add('active-medium');
+      bars[2].classList.add('active-medium');
+      text.textContent = 'Baik';
+      text.style.color = '#F59E0B';
+    } else {
+      bars[0].classList.add('active-strong');
+      bars[1].classList.add('active-strong');
+      bars[2].classList.add('active-strong');
+      bars[3].classList.add('active-strong');
+      text.textContent = 'Sangat Kuat';
+      text.style.color = '#10B981';
+    }
+  };
+
+  window.selectRole = function(role, btn) {
+    document.querySelectorAll('.role-option').forEach(o => o.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('regRole').value = role;
+  };
+
+  function showAlert(message, type = 'error') {
+    const box = document.getElementById('alertBox');
+    const text = document.getElementById('alertText');
+    const icon = box.querySelector('i');
+
+    box.className = 'alert alert-' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+
+    clearTimeout(window._alertTimer);
+    window._alertTimer = setTimeout(hideAlert, 6000);
+
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideAlert() {
+    document.getElementById('alertBox').classList.remove('active');
+  }
+
+  function setLoading(btnId, loading, originalHTML) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (loading) {
+      btn.disabled = true;
+      btn._originalHTML = originalHTML || btn.innerHTML;
+      btn.innerHTML = `<span class="spinner"></span><span>Memproses...</span>`;
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = btn._originalHTML || originalHTML;
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // LOGIN
+  // ═════════════════════════════════════════════════
+  window.handleLogin = async function(e) {
+    e.preventDefault();
+    hideAlert();
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showAlert('Sila isi emel dan kata laluan anda.');
+      return;
+    }
+
+    setLoading('loginBtn', true);
+
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      console.log('✅ Login berjaya:', cred.user.email);
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
+        if (!userDoc.exists()) {
+          await saveUserToFirestore(cred.user);
+        }
+      } catch (fsErr) {
+        console.warn('⚠️ Gagal semak user doc, tapi login OK:', fsErr);
+      }
+
+      showAlert('Berjaya log masuk! Mengalihkan...', 'success');
+      setTimeout(() => redirectByRole(cred.user), 900);
+    } catch (err) {
+      console.error('Login error:', err);
+      showAlert(friendlyError(err.code));
+      setLoading('loginBtn', false);
+    }
+  };
+
+  // ═════════════════════════════════════════════════
+  // REGISTER
+  // — FIX: Set flag _isRegistering = true SEBELUM
+  //   createUser, supaya onAuthStateChanged tidak
+  //   mencipta dokumen dengan role lalai 'murid'.
+  // ═════════════════════════════════════════════════
+  window.handleRegister = async function(e) {
+    e.preventDefault();
+    hideAlert();
+
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const role = document.getElementById('regRole').value;
+    const agree = document.getElementById('agreeTerms').checked;
+
+    if (name.length < 3) { showAlert('Nama penuh mesti sekurang-kurangnya 3 aksara.'); return; }
+    if (password.length < 6) { showAlert('Kata laluan mesti sekurang-kurangnya 6 aksara.'); return; }
+    if (!agree) { showAlert('Sila bersetuju dengan Terma & Syarat untuk teruskan.'); return; }
+
+    // ✅ FIX: Set flag SEBELUM createUser
+    window._isRegistering = true;
+
+    setLoading('registerBtn', true);
+
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      console.log('✅ Auth user created:', cred.user.uid);
+
+      await updateProfile(cred.user, { displayName: name });
+
+      const userData = await saveUserToFirestore(cred.user, name, role);
+
+      // Kalau guru, tunjuk teacher code dulu
+      if (role === 'guru' && userData.teacherCode) {
+        showAlert(`Berjaya! Kod guru anda: ${userData.teacherCode} — Simpan kod ini untuk dikongsi dengan murid.`, 'success');
+        setTimeout(() => {
+          window._isRegistering = false;
+          redirectByRole(cred.user);
+        }, 4000);
+      } else {
+        showAlert('Akaun berjaya dicipta! Mengalihkan...', 'success');
+        setTimeout(() => {
+          window._isRegistering = false;
+          redirectByRole(cred.user);
+        }, 1000);
+      }
+    } catch (err) {
+      console.error('Register error:', err);
+      window._isRegistering = false;
+
+      if (err.message && err.message.includes('Firestore')) {
+        showAlert('Akaun auth berjaya, tapi gagal simpan data. Sila semak Firestore Rules.');
+      } else {
+        showAlert(friendlyError(err.code));
+      }
+      setLoading('registerBtn', false);
+    }
+  };
+
+  // ═════════════════════════════════════════════════
+  // FORGOT PASSWORD
+  // ═════════════════════════════════════════════════
+  window.handleForgot = async function(e) {
+    e.preventDefault();
+    hideAlert();
+
+    const email = document.getElementById('forgotEmail').value.trim();
+    if (!email) { showAlert('Sila masukkan emel anda.'); return; }
+
+    setLoading('forgotBtn', true);
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showAlert('Pautan reset telah dihantar ke emel anda. Sila semak inbox/spam.', 'success');
+      setTimeout(() => switchTab('login'), 2500);
+    } catch (err) {
+      console.error('Forgot error:', err);
+      showAlert(friendlyError(err.code));
+      setLoading('forgotBtn', false);
+    }
+  };
+
+  // ═════════════════════════════════════════════════
+  // GOOGLE LOGIN
+  // ═════════════════════════════════════════════════
+  window.handleGoogleLogin = async function() {
+    hideAlert();
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      console.log('✅ Google login:', user.email);
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists()) {
+          await saveUserToFirestore(user);
+        }
+      } catch (fsErr) {
+        console.warn('⚠️ Gagal semak/simpan user doc:', fsErr);
+      }
+
+      showAlert('Berjaya log masuk dengan Google!', 'success');
+      setTimeout(() => redirectByRole(user), 900);
+    } catch (err) {
+      if (err.code === 'auth/popup-closed-by-user') showAlert('Log masuk Google dibatalkan.');
+      else if (err.code === 'auth/popup-blocked') showAlert('Popup disekat. Sila benarkan popup.');
+      else showAlert(friendlyError(err.code));
+    }
+  };
+
+  function friendlyError(code) {
+    const map = {
+      'auth/email-already-in-use': 'Emel ini telah didaftarkan. Sila log masuk.',
+      'auth/invalid-email': 'Format emel tidak sah.',
+      'auth/weak-password': 'Kata laluan terlalu lemah (minimum 6 aksara).',
+      'auth/user-not-found': 'Akaun tidak dijumpai. Sila daftar dahulu.',
+      'auth/wrong-password': 'Kata laluan salah. Cuba lagi.',
+      'auth/invalid-credential': 'Emel atau kata laluan salah.',
+      'auth/too-many-requests': 'Terlalu banyak percubaan. Sila cuba sebentar lagi.',
+      'auth/network-request-failed': 'Masalah rangkaian. Sila semak sambungan internet.',
+      'auth/operation-not-allowed': 'Kaedah log masuk ini tidak dibenarkan.',
+      'permission-denied': 'Firestore Rules block. Sila update rules di Firebase Console.'
+    };
+    return map[code] || 'Ralat tidak dijangka. Sila cuba lagi. (' + code + ')';
+  }
+
+  window.showTerms = function() {
+    showAlert('Terma & Syarat: Data anda digunakan untuk tujuan penyelidikan akademik sahaja.', 'success');
+  };
+
+  window.showPrivacy = function() {
+    showAlert('Dasar Privasi: Semua data disimpan dengan selamat dan tidak dikongsi dengan pihak ketiga.', 'success');
+  };
+
+  // ═════════════════════════════════════════════════
+  // AUTO-DETECT TAB DARI URL PARAM (?tab=register)
+  // ═════════════════════════════════════════════════
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  if (tabParam === 'register' || tabParam === 'forgot') {
+    switchTab(tabParam);
+  }
+
+  // ═════════════════════════════════════════════════
+  // AUTH STATE
+  // — FIX: Jika sedang mendaftar (flag true), LANGKAU.
+  //   Ini elak onAuthStateChanged cipta dokumen dengan
+  //   role lalai 'murid' sebelum handleRegister sempat
+  //   simpan dokumen dengan role betul.
+  // ═════════════════════════════════════════════════
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log('✅ Already logged in:', user.email);
+
+      // ✅ FIX: Jangan buat apa-apa semasa proses pendaftaran
+      if (window._isRegistering) {
+        console.log('⏭️ Langkau — sedang mendaftar');
+        return;
+      }
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (!userDoc.exists()) {
+          await saveUserToFirestore(user);
+        }
+        // Jika sudah ada, jangan sentuh — biar role kekal.
+      } catch (e) {
+        console.warn('⚠️ User doc check failed:', e.message);
+      }
+    }
+  });
+
+  console.log('%c REAL-MPC · Login ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
+  console.log('📌 Pastikan Firestore Rules betul!');
+</script>
+
+</body>
+</html>

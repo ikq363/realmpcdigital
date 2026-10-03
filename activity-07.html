@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 7: Koordinat Hidup Saya · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Geometri Koordinat dengan Interactive Life Plotter.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px; margin: 0 auto; padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 0.9rem; border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06); color: var(--maroon);
+    font-size: 0.85rem; font-weight: 700; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block; font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 900; color: var(--navy); line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem; color: var(--ink-soft);
+    font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy); border-radius: 50px;
+    font-size: 0.85rem; font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; color: var(--navy); font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    overflow: hidden;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  /* PAGE WRAP */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ACTIVITY HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px; padding: 2.2rem 2rem;
+    color: #fff; position: relative; overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: ""; position: absolute;
+    top: -80px; right: -80px; width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(244,196,48,0.2), transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative; z-index: 1;
+    display: flex; justify-content: space-between;
+    align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.3rem 0.8rem; border-radius: 50px;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900; line-height: 1.15;
+    margin-bottom: 0.6rem; letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px; padding: 0.9rem 1.2rem;
+    text-align: center; min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900;
+    line-height: 1; margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem; color: rgba(255,255,255,0.75);
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700;
+  }
+
+  /* STEPS BAR */
+  .steps-bar {
+    display: flex; align-items: center;
+    background: #fff; border-radius: 16px;
+    padding: 1rem 1.2rem; margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto; gap: 0.5rem;
+  }
+  .step-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 0.9rem; border-radius: 50px;
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--ink-soft); white-space: nowrap;
+    transition: all 0.3s; flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff; box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+  .step-item.done { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .step-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* CONTENT GRID */
+  .content-grid {
+    display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff; border-radius: 20px;
+    padding: 2rem; border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff; border-radius: 18px;
+    padding: 1.4rem; border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 900;
+    color: var(--navy); margin-bottom: 0.9rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--red); font-size: 0.9rem; }
+
+  /* PROBLEM BOX */
+  .problem-box {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line); border-radius: 16px;
+    padding: 1.5rem; margin-bottom: 1.5rem;
+  }
+  .problem-label {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--red); margin-bottom: 0.8rem;
+  }
+  .problem-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-weight: 900;
+    color: var(--navy); margin-bottom: 0.6rem;
+  }
+  .problem-desc {
+    font-size: 0.9rem; color: var(--ink-soft);
+    line-height: 1.6; margin-bottom: 1rem;
+  }
+  .concept-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff; border-radius: 12px;
+    padding: 1rem; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .concept-icon {
+    width: 50px; height: 50px; border-radius: 14px;
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: var(--gold); flex-shrink: 0;
+  }
+  .concept-content { flex: 1; }
+  .concept-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem;
+  }
+  .concept-desc { font-size: 0.78rem; color: rgba(255,255,255,0.8); line-height: 1.4; }
+
+  /* GRAPH AREA */
+  .graph-container {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    border: 2px solid var(--line);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    touch-action: none;
+  }
+  .graph-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .graph-toolbar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 0.4rem;
+    background: rgba(255,255,255,0.95);
+    padding: 0.4rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+  }
+  .tool-btn {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .tool-btn:hover { background: var(--paper); color: var(--maroon); }
+  .tool-btn.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+  }
+  .tool-btn.tool-p.active { background: linear-gradient(135deg, #C8102E, #8B1E3F); }
+  .tool-btn.tool-q.active { background: linear-gradient(135deg, #10B981, #059669); }
+
+  .graph-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 46, 78, 0.9);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.3s;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    max-width: 90%;
+  }
+  .graph-hint i { color: var(--gold); }
+
+  /* INFO PANEL */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .info-item {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    transition: all 0.3s;
+  }
+  .info-item:hover {
+    box-shadow: 0 8px 20px rgba(11, 46, 78, 0.1);
+    transform: translateY(-2px);
+  }
+  .info-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #fff;
+    flex-shrink: 0;
+  }
+  .info-icon.p { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+  .info-icon.q { background: linear-gradient(135deg, var(--success), #059669); }
+  .info-icon.dist { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+  .info-icon.mid { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy); }
+  .info-content { flex: 1; min-width: 0; }
+  .info-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.1rem;
+  }
+  .info-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    word-break: break-all;
+  }
+
+  /* REFLECTION INPUT */
+  .reflect-inline {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .reflect-inline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem; font-weight: 900;
+    color: var(--navy); margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .reflect-inline-title i { color: var(--red); font-size: 0.9rem; }
+  .reflect-input {
+    width: 100%; padding: 0.9rem 1rem;
+    border: 2px solid var(--line); border-radius: 12px;
+    font-family: inherit; font-size: 0.9rem; color: var(--ink);
+    background: #fff; resize: vertical; min-height: 80px;
+    outline: none; transition: all 0.25s;
+  }
+  .reflect-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 0.5rem; padding: 0.85rem 1.5rem;
+    border-radius: 12px; font-family: inherit;
+    font-size: 0.9rem; font-weight: 700;
+    border: none; cursor: pointer;
+    transition: all 0.25s; text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(200, 16, 46, 0.45); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff; color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--maroon); color: var(--maroon);
+    background: var(--paper); transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success { background: rgba(16, 185, 129, 0.1); color: #047857; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .feedback-msg.error { background: rgba(239, 68, 68, 0.1); color: #B91C1C; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .feedback-msg.info { background: rgba(244, 196, 48, 0.1); color: #92400E; border: 1px solid rgba(244, 196, 48, 0.3); }
+
+  /* SIDE CONTENT */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; color: var(--success);
+    font-size: 0.75rem; flex-shrink: 0; margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5;
+    padding: 0.7rem 0.9rem; background: var(--paper);
+    border-radius: 10px; border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff; border-radius: 12px; padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem; text-align: center;
+    margin-bottom: 0.8rem; line-height: 1.7;
+  }
+  .formula-box strong {
+    color: var(--gold); display: block;
+    margin-bottom: 0.5rem; font-size: 0.75rem;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* CONFETTI */
+  .confetti {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--gold); top: -20px;
+    z-index: 9999; pointer-events: none; opacity: 0;
+  }
+  @keyframes confettiFall {
+    0% { top: -20px; opacity: 1; transform: rotate(0deg) scale(1); }
+    100% { top: 100vh; opacity: 0; transform: rotate(720deg) scale(0.5); }
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999; display: none;
+    align-items: center; justify-content: center;
+    padding: 1.5rem; animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff; border-radius: 24px;
+    padding: 2.5rem 2rem; max-width: 480px; width: 100%;
+    text-align: center; position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--navy); margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--navy); line-height: 1; margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700;
+  }
+
+  /* REFLECTION MODAL */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px; padding: 1.5rem;
+    margin-bottom: 1.5rem; text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem; font-weight: 700;
+    color: var(--navy); margin-bottom: 0.7rem; display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px; border-radius: 14px;
+    border: 2px solid var(--line); background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 1.05rem;
+    color: var(--ink-soft); cursor: pointer;
+    transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold); transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff; border-color: var(--red);
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%; padding: 0.9rem 1rem;
+    border: 2px solid var(--line); border-radius: 12px;
+    font-family: inherit; font-size: 0.9rem; color: var(--ink);
+    background: #fff; resize: vertical; min-height: 90px;
+    outline: none; transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed; inset: 0;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 900;
+    color: var(--navy); letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+    .graph-hint { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+    .info-value { font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-crosshairs"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 7</strong>
+        <span>Koordinat Hidup Saya</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 3</small>
+      </div>
+      <div class="nav-avatar" id="navAvatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <!-- ACTIVITY HEADER -->
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-bolt"></i> Efikasi Kendiri
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Geometri Koordinat
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Koordinat Hidup Saya 📍</h1>
+        <p class="activity-subtitle">
+          Plot <strong>"Saya Sekarang" (P)</strong> dan <strong>"Matlamat Saya" (Q)</strong> pada graf koordinat. 
+          Sistem akan auto-calculate <strong>jarak perjalanan</strong> & <strong>checkpoint</strong> anda!
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statPoints">0/2</div>
+          <div class="activity-stat-label">Titik</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statDistance">—</div>
+          <div class="activity-stat-label">Jarak</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS BAR -->
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Plot Titik P & Q</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Lihat Jarak & Checkpoint</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <!-- MAIN GRID -->
+  <div class="content-grid">
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- PROBLEM BOX -->
+      <div class="problem-box">
+        <div class="problem-label">
+          <i class="fas fa-bullseye"></i> Objektif
+        </div>
+        <div class="problem-title">Graf Koordinat Hidup Saya</div>
+        <div class="problem-desc">
+          Plot titik pada graf koordinat. Anda boleh gunakan <strong>nilai pilihan sendiri</strong> yang melambangkan kedudukan & matlamat anda.
+        </div>
+
+        <div class="concept-box">
+          <div class="concept-icon"><i class="fas fa-crosshairs"></i></div>
+          <div class="concept-content">
+            <div class="concept-title">Paksi X = Masa | Paksi Y = Pencapaian</div>
+            <div class="concept-desc">Contoh: X = tahun/tingkatan, Y = tahap usaha/prestasi (skala 1-10)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR INSTRUCTIONS -->
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; padding: 0.9rem 1rem; background: rgba(244, 196, 48, 0.1); border: 1px solid rgba(244, 196, 48, 0.3); border-radius: 12px; font-size: 0.82rem; color: var(--ink); font-weight: 600;">
+        <span><i class="fas fa-mouse-pointer" style="color: var(--gold); margin-right: 0.3rem;"></i> Klik butang P atau Q dahulu</span>
+        <span><i class="fas fa-crosshairs" style="color: var(--gold); margin-right: 0.3rem;"></i> Kemudian klik pada graf</span>
+        <span><i class="fas fa-redo" style="color: var(--gold); margin-right: 0.3rem;"></i> Boleh drag titik untuk ubah posisi</span>
+      </div>
+
+      <!-- GRAPH CONTAINER -->
+      <div class="graph-container">
+        <svg class="graph-svg" id="graphSvg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet"></svg>
+
+        <div class="graph-toolbar">
+          <button class="tool-btn tool-p active" id="toolP" onclick="setTool('P')" title="Plot titik P (Saya Sekarang)">
+            <i class="fas fa-map-pin"></i>
+            <span style="position: absolute; bottom: 2px; right: 4px; font-size: 0.55rem; font-weight: 800; color: inherit;">P</span>
+          </button>
+          <button class="tool-btn tool-q" id="toolQ" onclick="setTool('Q')" title="Plot titik Q (Matlamat)">
+            <i class="fas fa-flag"></i>
+            <span style="position: absolute; bottom: 2px; right: 4px; font-size: 0.55rem; font-weight: 800; color: inherit;">Q</span>
+          </button>
+          <button class="tool-btn" onclick="clearPoints()" title="Padam semua titik">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div class="graph-hint" id="graphHint">
+          <i class="fas fa-mouse-pointer"></i>
+          <span id="graphHintText">Klik pada graf untuk plot titik P (Saya Sekarang)</span>
+        </div>
+      </div>
+
+      <!-- INFO GRID -->
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-icon p"><i class="fas fa-map-pin"></i></div>
+          <div class="info-content">
+            <div class="info-label">P — Saya Sekarang</div>
+            <div class="info-value" id="pCoords">—</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon q"><i class="fas fa-flag"></i></div>
+          <div class="info-content">
+            <div class="info-label">Q — Matlamat Saya</div>
+            <div class="info-value" id="qCoords">—</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon dist"><i class="fas fa-ruler"></i></div>
+          <div class="info-content">
+            <div class="info-label">Jarak P → Q</div>
+            <div class="info-value" id="distanceInfo">—</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon mid"><i class="fas fa-flag-checkered"></i></div>
+          <div class="info-content">
+            <div class="info-label">Checkpoint (Titik Tengah)</div>
+            <div class="info-value" id="midpointInfo">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REFLECTION -->
+      <div class="reflect-inline">
+        <div class="reflect-inline-title">
+          <i class="fas fa-edit"></i> Catatan Refleksi
+        </div>
+        <textarea class="reflect-input" id="inlineReflection" placeholder="Contoh: Titik P saya di (2, 5), matlamat Q di (8, 9). Jarak saya 7.2 unit — saya perlu tingkatkan usaha..."></textarea>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetActivity()">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="nextBtn" onclick="finishActivity()" disabled>
+          <i class="fas fa-check"></i> Simpan & Selesai
+        </button>
+      </div>
+
+    </div>
+
+    <!-- SIDE PANEL -->
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Fahami sistem koordinat Cartes</li>
+          <li>Plot titik P & Q pada graf</li>
+          <li>Hitung jarak & titik tengah</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Tips
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-lightbulb"></i>
+            <span>P = posisi anda <strong>sekarang</strong></span>
+          </li>
+          <li>
+            <i class="fas fa-flag"></i>
+            <span>Q = <strong>matlamat</strong> anda</span>
+          </li>
+          <li>
+            <i class="fas fa-flag-checkered"></i>
+            <span>Checkpoint = <strong>titik tengah</strong> (sub-matlamat)</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Formula
+        </div>
+        <div class="formula-box">
+          <strong>Jarak P ke Q</strong>
+          d = √[(x₂-x₁)² + (y₂-y₁)²]
+        </div>
+        <div class="formula-box">
+          <strong>Titik Tengah</strong>
+          M = ((x₁+x₂)/2, (y₁+y₂)/2)
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.3rem;">
+              <span style="font-weight: 600;">Titik Diplot</span>
+              <strong id="sidePoints" style="color: var(--red);">0 / 2</strong>
+            </div>
+            <div class="progress-mini" style="width: 100%; height: 6px; background: var(--line); border-radius: 10px; overflow: hidden;">
+              <div id="sideProgressFill" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--red), var(--gold)); border-radius: 10px; transition: width 0.5s;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda berjaya plot koordinat hidup anda!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalDistance">0.0</div>
+        <div class="modal-stat-label">Jarak P → Q</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalTime">0:00</div>
+        <div class="modal-stat-label">Masa</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Akhir
+      </button>
+      <button class="btn btn-outline" onclick="closeModal()" style="flex: none;">
+        <i class="fas fa-times"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan & pemikiran tentang koordinat hidup anda</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Apa yang anda sedar tentang kedudukan diri anda sekarang?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Saya sedar jarak saya ke matlamat agak jauh, tapi dengan strategi..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // METADATA
+  const ACTIVITY_ID = '7';
+  const ACTIVITY_NUMBER = 7;
+  const ACTIVITY_TITLE = 'Koordinat Hidup Saya';
+  const ACTIVITY_KONSTRUK = 'Efikasi Kendiri';
+  const NEXT_ACTIVITY_NUMBER = 8;
+  const NEXT_ACTIVITY_FILE = 'activity-08.html';
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // GRAPH CONFIG
+  const GRAPH = {
+    width: 800,
+    height: 500,
+    padding: { top: 40, right: 50, bottom: 60, left: 70 },
+    xMin: 0,
+    xMax: 10,
+    yMin: 0,
+    yMax: 10
+  };
+
+  let pointP = null;
+  let pointQ = null;
+  let currentTool = 'P';
+  let dragging = null;
+  let currentUser = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+  let selectedEmotion = null;
+
+  // TIMER
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      const el = document.getElementById('statTime');
+      if (el) el.textContent = `${m}:${String(s).padStart(2, '0')}`;
+    }, 1000);
+  }
+
+  // RENDER GRAPH
+  function renderGraph() {
+    const svg = document.getElementById('graphSvg');
+    if (!svg) return;
+
+    const { width, height, padding, xMin, xMax, yMin, yMax } = GRAPH;
+
+    const plotW = width - padding.left - padding.right;
+    const plotH = height - padding.top - padding.bottom;
+
+    function toScreen(x, y) {
+      return {
+        px: padding.left + ((x - xMin) / (xMax - xMin)) * plotW,
+        py: padding.top + plotH - ((y - yMin) / (yMax - yMin)) * plotH
+      };
+    }
+
+    let svgContent = '';
+
+    svgContent += `<rect width="${width}" height="${height}" fill="#ffffff"/>`;
+
+    for (let x = 0; x <= xMax; x++) {
+      const { px } = toScreen(x, 0);
+      svgContent += `<line x1="${px}" y1="${padding.top}" x2="${px}" y2="${padding.top + plotH}" 
+        stroke="#EEF2F7" stroke-width="0.5"/>`;
+    }
+    for (let y = 0; y <= yMax; y++) {
+      const { py } = toScreen(0, y);
+      svgContent += `<line x1="${padding.left}" y1="${py}" x2="${padding.left + plotW}" y2="${py}" 
+        stroke="#EEF2F7" stroke-width="0.5"/>`;
+    }
+
+    for (let x = 0; x <= xMax; x += 5) {
+      const { px } = toScreen(x, 0);
+      svgContent += `<line x1="${px}" y1="${padding.top}" x2="${px}" y2="${padding.top + plotH}" 
+        stroke="#D8E0EA" stroke-width="1" stroke-dasharray="4,3"/>`;
+    }
+    for (let y = 0; y <= yMax; y += 5) {
+      const { py } = toScreen(0, y);
+      svgContent += `<line x1="${padding.left}" y1="${py}" x2="${padding.left + plotW}" y2="${py}" 
+        stroke="#D8E0EA" stroke-width="1" stroke-dasharray="4,3"/>`;
+    }
+
+    svgContent += `<line x1="${padding.left}" y1="${padding.top + plotH}" x2="${padding.left + plotW}" y2="${padding.top + plotH}" 
+      stroke="#1E293B" stroke-width="2.5"/>`;
+    svgContent += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + plotH}" 
+      stroke="#1E293B" stroke-width="2.5"/>`;
+
+    for (let x = 0; x <= xMax; x++) {
+      const { px } = toScreen(x, 0);
+      const isMajor = x % 1 === 0;
+      const isLabel = x % 2 === 0;
+      const tickH = isMajor ? 8 : 4;
+      svgContent += `<line x1="${px}" y1="${padding.top + plotH}" x2="${px}" y2="${padding.top + plotH + tickH}" 
+        stroke="#1E293B" stroke-width="${isMajor ? 2 : 1}"/>`;
+      if (isLabel) {
+        svgContent += `<text x="${px}" y="${padding.top + plotH + 26}" text-anchor="middle" 
+          font-size="13" font-weight="700" font-family="Inter, sans-serif" fill="#0B2E4E">${x}</text>`;
+      }
+    }
+
+    for (let y = 0; y <= yMax; y++) {
+      const { py } = toScreen(0, y);
+      const isMajor = y % 1 === 0;
+      const isLabel = y % 2 === 0;
+      const tickW = isMajor ? 8 : 4;
+      svgContent += `<line x1="${padding.left - tickW}" y1="${py}" x2="${padding.left}" y2="${py}" 
+        stroke="#1E293B" stroke-width="${isMajor ? 2 : 1}"/>`;
+      if (isLabel) {
+        svgContent += `<text x="${padding.left - 14}" y="${py + 5}" text-anchor="end" 
+          font-size="13" font-weight="700" font-family="Inter, sans-serif" fill="#0B2E4E">${y}</text>`;
+      }
+    }
+
+    svgContent += `<text x="${padding.left + plotW / 2}" y="${height - 15}" text-anchor="middle" 
+      font-size="15" font-weight="800" font-family="Inter, sans-serif" fill="#0B2E4E">Masa / Tingkatan / Tahun →</text>`;
+    svgContent += `<text x="22" y="${padding.top + plotH / 2}" text-anchor="middle" 
+      font-size="15" font-weight="800" font-family="Inter, sans-serif" fill="#0B2E4E" 
+      transform="rotate(-90 22 ${padding.top + plotH / 2})">Pencapaian / Usaha →</text>`;
+
+    if (pointP && pointQ) {
+      const p1 = toScreen(pointP.x, pointP.y);
+      const p2 = toScreen(pointQ.x, pointQ.y);
+
+      svgContent += `<line x1="${p1.px}" y1="${p1.py}" x2="${p2.px}" y2="${p2.py}" 
+        stroke="#0B2E4E" stroke-width="5" stroke-linecap="round" opacity="0.15"/>`;
+      svgContent += `<line x1="${p1.px}" y1="${p1.py}" x2="${p2.px}" y2="${p2.py}" 
+        stroke="#0B2E4E" stroke-width="3" stroke-linecap="round" stroke-dasharray="8,4"/>`;
+
+      const angle = Math.atan2(p2.py - p1.py, p2.px - p1.px);
+      const headLen = 18;
+      const headWidth = Math.PI / 7;
+      const arrowX = p2.px - headLen * Math.cos(angle);
+      const arrowY = p2.py - headLen * Math.sin(angle);
+
+      svgContent += `<polygon points="${p2.px},${p2.py} ${arrowX - headLen * Math.cos(angle - headWidth)},${arrowY - headLen * Math.sin(angle - headWidth)} ${arrowX - headLen * Math.cos(angle + headWidth)},${arrowY - headLen * Math.sin(angle + headWidth)}" 
+        fill="#0B2E4E"/>`;
+
+      const mx = (p1.px + p2.px) / 2;
+      const my = (p1.py + p2.py) / 2;
+
+      svgContent += `<circle cx="${mx}" cy="${my}" r="14" fill="#F4C430" opacity="0.2"/>`;
+      svgContent += `<circle cx="${mx}" cy="${my}" r="10" fill="#F4C430" stroke="#ffffff" stroke-width="3"/>`;
+      svgContent += `<text x="${mx}" y="${my + 4}" text-anchor="middle" 
+        font-size="11" font-weight="900" font-family="Inter, sans-serif" fill="#0B2E4E">M</text>`;
+
+      const dist = Math.sqrt((pointP.x - pointQ.x) ** 2 + (pointP.y - pointQ.y) ** 2);
+      svgContent += `<text x="${mx}" y="${my - 20}" text-anchor="middle" 
+        font-size="13" font-weight="800" font-family="JetBrains Mono, monospace" 
+        fill="#0B2E4E" stroke="#ffffff" stroke-width="4" paint-order="stroke">d = ${dist.toFixed(2)}</text>`;
+    }
+
+    if (pointP) {
+      const { px, py } = toScreen(pointP.x, pointP.y);
+      svgContent += `<circle cx="${px}" cy="${py}" r="20" fill="#C8102E" opacity="0.2"/>`;
+      svgContent += `<circle cx="${px}" cy="${py}" r="12" fill="#C8102E" stroke="#ffffff" stroke-width="4" style="cursor: grab;"/>`;
+      svgContent += `<text x="${px}" y="${py + 4}" text-anchor="middle" 
+        font-size="13" font-weight="900" font-family="Inter, sans-serif" fill="#ffffff">P</text>`;
+      svgContent += `<text x="${px}" y="${py - 22}" text-anchor="middle" 
+        font-size="12" font-weight="800" font-family="JetBrains Mono, monospace" 
+        fill="#C8102E" stroke="#ffffff" stroke-width="4" paint-order="stroke">(${pointP.x.toFixed(1)}, ${pointP.y.toFixed(1)})</text>`;
+    }
+
+    if (pointQ) {
+      const { px, py } = toScreen(pointQ.x, pointQ.y);
+      svgContent += `<circle cx="${px}" cy="${py}" r="20" fill="#10B981" opacity="0.2"/>`;
+      svgContent += `<circle cx="${px}" cy="${py}" r="12" fill="#10B981" stroke="#ffffff" stroke-width="4" style="cursor: grab;"/>`;
+      svgContent += `<text x="${px}" y="${py + 4}" text-anchor="middle" 
+        font-size="13" font-weight="900" font-family="Inter, sans-serif" fill="#ffffff">Q</text>`;
+      svgContent += `<text x="${px}" y="${py - 22}" text-anchor="middle" 
+        font-size="12" font-weight="800" font-family="JetBrains Mono, monospace" 
+        fill="#10B981" stroke="#ffffff" stroke-width="4" paint-order="stroke">(${pointQ.x.toFixed(1)}, ${pointQ.y.toFixed(1)})</text>`;
+    }
+
+    if (!pointP && !pointQ) {
+      svgContent += `<text x="${padding.left + plotW / 2}" y="${padding.top + plotH / 2}" 
+        text-anchor="middle" font-size="18" font-weight="700" font-family="Inter, sans-serif" fill="#94A3B8">
+        📍 Klik pada graf untuk plot titik P
+      </text>`;
+      svgContent += `<text x="${padding.left + plotW / 2}" y="${padding.top + plotH / 2 + 30}" 
+        text-anchor="middle" font-size="14" font-weight="600" font-family="Inter, sans-serif" fill="#CBD5E1">
+        P = "Saya Sekarang" · Q = "Matlamat Saya"
+      </text>`;
+    }
+
+    svg.innerHTML = svgContent;
+
+    svg.onmousedown = handleMouseDown;
+    svg.onmousemove = handleMouseMove;
+    svg.onmouseup = handleMouseUp;
+    svg.onmouseleave = handleMouseUp;
+
+    svg.ontouchstart = handleTouchStart;
+    svg.ontouchmove = handleTouchMove;
+    svg.ontouchend = handleTouchEnd;
+  }
+
+  // COORDINATE HELPERS
+  function getSVGCoords(e) {
+    const svg = document.getElementById('graphSvg');
+    const rect = svg.getBoundingClientRect();
+    const scaleX = GRAPH.width / rect.width;
+    const scaleY = GRAPH.height / rect.height;
+
+    let clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if (e.changedTouches) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    return {
+      px: (clientX - rect.left) * scaleX,
+      py: (clientY - rect.top) * scaleY
+    };
+  }
+
+  function screenToData(px, py) {
+    const { padding, xMin, xMax, yMin, yMax } = GRAPH;
+    const plotW = GRAPH.width - padding.left - padding.right;
+    const plotH = GRAPH.height - padding.top - padding.bottom;
+
+    let x = xMin + ((px - padding.left) / plotW) * (xMax - xMin);
+    let y = yMin + ((padding.top + plotH - py) / plotH) * (yMax - yMin);
+
+    x = Math.max(xMin, Math.min(xMax, x));
+    y = Math.max(yMin, Math.min(yMax, y));
+
+    return {
+      x: Math.round(x * 10) / 10,
+      y: Math.round(y * 10) / 10
+    };
+  }
+
+  function findNearbyPoint(px, py) {
+    const { padding, xMin, xMax, yMin, yMax } = GRAPH;
+    const plotW = GRAPH.width - padding.left - padding.right;
+    const plotH = GRAPH.height - padding.top - padding.bottom;
+
+    function toScreen(x, y) {
+      return {
+        px: padding.left + ((x - xMin) / (xMax - xMin)) * plotW,
+        py: padding.top + plotH - ((y - yMin) / (yMax - yMin)) * plotH
+      };
+    }
+
+    if (pointP) {
+      const s = toScreen(pointP.x, pointP.y);
+      if (Math.sqrt((s.px - px) ** 2 + (s.py - py) ** 2) < 30) return 'P';
+    }
+    if (pointQ) {
+      const s = toScreen(pointQ.x, pointQ.y);
+      if (Math.sqrt((s.px - px) ** 2 + (s.py - py) ** 2) < 30) return 'Q';
+    }
+    return null;
+  }
+
+  // MOUSE HANDLERS
+  function handleMouseDown(e) {
+    const { px, py } = getSVGCoords(e);
+    const near = findNearbyPoint(px, py);
+    if (near) {
+      dragging = near;
+      return;
+    }
+    placePoint(px, py);
+  }
+
+  function handleMouseMove(e) {
+    if (!dragging) return;
+    const { px, py } = getSVGCoords(e);
+    const data = screenToData(px, py);
+    if (dragging === 'P') pointP = data;
+    else if (dragging === 'Q') pointQ = data;
+    renderGraph();
+    updateInfo();
+  }
+
+  function handleMouseUp() {
+    dragging = null;
+  }
+
+  // TOUCH HANDLERS
+  function handleTouchStart(e) {
+    e.preventDefault();
+    const { px, py } = getSVGCoords(e);
+    const near = findNearbyPoint(px, py);
+    if (near) {
+      dragging = near;
+      return;
+    }
+    placePoint(px, py);
+  }
+
+  function handleTouchMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    const { px, py } = getSVGCoords(e);
+    const data = screenToData(px, py);
+    if (dragging === 'P') pointP = data;
+    else if (dragging === 'Q') pointQ = data;
+    renderGraph();
+    updateInfo();
+  }
+
+  function handleTouchEnd(e) {
+    dragging = null;
+  }
+
+  // PLACE POINT
+  function placePoint(px, py) {
+    const data = screenToData(px, py);
+
+    if (currentTool === 'P') {
+      pointP = data;
+      showFeedback('success', `📍 Titik P ditetapkan: (${data.x}, ${data.y})`);
+      if (!pointQ) {
+        setTool('Q');
+      }
+    } else if (currentTool === 'Q') {
+      pointQ = data;
+      showFeedback('success', `🏁 Titik Q ditetapkan: (${data.x}, ${data.y})`);
+    }
+
+    renderGraph();
+    updateInfo();
+    updateStatus();
+  }
+
+  // SET TOOL
+  window.setTool = function(tool) {
+    currentTool = tool;
+
+    document.getElementById('toolP').classList.toggle('active', tool === 'P');
+    document.getElementById('toolQ').classList.toggle('active', tool === 'Q');
+
+    const hint = document.getElementById('graphHintText');
+    if (tool === 'P') {
+      hint.textContent = 'Klik pada graf untuk plot titik P (Saya Sekarang)';
+    } else {
+      hint.textContent = 'Klik pada graf untuk plot titik Q (Matlamat Saya)';
+    }
+  };
+
+  // CLEAR POINTS
+  window.clearPoints = function() {
+    if (!pointP && !pointQ) return;
+    if (!confirm('Padam semua titik P & Q?')) return;
+    pointP = null;
+    pointQ = null;
+    renderGraph();
+    updateInfo();
+    updateStatus();
+    showFeedback('info', '🔄 Titik dipadam. Mula semula!');
+  };
+
+  // UPDATE INFO
+  function updateInfo() {
+    const pCoords = document.getElementById('pCoords');
+    const qCoords = document.getElementById('qCoords');
+    const distInfo = document.getElementById('distanceInfo');
+    const midInfo = document.getElementById('midpointInfo');
+
+    if (pointP) {
+      pCoords.textContent = `(${pointP.x.toFixed(1)}, ${pointP.y.toFixed(1)})`;
+    } else {
+      pCoords.textContent = '—';
+    }
+
+    if (pointQ) {
+      qCoords.textContent = `(${pointQ.x.toFixed(1)}, ${pointQ.y.toFixed(1)})`;
+    } else {
+      qCoords.textContent = '—';
+    }
+
+    if (pointP && pointQ) {
+      const dist = Math.sqrt((pointP.x - pointQ.x) ** 2 + (pointP.y - pointQ.y) ** 2);
+      const mx = (pointP.x + pointQ.x) / 2;
+      const my = (pointP.y + pointQ.y) / 2;
+
+      distInfo.textContent = `${dist.toFixed(2)} unit`;
+      midInfo.textContent = `(${mx.toFixed(1)}, ${my.toFixed(1)})`;
+      document.getElementById('statDistance').textContent = dist.toFixed(1);
+    } else {
+      distInfo.textContent = '—';
+      midInfo.textContent = '—';
+      document.getElementById('statDistance').textContent = '—';
+    }
+  }
+
+  // UPDATE STATUS
+  function updateStatus() {
+    const count = (pointP ? 1 : 0) + (pointQ ? 1 : 0);
+    document.getElementById('statPoints').textContent = `${count}/2`;
+    document.getElementById('sidePoints').textContent = `${count} / 2`;
+    document.getElementById('sideProgressFill').style.width = (count / 2 * 100) + '%';
+    document.getElementById('navScore').textContent = count;
+
+    const btn = document.getElementById('nextBtn');
+    btn.disabled = count < 2;
+  }
+
+  // FINISH ACTIVITY
+  window.finishActivity = async function() {
+    if (!pointP || !pointQ) {
+      showFeedback('error', '❌ Sila plot kedua-dua titik P & Q dahulu.');
+      return;
+    }
+
+    if (timerInterval) clearInterval(timerInterval);
+
+    launchConfetti();
+    await saveToFirestore();
+
+    setTimeout(() => {
+      showResultModal();
+    }, 600);
+  };
+
+  // RESET ACTIVITY
+  window.resetActivity = function() {
+    if (!pointP && !pointQ) return;
+    if (!confirm('Reset akan padam semua titik. Teruskan?')) return;
+    pointP = null;
+    pointQ = null;
+    document.getElementById('inlineReflection').value = '';
+    renderGraph();
+    updateInfo();
+    updateStatus();
+    hideFeedback();
+  };
+
+  // CONFETTI
+  function launchConfetti() {
+    const colors = ['#C8102E', '#F4C430', '#0B2E4E', '#10B981', '#E63946'];
+    for (let i = 0; i < 50; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animation = `confettiFall ${1.5 + Math.random() * 1.5}s linear ${Math.random() * 0.5}s forwards`;
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = c.style.width;
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3000);
+    }
+  }
+
+  // SAVE TO FIRESTORE
+  async function saveToFirestore() {
+    if (!currentUser) return;
+
+    try {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const dist = Math.sqrt((pointP.x - pointQ.x) ** 2 + (pointP.y - pointQ.y) ** 2);
+      const mx = (pointP.x + pointQ.x) / 2;
+      const my = (pointP.y + pointQ.y) / 2;
+      const noteValue = document.getElementById('inlineReflection').value.trim();
+
+      const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+      await setDoc(progressRef, {
+        status: 'completed',
+        completedAt: serverTimestamp(),
+        pointP: pointP,
+        pointQ: pointQ,
+        distance: parseFloat(dist.toFixed(2)),
+        midpoint: { x: parseFloat(mx.toFixed(2)), y: parseFloat(my.toFixed(2)) },
+        notes: noteValue,
+        timeSpent: elapsed,
+        activityTitle: ACTIVITY_TITLE,
+        konstruk: ACTIVITY_KONSTRUK
+      }, { merge: true });
+
+      // Auto-unlock next
+      const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+      const nextDoc = await getDoc(nextRef);
+      if (!nextDoc.exists()) {
+        await setDoc(nextRef, {
+          status: 'in_progress',
+          startedAt: serverTimestamp()
+        }, { merge: true });
+      }
+
+      console.log('✅ Progress saved');
+    } catch (e) {
+      console.error('❌ Save error:', e);
+    }
+  }
+
+  // RESULT MODAL
+  function showResultModal() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    const dist = Math.sqrt((pointP.x - pointQ.x) ** 2 + (pointP.y - pointQ.y) ** 2);
+
+    document.getElementById('modalDistance').textContent = dist.toFixed(1);
+    document.getElementById('modalTime').textContent = `${m}:${String(s).padStart(2, '0')}`;
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  // REFLECTION
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  // SUBMIT REFLECTION — Integrated
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const dist = Math.sqrt((pointP.x - pointQ.x) ** 2 + (pointP.y - pointQ.y) ** 2);
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+    try {
+      if (currentUser) {
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+        await setDoc(progressRef, {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          refleksi: text,
+          emosi: selectedEmotion,
+          badge: { earned: true, type: 'activity_complete' },
+          pointP: pointP,
+          pointQ: pointQ,
+          distance: parseFloat(dist.toFixed(2)),
+          timeSpent: elapsed,
+          activityTitle: ACTIVITY_TITLE,
+          konstruk: ACTIVITY_KONSTRUK
+        }, { merge: true });
+
+        const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+        const nextDoc = await getDoc(nextRef);
+        if (!nextDoc.exists()) {
+          await setDoc(nextRef, {
+            status: 'in_progress',
+            startedAt: serverTimestamp()
+          }, { merge: true });
+        }
+
+        console.log('✅ Reflection saved');
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan & Selesai';
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon good';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai! 🎉';
+    document.getElementById('modalSub').textContent = 'Refleksi anda telah disimpan. Teruskan ke aktiviti seterusnya!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="${NEXT_ACTIVITY_FILE}" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-arrow-right"></i> Aktiviti Seterusnya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // FEEDBACK
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 3000);
+  }
+
+  function hideFeedback() {
+    const box = document.getElementById('feedbackMsg');
+    if (box) box.classList.remove('active');
+  }
+
+  // INIT — Render graph terus
+  renderGraph();
+  updateInfo();
+  updateStatus();
+
+  setTimeout(() => { hideLoader(); }, 1500);
+
+  // AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        let nama = data.nama;
+        if (!nama || nama.trim() === '' || nama === 'Pengguna') {
+          nama = data.emel?.split('@')[0] || 'Murid';
+        }
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+
+        if (data.avatar) {
+          const navAvatar = document.getElementById('navAvatar');
+          navAvatar.innerHTML = `<img src="${data.avatar}" alt="${nama}">`;
+        }
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    startTimer();
+    hideLoader();
+  });
+
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 7 · Koordinat Hidup Saya ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 5: Lengkung Keyakinan · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Fungsi Kuadratik dengan Confidence Slider.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    overflow: hidden;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  /* PAGE WRAP */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ACTIVITY HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(244,196,48,0.2), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* STEPS BAR */
+  .steps-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+  .step-item.done {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+  }
+  .step-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* CONTENT GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.4rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--red); font-size: 0.9rem; }
+
+  /* CONFIDENCE SLIDER */
+  .confidence-box {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .confidence-box::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 100%, rgba(244,196,48,0.1), transparent 60%);
+    pointer-events: none;
+  }
+  .confidence-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .confidence-sub {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.8rem;
+    position: relative;
+  }
+  .confidence-value-display {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .confidence-label-display {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--maroon);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.5rem;
+    min-height: 24px;
+    position: relative;
+  }
+
+  .slider-track {
+    position: relative;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+  .slider-input {
+    width: 100%;
+    height: 12px;
+    border-radius: 50px;
+    background: linear-gradient(90deg, 
+      #EF4444 0%, 
+      #F59E0B 33%, 
+      #FACC15 50%, 
+      #84CC16 66%, 
+      #10B981 100%);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+  }
+  .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid var(--navy);
+    cursor: grab;
+    box-shadow: 0 4px 12px rgba(11, 46, 78, 0.3);
+    transition: all 0.2s;
+  }
+  .slider-input::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 6px 20px rgba(11, 46, 78, 0.4);
+  }
+  .slider-input::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.2);
+  }
+  .slider-input::-moz-range-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid var(--navy);
+    cursor: grab;
+    box-shadow: 0 4px 12px rgba(11, 46, 78, 0.3);
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .slider-emoji {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* PARABOLA GRAPH */
+  .parabola-section {
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .parabola-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .parabola-title i { color: var(--red); }
+  .parabola-sub {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-bottom: 1rem;
+  }
+  .parabola-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #FAFBFC 0%, #F1F5F9 100%);
+  }
+
+  /* REFLECTION INPUT */
+  .reflect-inline {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .reflect-inline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .reflect-inline-title i { color: var(--red); font-size: 0.9rem; }
+  .reflect-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: all 0.25s;
+  }
+  .reflect-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  /* STEPS PROGRESS */
+  .mini-steps {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .mini-step {
+    flex: 1;
+    min-width: 60px;
+    padding: 0.6rem 0.5rem;
+    border-radius: 10px;
+    background: var(--paper);
+    border: 2px solid var(--line);
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .mini-step.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    border-color: var(--red);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+  }
+  .mini-step.done {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .mini-step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .mini-step-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .question-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+  .question-topic-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(11, 46, 78, 0.08);
+    color: var(--navy);
+    padding: 0.25rem 0.7rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+  }
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+  .question-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    background: rgba(244, 196, 48, 0.1);
+    border: 1px solid rgba(244, 196, 48, 0.3);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    font-size: 0.82rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .question-hint i {
+    color: var(--gold);
+    font-size: 0.95rem;
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+  }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(200, 16, 46, 0.45); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--maroon);
+    color: var(--maroon);
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success { background: rgba(16, 185, 129, 0.1); color: #047857; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .feedback-msg.error { background: rgba(239, 68, 68, 0.1); color: #B91C1C; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .feedback-msg.info { background: rgba(244, 196, 48, 0.1); color: #92400E; border: 1px solid rgba(244, 196, 48, 0.3); }
+
+  /* SIDE CONTENT */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; color: var(--success);
+    font-size: 0.75rem; flex-shrink: 0; margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5;
+    padding: 0.7rem 0.9rem; background: var(--paper);
+    border-radius: 10px; border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff; border-radius: 12px; padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem; text-align: center;
+    margin-bottom: 0.8rem; line-height: 1.6;
+  }
+  .formula-box strong {
+    color: var(--gold); display: block; margin-bottom: 0.4rem;
+    font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* CONFETTI */
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: var(--gold);
+    top: -20px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+  }
+  @keyframes confettiFall {
+    0% { top: -20px; opacity: 1; transform: rotate(0deg) scale(1); }
+    100% { top: 100vh; opacity: 0; transform: rotate(720deg) scale(0.5); }
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none; align-items: center; justify-content: center;
+    padding: 1.5rem; animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff; border-radius: 24px;
+    padding: 2.5rem 2rem; max-width: 480px; width: 100%;
+    text-align: center; position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--navy); margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--navy); line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700;
+  }
+
+  /* REFLECTION MODAL */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px; padding: 1.5rem;
+    margin-bottom: 1.5rem; text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem; font-weight: 700;
+    color: var(--navy); margin-bottom: 0.7rem; display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px; border-radius: 14px;
+    border: 2px solid var(--line); background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 1.05rem;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold); transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff; border-color: var(--red);
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%; padding: 0.9rem 1rem;
+    border: 2px solid var(--line); border-radius: 12px;
+    font-family: inherit; font-size: 0.9rem; color: var(--ink);
+    background: #fff; resize: vertical; min-height: 90px;
+    outline: none; transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed; inset: 0;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 900;
+    color: var(--navy); letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+    .confidence-value-display { font-size: 3.5rem; }
+    .question-text { font-size: 1.1rem; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+    .mini-step-label { font-size: 0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-wave-square"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 5</strong>
+        <span>Lengkung Keyakinan</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 5</small>
+      </div>
+      <div class="nav-avatar" id="navAvatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <!-- ACTIVITY HEADER -->
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-bolt"></i> Efikasi Kendiri
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Fungsi Kuadratik
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Lengkung Keyakinan 📈</h1>
+        <p class="activity-subtitle">
+          Ukur <strong>tahap keyakinan</strong> anda terhadap 5 topik Fungsi Kuadratik dengan slider interaktif. 
+          Lihat lengkung keyakinan anda terbentuk secara real-time!
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statTopics">0/5</div>
+          <div class="activity-stat-label">Topik</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statAvg">—</div>
+          <div class="activity-stat-label">Purata</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS BAR -->
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Nilai Keyakinan</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Lihat Lengkung</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <!-- MAIN GRID -->
+  <div class="content-grid">
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- MINI STEPS -->
+      <div class="mini-steps" id="miniSteps"></div>
+
+      <!-- QUESTION CARD -->
+      <div class="question-card" id="questionCard">
+        <div style="display: flex; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+          <div class="question-num" id="qNum">1</div>
+          <span class="question-topic-badge">
+            <i class="fas fa-book"></i> <span id="qTopic">Fungsi Kuadratik</span>
+          </span>
+        </div>
+        <div class="question-text" id="qText">
+          Melakar graf fungsi kuadratik
+        </div>
+        <div class="question-hint">
+          <i class="fas fa-lightbulb"></i>
+          <span id="qHint">Fikirkan: Setakat ini, berapa yakin anda dengan topik ini?</span>
+        </div>
+      </div>
+
+      <!-- CONFIDENCE SLIDER -->
+      <div class="confidence-box">
+        <div class="confidence-question">Berapa yakin anda?</div>
+        <div class="confidence-sub">Gerakkan slider untuk nilai keyakinan anda</div>
+
+        <div class="confidence-value-display" id="confValue">3</div>
+        <div class="confidence-label-display" id="confLabel">Sederhana</div>
+
+        <div class="slider-emoji">
+          <span>😰</span>
+          <span>😟</span>
+          <span>😐</span>
+          <span>🙂</span>
+          <span>😎</span>
+        </div>
+
+        <div class="slider-track">
+          <input type="range" class="slider-input" id="confSlider" min="1" max="5" value="3" step="1">
+        </div>
+
+        <div class="slider-labels">
+          <span>1 · Tidak Yakin</span>
+          <span>3 · Sederhana</span>
+          <span>5 · Sangat Yakin</span>
+        </div>
+      </div>
+
+      <!-- PARABOLA GRAPH -->
+      <div class="parabola-section">
+        <div class="parabola-title">
+          <i class="fas fa-chart-line"></i>
+          Lengkung Keyakinan Anda
+        </div>
+        <div class="parabola-sub">
+          Setiap titik mewakili keyakinan anda pada satu topik. Lihat pola keyakinan anda!
+        </div>
+        <svg class="parabola-svg" id="parabolaSvg" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+
+      <!-- INLINE REFLECTION -->
+      <div class="reflect-inline">
+        <div class="reflect-inline-title">
+          <i class="fas fa-edit"></i> Catatan Refleksi
+        </div>
+        <textarea class="reflect-input" id="inlineReflection" placeholder="Contoh: Saya takut bila jumpa soalan graf yang perlu cari puncak..."></textarea>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetActivity()">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextTopic()">
+          <i class="fas fa-arrow-right"></i> Topik Seterusnya
+        </button>
+      </div>
+
+    </div>
+
+    <!-- SIDE PANEL -->
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Ukur tahap keyakinan anda pada 5 topik</li>
+          <li>Lihat pola keyakinan melalui lengkung</li>
+          <li>Refleksi: kenapa keyakinan tinggi/rendah</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Tips Efikasi Kendiri
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-heart"></i>
+            <span><strong>Jujur</strong> — tiada jawapan betul/salah</span>
+          </li>
+          <li>
+            <i class="fas fa-redo"></i>
+            <span>Keyakinan boleh <strong>berubah</strong> bila belajar</span>
+          </li>
+          <li>
+            <i class="fas fa-chart-line"></i>
+            <span>Kenal pasti topik yang perlu <strong>fokus</strong></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Topik Fungsi Kuadratik
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.7;">
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">1.</strong> Melakar graf</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">2.</strong> Cari titik puncak & paksi simetri</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">3.</strong> Cari punca persamaan</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">4.</strong> Bentuk am ↔ bentuk puncak</div>
+          <div><strong style="color: var(--navy);">5.</strong> Menyelesaikan masalah</div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.3rem;">
+              <span style="font-weight: 600;">Topik Dinilai</span>
+              <strong id="sideTopics" style="color: var(--red);">0 / 5</strong>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--line); border-radius: 10px; overflow: hidden;">
+              <div id="sideProgressFill" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--red), var(--gold)); border-radius: 10px; transition: width 0.5s;"></div>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Purata Keyakinan</span>
+            <strong id="sideAvg" style="color: var(--navy);">—</strong>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda telah menilai keyakinan anda pada semua 5 topik!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalAvg">0.0</div>
+        <div class="modal-stat-label">Purata Keyakinan</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalTime">0:00</div>
+        <div class="modal-stat-label">Masa</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Akhir
+      </button>
+      <button class="btn btn-outline" onclick="closeModal()" style="flex: none;">
+        <i class="fas fa-times"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan & pemikiran tentang keyakinan anda</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Topik mana paling tinggi/rendah? Kenapa?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Saya paling yakin dengan melakar graf, tapi takut dengan masalah aplikasi..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // METADATA
+  const ACTIVITY_ID = '5';
+  const ACTIVITY_NUMBER = 5;
+  const ACTIVITY_TITLE = 'Lengkung Keyakinan';
+  const ACTIVITY_KONSTRUK = 'Efikasi Kendiri';
+  const NEXT_ACTIVITY_NUMBER = 6;
+  const NEXT_ACTIVITY_FILE = 'activity-06.html';
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // TOPICS DATA
+  const TOPICS = [
+    { num: 1, topic: "Melakar Graf", question: "Melakar graf fungsi kuadratik", hint: "Fikirkan: Setakat ini, berapa yakin anda melukis parabola?" },
+    { num: 2, topic: "Titik Puncak", question: "Mencari titik puncak & paksi simetri", hint: "Fikirkan: Boleh tak anda cari puncak tanpa rujuk nota?" },
+    { num: 3, topic: "Punca Persamaan", question: "Mencari punca persamaan kuadratik", hint: "Fikirkan: Yakin tak anda guna pemfaktoran / rumus?" },
+    { num: 4, topic: "Bentuk Am & Puncak", question: "Menukar bentuk am ↔ bentuk puncak", hint: "Fikirkan: Faham tak anda proses completing the square?" },
+    { num: 5, topic: "Masalah Aplikasi", question: "Menyelesaikan masalah aplikasi", hint: "Fikirkan: Yakin tak anda bila soalan berbentuk cerita?" }
+  ];
+
+  const CONFIDENCE_LABELS = {
+    1: { label: "Tidak Yakin", color: "#EF4444" },
+    2: { label: "Kurang Yakin", color: "#F59E0B" },
+    3: { label: "Sederhana", color: "#FACC15" },
+    4: { label: "Yakin", color: "#84CC16" },
+    5: { label: "Sangat Yakin", color: "#10B981" }
+  };
+
+  let currentTopicIndex = 0;
+  let answers = {};
+  let inlineNotes = {};
+  let currentUser = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+  let selectedEmotion = null;
+
+  // TIMER
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      // no timer element in this layout, just keep time tracked
+    }, 1000);
+  }
+
+  // RENDER MINI STEPS
+  function renderMiniSteps() {
+    const container = document.getElementById('miniSteps');
+    container.innerHTML = TOPICS.map((t, i) => {
+      let cls = 'mini-step';
+      if (i === currentTopicIndex) cls += ' active';
+      else if (answers[t.num] !== undefined) cls += ' done';
+
+      return `
+        <div class="${cls}" onclick="jumpToTopic(${i})">
+          <div class="mini-step-num">${t.num}</div>
+          <div class="mini-step-label">${t.topic}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // RENDER TOPIC
+  function renderTopic() {
+    const topic = TOPICS[currentTopicIndex];
+    if (!topic) return;
+
+    document.getElementById('qNum').textContent = topic.num;
+    document.getElementById('qTopic').textContent = topic.topic;
+    document.getElementById('qText').textContent = topic.question;
+    document.getElementById('qHint').textContent = topic.hint;
+
+    const existingValue = answers[topic.num] || 3;
+    const slider = document.getElementById('confSlider');
+    slider.value = existingValue;
+    updateConfidenceDisplay(existingValue);
+
+    document.getElementById('inlineReflection').value = inlineNotes[topic.num] || '';
+
+    const btn = document.getElementById('nextBtn');
+    if (currentTopicIndex === TOPICS.length - 1) {
+      btn.innerHTML = '<i class="fas fa-check"></i> Selesai & Lihat Hasil';
+    } else {
+      btn.innerHTML = '<i class="fas fa-arrow-right"></i> Topik Seterusnya';
+    }
+
+    document.getElementById('navScore').textContent = Object.keys(answers).length;
+
+    renderMiniSteps();
+    renderParabola();
+    updateStatus();
+  }
+
+  // UPDATE CONFIDENCE DISPLAY
+  function updateConfidenceDisplay(value) {
+    const display = document.getElementById('confValue');
+    const label = document.getElementById('confLabel');
+    const conf = CONFIDENCE_LABELS[value];
+
+    display.textContent = value;
+    display.style.background = `linear-gradient(135deg, ${conf.color}, ${conf.color})`;
+    display.style.webkitBackgroundClip = 'text';
+    display.style.webkitTextFillColor = 'transparent';
+
+    label.textContent = conf.label;
+    label.style.color = conf.color;
+  }
+
+  // PARABOLA GRAPH
+  function renderParabola() {
+    const svg = document.getElementById('parabolaSvg');
+    const W = 800, H = 320;
+    const padding = { top: 40, right: 40, bottom: 60, left: 60 };
+    const plotW = W - padding.left - padding.right;
+    const plotH = H - padding.top - padding.bottom;
+
+    function xPos(i) {
+      return padding.left + (i / (TOPICS.length - 1)) * plotW;
+    }
+    function yPos(val) {
+      return padding.top + plotH - ((val - 0.5) / 5.5) * plotH;
+    }
+
+    let svgContent = '';
+    svgContent += `<rect width="${W}" height="${H}" fill="#ffffff"/>`;
+
+    for (let v = 1; v <= 5; v++) {
+      const y = yPos(v);
+      svgContent += `<line x1="${padding.left}" y1="${y}" x2="${padding.left + plotW}" y2="${y}" stroke="#EEF2F7" stroke-width="1" stroke-dasharray="4,3"/>`;
+      svgContent += `<text x="${padding.left - 12}" y="${y + 4}" text-anchor="end" font-size="13" font-weight="700" font-family="Inter, sans-serif" fill="#475569">${v}</text>`;
+    }
+
+    TOPICS.forEach((t, i) => {
+      const x = xPos(i);
+      svgContent += `<line x1="${x}" y1="${padding.top}" x2="${x}" y2="${padding.top + plotH}" stroke="#EEF2F7" stroke-width="1"/>`;
+    });
+
+    svgContent += `<line x1="${padding.left}" y1="${padding.top + plotH}" x2="${padding.left + plotW}" y2="${padding.top + plotH}" stroke="#1E293B" stroke-width="2.5"/>`;
+    svgContent += `<line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + plotH}" stroke="#1E293B" stroke-width="2.5"/>`;
+
+    const points = [];
+    TOPICS.forEach((t, i) => {
+      const val = answers[t.num];
+      if (val !== undefined) {
+        points.push({ x: xPos(i), y: yPos(val), value: val, topic: t.topic, index: i });
+      }
+    });
+
+    if (points.length >= 2) {
+      let pathD = `M ${points[0].x} ${points[0].y}`;
+      if (points.length === 2) {
+        pathD += ` L ${points[1].x} ${points[1].y}`;
+      } else {
+        for (let i = 1; i < points.length; i++) {
+          const p0 = points[i - 1];
+          const p1 = points[i];
+          const cpx = (p0.x + p1.x) / 2;
+          pathD += ` C ${cpx} ${p0.y}, ${cpx} ${p1.y}, ${p1.x} ${p1.y}`;
+        }
+      }
+
+      if (points.length >= 3) {
+        let fillD = pathD + ` L ${points[points.length - 1].x} ${padding.top + plotH}`;
+        fillD += ` L ${points[0].x} ${padding.top + plotH} Z`;
+        svgContent += `<path d="${fillD}" fill="url(#curveFill)" opacity="0.3"/>`;
+      }
+
+      svgContent += `<path d="${pathD}" fill="none" stroke="url(#curveStroke)" stroke-width="3.5" stroke-linecap="round"/>`;
+    }
+
+    svgContent = `<defs>
+      <linearGradient id="curveStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C8102E"/>
+        <stop offset="100%" stop-color="#F4C430"/>
+      </linearGradient>
+      <linearGradient id="curveFill" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#F4C430" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#F4C430" stop-opacity="0"/>
+      </linearGradient>
+    </defs>` + svgContent;
+
+    points.forEach(p => {
+      const conf = CONFIDENCE_LABELS[p.value];
+      const isCurrent = p.index === currentTopicIndex;
+      svgContent += `<circle cx="${p.x}" cy="${p.y}" r="${isCurrent ? 18 : 12}" fill="${conf.color}" opacity="0.2"/>`;
+      svgContent += `<circle cx="${p.x}" cy="${p.y}" r="${isCurrent ? 10 : 8}" fill="${conf.color}" stroke="#ffffff" stroke-width="3"/>`;
+      svgContent += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle" font-size="11" font-weight="800" font-family="Inter, sans-serif" fill="#ffffff">${p.value}</text>`;
+    });
+
+    TOPICS.forEach((t, i) => {
+      const x = xPos(i);
+      const isCurrent = i === currentTopicIndex;
+      svgContent += `<text x="${x}" y="${padding.top + plotH + 22}" text-anchor="middle" font-size="${isCurrent ? 13 : 11}" font-weight="${isCurrent ? 800 : 600}" font-family="Inter, sans-serif" fill="${isCurrent ? '#C8102E' : '#475569'}">${t.num}</text>`;
+      svgContent += `<text x="${x}" y="${padding.top + plotH + 38}" text-anchor="middle" font-size="10" font-weight="600" font-family="Inter, sans-serif" fill="#94A3B8">${t.topic.split(' ')[0]}</text>`;
+    });
+
+    svgContent += `<text x="20" y="${padding.top + plotH / 2}" text-anchor="middle" font-size="13" font-weight="800" font-family="Inter, sans-serif" fill="#0B2E4E" transform="rotate(-90 20 ${padding.top + plotH / 2})">Keyakinan</text>`;
+    svgContent += `<text x="${padding.left + plotW / 2}" y="${H - 15}" text-anchor="middle" font-size="13" font-weight="800" font-family="Inter, sans-serif" fill="#0B2E4E">Topik Fungsi Kuadratik</text>`;
+
+    if (points.length === 0) {
+      svgContent += `<text x="${padding.left + plotW / 2}" y="${padding.top + plotH / 2}" text-anchor="middle" font-size="16" font-weight="700" font-family="Inter, sans-serif" fill="#94A3B8">Gerakkan slider untuk nilai keyakinan anda</text>`;
+    }
+
+    svg.innerHTML = svgContent;
+  }
+
+  // TOPIC NAVIGATION
+  window.jumpToTopic = function(index) {
+    currentTopicIndex = index;
+    renderTopic();
+  };
+
+  window.nextTopic = function() {
+    const sliderValue = parseInt(document.getElementById('confSlider').value);
+    const noteValue = document.getElementById('inlineReflection').value.trim();
+
+    const topic = TOPICS[currentTopicIndex];
+    answers[topic.num] = sliderValue;
+    if (noteValue) inlineNotes[topic.num] = noteValue;
+
+    if (currentTopicIndex === TOPICS.length - 1) {
+      finishActivity();
+      return;
+    }
+
+    currentTopicIndex++;
+    renderTopic();
+    showFeedback('success', `✅ Topik ${topic.num} disimpan. Seterusnya!`);
+  };
+
+  window.resetActivity = function() {
+    if (!confirm('Reset akan padam semua jawapan. Teruskan?')) return;
+    answers = {};
+    inlineNotes = {};
+    currentTopicIndex = 0;
+    renderTopic();
+    hideFeedback();
+  };
+
+  // FINISH
+  function finishActivity() {
+    const sliderValue = parseInt(document.getElementById('confSlider').value);
+    const noteValue = document.getElementById('inlineReflection').value.trim();
+    const topic = TOPICS[currentTopicIndex];
+    answers[topic.num] = sliderValue;
+    if (noteValue) inlineNotes[topic.num] = noteValue;
+
+    const answeredCount = Object.keys(answers).length;
+    if (answeredCount < TOPICS.length) {
+      showFeedback('error', `❌ Sila jawab semua ${TOPICS.length} topik dahulu.`);
+      return;
+    }
+
+    launchConfetti();
+    saveToFirestore();
+
+    setTimeout(() => {
+      showResultModal();
+    }, 800);
+  }
+
+  // CONFETTI
+  function launchConfetti() {
+    const colors = ['#C8102E', '#F4C430', '#0B2E4E', '#10B981', '#E63946'];
+    for (let i = 0; i < 50; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animation = `confettiFall ${1.5 + Math.random() * 1.5}s linear ${Math.random() * 0.5}s forwards`;
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = c.style.width;
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3000);
+    }
+  }
+
+  // SAVE TO FIRESTORE (with auto-unlock)
+  async function saveToFirestore() {
+    if (!currentUser) return;
+
+    try {
+      const avgConf = Object.values(answers).reduce((a, b) => a + b, 0) / Object.keys(answers).length;
+
+      const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+      await setDoc(progressRef, {
+        status: 'completed',
+        completedAt: serverTimestamp(),
+        confidence: answers,
+        notes: inlineNotes,
+        avgConfidence: parseFloat(avgConf.toFixed(2)),
+        timeSpent: Math.floor((Date.now() - startTime) / 1000),
+        activityTitle: ACTIVITY_TITLE,
+        konstruk: ACTIVITY_KONSTRUK
+      }, { merge: true });
+
+      // Auto-unlock next
+      const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+      const nextDoc = await getDoc(nextRef);
+      if (!nextDoc.exists()) {
+        await setDoc(nextRef, {
+          status: 'in_progress',
+          startedAt: serverTimestamp()
+        }, { merge: true });
+      }
+
+      console.log('✅ Progress saved');
+    } catch (e) {
+      console.error('❌ Save error:', e);
+    }
+  }
+
+  // RESULT MODAL
+  function showResultModal() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+
+    const avgConf = Object.values(answers).reduce((a, b) => a + b, 0) / Object.keys(answers).length;
+
+    document.getElementById('modalAvg').textContent = avgConf.toFixed(1);
+    document.getElementById('modalTime').textContent = `${m}:${String(s).padStart(2, '0')}`;
+
+    const icon = document.getElementById('modalIcon');
+    const title = document.getElementById('modalTitle');
+    const sub = document.getElementById('modalSub');
+
+    if (avgConf >= 4) {
+      icon.className = 'modal-icon';
+      icon.innerHTML = '<i class="fas fa-star"></i>';
+      title.textContent = 'Keyakinan Tinggi! ⭐';
+      sub.textContent = 'Anda yakin dengan topik Fungsi Kuadratik. Kekalkan momentum!';
+    } else if (avgConf >= 3) {
+      icon.className = 'modal-icon good';
+      icon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+      title.textContent = 'Bagus! 👍';
+      sub.textContent = 'Keyakinan sederhana. Teruskan berlatih untuk lebih yakin!';
+    } else {
+      icon.className = 'modal-icon';
+      icon.innerHTML = '<i class="fas fa-heart"></i>';
+      title.textContent = 'Teruskan Usaha! 💪';
+      sub.textContent = 'Keyakinan boleh dibina — fokus pada topik yang lemah.';
+    }
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  // REFLECTION
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  // ✅ SUBMIT REFLECTION — Integrated dengan dashboard
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const avgConf = Object.values(answers).reduce((a, b) => a + b, 0) / Object.keys(answers).length;
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+    try {
+      if (currentUser) {
+        // ✅ Save ke struktur dashboard
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+        await setDoc(progressRef, {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          refleksi: text,
+          emosi: selectedEmotion,
+          badge: { earned: true, type: 'activity_complete' },
+          confidence: answers,
+          notes: inlineNotes,
+          avgConfidence: parseFloat(avgConf.toFixed(2)),
+          timeSpent: Math.floor((Date.now() - startTime) / 1000),
+          activityTitle: ACTIVITY_TITLE,
+          konstruk: ACTIVITY_KONSTRUK
+        }, { merge: true });
+
+        // Auto-unlock next (safety)
+        const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+        const nextDoc = await getDoc(nextRef);
+        if (!nextDoc.exists()) {
+          await setDoc(nextRef, {
+            status: 'in_progress',
+            startedAt: serverTimestamp()
+          }, { merge: true });
+        }
+
+        console.log('✅ Reflection saved');
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan & Selesai';
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon good';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai! 🎉';
+    document.getElementById('modalSub').textContent = 'Refleksi anda telah disimpan. Teruskan ke aktiviti seterusnya!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="${NEXT_ACTIVITY_FILE}" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-arrow-right"></i> Aktiviti Seterusnya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // STATUS
+  function updateStatus() {
+    const count = Object.keys(answers).length;
+    document.getElementById('statTopics').textContent = `${count}/5`;
+    document.getElementById('sideTopics').textContent = `${count} / 5`;
+    document.getElementById('sideProgressFill').style.width = (count / 5 * 100) + '%';
+
+    if (count > 0) {
+      const avg = Object.values(answers).reduce((a, b) => a + b, 0) / count;
+      document.getElementById('statAvg').textContent = avg.toFixed(1);
+      document.getElementById('sideAvg').textContent = avg.toFixed(1);
+    } else {
+      document.getElementById('statAvg').textContent = '—';
+      document.getElementById('sideAvg').textContent = '—';
+    }
+  }
+
+  // FEEDBACK
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 4000);
+  }
+
+  function hideFeedback() {
+    document.getElementById('feedbackMsg').classList.remove('active');
+  }
+
+  // SLIDER LISTENER
+  document.getElementById('confSlider').addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    updateConfidenceDisplay(value);
+
+    const topic = TOPICS[currentTopicIndex];
+    answers[topic.num] = value;
+
+    renderParabola();
+    updateStatus();
+    renderMiniSteps();
+  });
+
+  setTimeout(() => { hideLoader(); }, 2000);
+
+  // AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        let nama = data.nama;
+        if (!nama || nama.trim() === '' || nama === 'Pengguna') {
+          nama = data.emel?.split('@')[0] || 'Murid';
+        }
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+
+        if (data.avatar) {
+          const navAvatar = document.getElementById('navAvatar');
+          navAvatar.innerHTML = `<img src="${data.avatar}" alt="${nama}">`;
+        }
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    renderTopic();
+    startTimer();
+    hideLoader();
+  });
+
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 5 · Lengkung Keyakinan ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+</script>
+
+</body>
+</html>

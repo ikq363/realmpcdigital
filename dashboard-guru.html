@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Guru · REAL-MPC Digital</title>
+<meta name="description" content="Dashboard guru REAL-MPC untuk memantau perkembangan pelajar.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --maroon: #8B1E3F;
+  --maroon-dark: #5C1329;
+  --red: #C8102E;
+  --red-bright: #E63946;
+  --gold: #F4C430;
+  --gold-soft: #FACC15;
+  --navy: #0B2E4E;
+  --navy-mid: #1A4A6E;
+  --navy-light: #2B6A9E;
+  --cream: #FDF9F0;
+  --paper: #F8F4EA;
+  --ink: #1E293B;
+  --ink-soft: #475569;
+  --line: #E2E8F0;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* PRELOADER */
+#preloader {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
+  z-index: 99998;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; }
+
+.preloader-logo {
+  width: 100px; height: 100px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900; font-size: 2rem; color: #fff;
+  margin-bottom: 2rem;
+  box-shadow: 0 20px 60px rgba(200, 16, 46, 0.6);
+  animation: preloaderPulse 1.5s ease-in-out infinite;
+  position: relative;
+}
+.preloader-logo::before {
+  content: ""; position: absolute; inset: -6px;
+  border-radius: 34px;
+  background: linear-gradient(135deg, var(--gold), var(--red));
+  z-index: -1;
+  animation: preloaderRotate 3s linear infinite;
+}
+@keyframes preloaderPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+@keyframes preloaderRotate { 0%{transform:rotate(0);} 100%{transform:rotate(360deg);} }
+.preloader-text {
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 1.5rem; opacity: 0.9;
+}
+.preloader-bar {
+  width: 240px; height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50px; overflow: hidden; position: relative;
+}
+.preloader-bar::after {
+  content: ""; position: absolute; top: 0; left: 0;
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  border-radius: 50px;
+  animation: preloaderLoad 1.5s ease-in-out forwards;
+}
+@keyframes preloaderLoad { 0%{width:0;} 60%{width:75%;} 100%{width:100%;} }
+
+/* BACKGROUND */
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 30, 63, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 30, 63, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  z-index: 0; pointer-events: none;
+}
+.bg-dots {
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, rgba(11, 46, 78, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  z-index: 0; pointer-events: none;
+}
+.floating-formula {
+  position: fixed;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: rgba(139, 30, 63, 0.05);
+  pointer-events: none; user-select: none;
+  z-index: 0;
+  animation: floatSlow 14s ease-in-out infinite;
+}
+.ff-1 { top: 12%; left: 3%; font-size: 5rem; }
+.ff-2 { top: 45%; right: 4%; font-size: 4rem; animation-delay: 2s; color: rgba(11, 46, 78, 0.04); }
+.ff-3 { bottom: 15%; left: 6%; font-size: 4.5rem; animation-delay: 4s; }
+@keyframes floatSlow {
+  0%,100%{transform:translateY(0) rotate(0);}
+  50%{transform:translateY(-30px) rotate(8deg);}
+}
+
+/* LAYOUT */
+.app-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(244,196,48,0.3); border-radius: 2px; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0 0.5rem 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none; color: inherit;
+}
+.sidebar-logo {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900; font-size: 0.95rem; color: #fff;
+  box-shadow: 0 8px 20px rgba(200,16,46,0.4);
+  flex-shrink: 0;
+}
+.sidebar-brand-text strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.sidebar-brand-text span {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.6);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sidebar-section-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 1rem 0.75rem 0.5rem;
+}
+
+.sidebar-nav {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  flex: 1;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  border: none;
+  background: none;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar-item i {
+  width: 22px;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.55);
+  transition: color 0.25s;
+}
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.sidebar-item:hover i { color: var(--gold); }
+.sidebar-item.active {
+  background: linear-gradient(90deg, rgba(244,196,48,0.18), rgba(244,196,48,0.05));
+  color: var(--gold);
+  border-left: 3px solid var(--gold);
+}
+.sidebar-item.active i { color: var(--gold); }
+
+.sidebar-item .badge-count {
+  margin-left: auto;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 1rem;
+}
+
+.sidebar-user-card {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.7rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  transition: all 0.25s;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+.sidebar-user-card:hover { background: rgba(255,255,255,0.12); }
+
+.sidebar-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sidebar-avatar-fallback {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-info strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-info span {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-logout {
+  color: rgba(255,150,150,0.85) !important;
+  font-size: 0.82rem !important;
+}
+.sidebar-logout:hover {
+  background: rgba(239,68,68,0.15) !important;
+  color: #ff9999 !important;
+}
+.sidebar-logout i { color: rgba(255,150,150,0.85) !important; }
+
+/* MAIN */
+.main {
+  padding: 1.5rem 2rem 3rem;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
+.topbar-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.topbar-title p {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.topbar-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+/* LIVE DATE TIME WIDGET */
+.datetime-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.55rem 1rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.datetime-widget::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--red), var(--gold));
+}
+.datetime-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(11, 46, 78, 0.12);
+}
+.datetime-icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  animation: preloaderPulse 3s ease-in-out infinite;
+}
+.datetime-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1.15;
+}
+.datetime-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.datetime-time .colon {
+  color: var(--red);
+  animation: colonBlink 1s step-start infinite;
+}
+@keyframes colonBlink { 50% { opacity: 0.3; } }
+.datetime-time .ampm {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--red);
+  padding: 0.1rem 0.4rem;
+  background: rgba(200,16,46,0.1);
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+.datetime-date {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .datetime-widget { padding: 0.5rem 0.8rem; gap: 0.6rem; }
+  .datetime-icon { width: 32px; height: 32px; font-size: 0.8rem; }
+  .datetime-time { font-size: 0.95rem; }
+  .datetime-date { font-size: 0.65rem; }
+}
+@media (max-width: 500px) {
+  .datetime-date { display: none; }
+  .datetime-widget { padding: 0.5rem 0.7rem; }
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--navy);
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.mobile-menu-btn:hover { background: var(--paper); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+}
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s;
+}
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(200, 16, 46, 0.45);
+}
+.btn-outline {
+  background: #fff;
+  color: var(--navy);
+  border: 2px solid var(--line);
+}
+.btn-outline:hover {
+  border-color: var(--maroon);
+  color: var(--maroon);
+  background: rgba(139, 30, 63, 0.03);
+  transform: translateY(-2px);
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+  font-weight: 800;
+}
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(244, 196, 48, 0.55);
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* WELCOME CARD */
+.welcome-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  border-radius: 28px;
+  padding: 2rem 2.2rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.8rem;
+  box-shadow: 0 24px 48px -12px rgba(11, 46, 78, 0.4);
+  isolation: isolate;
+}
+@keyframes gradientShift {
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.welcome-card::before {
+  content: ""; position: absolute;
+  top: -80px; right: -80px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(244,196,48,0.25), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 6s ease-in-out infinite;
+}
+@keyframes pulseDeco {
+  0%,100%{transform:scale(1);opacity:0.5;}
+  50%{transform:scale(1.3);opacity:0.9;}
+}
+.welcome-card::after {
+  content: ""; position: absolute;
+  inset: 0; opacity: 0.12;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -1;
+}
+.welcome-content { position: relative; z-index: 2; }
+.welcome-greeting {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.welcome-greeting::before {
+  content: "";
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--gold);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.4);opacity:0.7;}
+}
+.welcome-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(120deg, #fff 0%, #fff 40%, var(--gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shineText 4s linear infinite;
+}
+@keyframes shineText {
+  0%{background-position:0% center;}
+  100%{background-position:200% center;}
+}
+.welcome-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.85);
+  max-width: 600px;
+  line-height: 1.6;
+}
+.welcome-stats {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+  position: relative;
+  z-index: 2;
+}
+.welcome-stat {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.8rem 1.1rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+.welcome-stat:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-3px);
+}
+.welcome-stat-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.welcome-stat-info strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+.welcome-stat-info span {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+
+/* SECTION */
+.section {
+  margin-bottom: 2.2rem;
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.section-head-left h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.section-head-left p {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  background: rgba(200,16,46,0.08);
+  border-radius: 50px;
+  width: fit-content;
+}
+
+/* STATS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+.stat-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.4rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  transition: height 0.3s;
+}
+.stat-card.stat-blue::before { background: linear-gradient(90deg, var(--navy), var(--navy-mid)); }
+.stat-card.stat-red::before { background: linear-gradient(90deg, var(--red), var(--maroon)); }
+.stat-card.stat-gold::before { background: linear-gradient(90deg, var(--gold), var(--gold-soft)); }
+.stat-card.stat-green::before { background: linear-gradient(90deg, var(--success), #059669); }
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(11, 46, 78, 0.12);
+}
+.stat-card:hover::before { height: 6px; }
+.stat-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+.stat-blue .stat-icon { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+.stat-red .stat-icon { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+.stat-gold .stat-icon { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy); }
+.stat-green .stat-icon { background: linear-gradient(135deg, var(--success), #059669); }
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* CLASS GRID */
+.classes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.class-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.4rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.class-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  transition: height 0.3s;
+}
+.class-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(11, 46, 78, 0.12);
+  border-color: rgba(200,16,46,0.15);
+}
+.class-card:hover::before { height: 6px; }
+.class-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 0.8rem;
+}
+.class-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.class-card-sub {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.class-code-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--maroon);
+  padding: 0.3rem 0.7rem;
+  background: rgba(200,16,46,0.08);
+  border-radius: 50px;
+  border: 1px solid rgba(200,16,46,0.15);
+  white-space: nowrap;
+}
+.class-card-stats {
+  display: flex;
+  gap: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+.class-card-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+.class-card-stat strong {
+  color: var(--navy);
+  font-weight: 800;
+}
+.class-card-stat i { color: var(--red); }
+
+/* STUDENT LIST */
+.students-list {
+  display: grid;
+  gap: 0.8rem;
+}
+.student-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+.student-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(11, 46, 78, 0.1);
+  border-color: rgba(200,16,46,0.15);
+}
+.student-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.student-avatar-fallback {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.student-info { flex: 1; min-width: 0; }
+.student-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--navy);
+  margin-bottom: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.student-email {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.student-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--paper);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  border-radius: 10px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.progress-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--maroon);
+  min-width: 45px;
+  text-align: right;
+}
+.student-arrow {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  transition: all 0.25s;
+}
+.student-card:hover .student-arrow {
+  color: var(--red);
+  transform: translateX(4px);
+}
+
+/* EMPTY STATE */
+.empty-state {
+  background: #fff;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  border: 2px dashed var(--line);
+}
+.empty-icon {
+  width: 80px; height: 80px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(200,16,46,0.1), rgba(244,196,48,0.15));
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.2rem;
+}
+.empty-state h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.empty-state p {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  max-width: 420px;
+  margin: 0 auto 1.5rem;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(11, 46, 78, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.modal-overlay.show { opacity: 1; visibility: visible; }
+
+.modal {
+  background: #fff;
+  border-radius: 28px;
+  max-width: 540px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 40px 80px rgba(11, 46, 78, 0.4);
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal::-webkit-scrollbar { width: 6px; }
+.modal::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
+
+.modal-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.8rem 1.8rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-radius: 28px 28px 0 0;
+  overflow: hidden;
+}
+.modal-header::before {
+  content: ""; position: absolute;
+  inset: 0; opacity: 0.15;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.modal-header-inner { position: relative; z-index: 1; }
+
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  z-index: 2;
+  cursor: pointer;
+}
+.modal-close:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
+
+.modal-label {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  background: rgba(244,196,48,0.15);
+  border: 1px solid rgba(244,196,48,0.3);
+  border-radius: 50px;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 0.3rem;
+}
+.modal-sub {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.modal-body { padding: 1.5rem 1.8rem 1.8rem; }
+
+.form-block { margin-bottom: 1.3rem; }
+.form-block-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 0.7rem;
+}
+.form-block-label i { color: var(--red); font-size: 0.85rem; }
+
+.form-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: #fff;
+  transition: all 0.25s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+}
+.form-input::placeholder { color: #94A3B8; }
+
+.modal-footer {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0 1.8rem 1.8rem;
+}
+
+/* PROFILE MODAL */
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+.profile-avatar-wrap {
+  position: relative;
+  display: inline-block;
+}
+.profile-avatar {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+  background: #fff;
+}
+.profile-avatar-fallback {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+.avatar-upload-btn {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  transition: all 0.25s;
+  box-shadow: 0 4px 12px rgba(200,16,46,0.4);
+  cursor: pointer;
+}
+.avatar-upload-btn:hover { transform: scale(1.15) rotate(-8deg); }
+
+.profile-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  background: var(--paper);
+  border-radius: 14px;
+  margin-bottom: 0.6rem;
+}
+.profile-info-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.profile-info-content { flex: 1; min-width: 0; }
+.profile-info-content small {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.profile-info-content strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CODE MODAL SPECIFIC */
+.code-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--maroon);
+  letter-spacing: 0.3em;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, rgba(244,196,48,0.15), rgba(200,16,46,0.08));
+  border: 2px dashed var(--gold);
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* TOAST */
+.toast-container {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 99999;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  pointer-events: none;
+}
+.toast {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 12px 32px rgba(11, 46, 78, 0.15);
+  border-left: 4px solid var(--success);
+  display: flex; align-items: center; gap: 0.8rem;
+  min-width: 280px; max-width: 400px;
+  font-size: 0.88rem;
+  animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: auto;
+}
+.toast.error { border-left-color: var(--danger); }
+.toast.info { border-left-color: var(--navy-mid); }
+.toast.warning { border-left-color: var(--warning); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.toast-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.toast.error .toast-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.toast.info .toast-icon { background: rgba(43, 106, 158, 0.1); color: var(--navy-mid); }
+.toast.warning .toast-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.toast-content { flex: 1; }
+.toast-content strong { display: block; color: var(--navy); font-size: 0.85rem; }
+.toast-content span { font-size: 0.78rem; color: var(--ink-soft); }
+
+/* PAGE SWITCHING */
+.page { display: none; }
+.page.active { display: block; animation: fadeInPage 0.4s ease; }
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MOBILE SIDEBAR OVERLAY */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 46, 78, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar-overlay.show { opacity: 1; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    z-index: 41;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { display: block; }
+  .mobile-menu-btn { display: flex; }
+  .main { padding: 1.2rem 1.2rem 3rem; }
+}
+
+@media (max-width: 640px) {
+  .topbar-title h1 { font-size: 1.2rem; }
+  .welcome-card { padding: 1.5rem 1.3rem; }
+  .welcome-stats { gap: 0.6rem; }
+  .welcome-stat { padding: 0.6rem 0.8rem; }
+  .welcome-stat-info strong { font-size: 0.9rem; }
+  .welcome-stat-info span { font-size: 0.65rem; }
+  .welcome-stat-icon { width: 32px; height: 32px; font-size: 0.8rem; }
+  .classes-grid { grid-template-columns: 1fr; }
+  .modal-body { padding: 1.2rem 1.3rem 1.3rem; }
+  .modal-header { padding: 1.4rem 1.3rem 1.2rem; }
+  .modal-footer { padding: 0 1.3rem 1.3rem; }
+  .modal-title { font-size: 1.2rem; }
+  .code-display { font-size: 1.5rem; letter-spacing: 0.2em; }
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="preloader-logo">RM</div>
+  <div class="preloader-text">Dashboard Guru</div>
+  <div class="preloader-bar"></div>
+</div>
+
+<!-- BACKGROUND -->
+<div class="bg-grid"></div>
+<div class="bg-dots"></div>
+<div class="floating-formula ff-1">∑</div>
+<div class="floating-formula ff-2">√</div>
+<div class="floating-formula ff-3">π</div>
+
+<!-- MOBILE SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- APP LAYOUT -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <div class="sidebar-logo">RM</div>
+      <div class="sidebar-brand-text">
+        <strong>REAL-MPC</strong>
+        <span>Guru Dashboard</span>
+      </div>
+    </a>
+
+    <div class="sidebar-section-label">Menu Utama</div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+        <i class="fas fa-home"></i> Dashboard
+      </button>
+      <button class="sidebar-item" data-page="students" onclick="switchPage('students')">
+        <i class="fas fa-users"></i> Pelajar
+        <span class="badge-count" id="studentsBadge">0</span>
+      </button>
+      <button class="sidebar-item" data-page="classes" onclick="switchPage('classes')">
+        <i class="fas fa-chalkboard"></i> Kelas
+        <span class="badge-count" id="classesBadge">0</span>
+      </button>
+      <button class="sidebar-item" data-page="analytics" onclick="switchPage('analytics')">
+        <i class="fas fa-chart-bar"></i> Analitik
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user-card" onclick="openProfileModal()">
+        <img id="sidebarAvatar" class="sidebar-avatar" style="display:none;" src="" alt="">
+        <div id="sidebarAvatarFallback" class="sidebar-avatar-fallback">?</div>
+        <div class="sidebar-user-info">
+          <strong id="sidebarName">—</strong>
+          <span id="sidebarEmail">—</span>
+        </div>
+      </div>
+      <button class="sidebar-item sidebar-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Log Keluar
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1 id="topbarTitle">Dashboard</h1>
+          <p id="topbarSubtitle">Selamat datang ke REAL-MPC</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="datetime-widget">
+          <div class="datetime-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="datetime-content">
+            <div class="datetime-time">
+              <span id="liveHour">--</span>
+              <span class="colon">:</span>
+              <span id="liveMinute">--</span>
+              <span class="colon">:</span>
+              <span id="liveSecond">--</span>
+              <span class="ampm" id="liveAmPm">--</span>
+            </div>
+            <div class="datetime-date" id="liveDate">Memuatkan...</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="openProfileModal()">
+          <i class="fas fa-user-circle"></i> Profil
+        </button>
+      </div>
+    </div>
+
+    <!-- PAGE: DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+
+      <div class="welcome-card">
+        <div class="welcome-content">
+          <div class="welcome-greeting">
+            <span id="welcomeGreeting">Selamat Datang</span>
+          </div>
+          <h2 class="welcome-title" id="welcomeTitle">Hai, Guru! 👋</h2>
+          <p class="welcome-subtitle">
+            Pantau perkembangan pelajar anda dalam 3 konstruk psikologi: daya tahan, efikasi kendiri dan kesedaran kendiri.
+          </p>
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon"><i class="fas fa-users"></i></div>
+              <div class="welcome-stat-info">
+                <strong id="statTotalStudents">0</strong>
+                <span>Jumlah Pelajar</span>
+              </div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon"><i class="fas fa-chalkboard"></i></div>
+              <div class="welcome-stat-info">
+                <strong id="statTotalClasses">0</strong>
+                <span>Kelas Aktif</span>
+              </div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="welcome-stat-info">
+                <strong id="statAvgProgress">0%</strong>
+                <span>Purata Progress</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS GRID -->
+      <div class="stats-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="stat-value" id="statResilienceAvg">0.0</div>
+          <div class="stat-label">Purata Daya Tahan</div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+          <div class="stat-value" id="statEfficacyAvg">0.0</div>
+          <div class="stat-label">Purata Efikasi Kendiri</div>
+        </div>
+        <div class="stat-card stat-gold">
+          <div class="stat-icon"><i class="fas fa-eye"></i></div>
+          <div class="stat-value" id="statAwarenessAvg">0.0</div>
+          <div class="stat-label">Purata Kesedaran Kendiri</div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-icon"><i class="fas fa-award"></i></div>
+          <div class="stat-value" id="statTotalBadges">0</div>
+          <div class="stat-label">Jumlah Lencana</div>
+        </div>
+      </div>
+
+      <!-- CLASSES SECTION -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-chalkboard"></i> Kelas</div>
+            <h2>Kelas Saya</h2>
+            <p>Setiap kelas ada kod unik untuk pelajar menyertai</p>
+          </div>
+          <button class="btn btn-primary" onclick="openCreateClassModal()">
+            <i class="fas fa-plus"></i> Cipta Kelas
+          </button>
+        </div>
+        <div class="classes-grid" id="classesGrid"></div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-clock"></i> Aktiviti Terkini</div>
+            <h2>Aktiviti Pelajar Terkini</h2>
+            <p>Aktiviti yang baru diselesaikan oleh pelajar anda</p>
+          </div>
+        </div>
+        <div id="recentActivity"></div>
+      </div>
+
+    </div>
+
+    <!-- PAGE: STUDENTS -->
+    <div class="page" id="page-students">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-users"></i> Pelajar</div>
+            <h2>Senarai Pelajar</h2>
+            <p>Semua pelajar dalam kelas anda</p>
+          </div>
+        </div>
+        <div class="students-list" id="allStudentsList"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: CLASSES -->
+    <div class="page" id="page-classes">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-chalkboard"></i> Kelas</div>
+            <h2>Kelola Kelas</h2>
+            <p>Cipta dan urus kelas anda</p>
+          </div>
+          <button class="btn btn-primary" onclick="openCreateClassModal()">
+            <i class="fas fa-plus"></i> Cipta Kelas
+          </button>
+        </div>
+        <div class="classes-grid" id="allClassesGrid"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-chart-bar"></i> Analitik</div>
+            <h2>Analitik Kelas</h2>
+            <p>Analisis perkembangan pelajar</p>
+          </div>
+        </div>
+        <div id="analyticsContent"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: CREATE CLASS -->
+<div class="modal-overlay" id="createClassModal">
+  <div class="modal" style="max-width: 460px;">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal('createClassModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-header-inner" style="text-align: center;">
+        <div style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 1rem;">
+          <i class="fas fa-chalkboard"></i>
+        </div>
+        <span class="modal-label">Kelas Baru</span>
+        <h2 class="modal-title" style="margin-top: 0.5rem;">Cipta Kelas</h2>
+        <p class="modal-sub">Kod kelas akan dijana secara automatik</p>
+      </div>
+    </div>
+    <form id="createClassForm" onsubmit="handleCreateClass(event)">
+      <div class="modal-body">
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-tag"></i> Nama Kelas</label>
+          <input type="text" id="className" class="form-input" placeholder="Contoh: 4 Cemerlang" required maxlength="50">
+        </div>
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-book"></i> Subjek</label>
+          <input type="text" id="classSubject" class="form-input" value="Matematik Tambahan" required maxlength="50">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('createClassModal')">
+          Batal
+        </button>
+        <button type="submit" class="btn btn-primary" style="flex: 1;" id="createClassBtn">
+          <i class="fas fa-check"></i> Cipta Kelas
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: CLASS DETAIL (LIST STUDENTS) -->
+<div class="modal-overlay" id="classDetailModal">
+  <div class="modal" style="max-width: 560px;">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal('classDetailModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-header-inner">
+        <span class="modal-label" id="classDetailLabel"><i class="fas fa-chalkboard"></i> Detail Kelas</span>
+        <h2 class="modal-title" id="classDetailTitle">Nama Kelas</h2>
+        <p class="modal-sub" id="classDetailSub">— pelajar</p>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="form-block">
+        <label class="form-block-label"><i class="fas fa-key"></i> Kod Kelas — Kongsi kepada pelajar</label>
+        <div class="code-display" id="classDetailCode">------</div>
+        <button class="btn btn-gold" style="width: 100%;" onclick="copyClassCode()">
+          <i class="fas fa-copy"></i> Salin Kod Kelas
+        </button>
+      </div>
+      <div class="form-block">
+        <label class="form-block-label"><i class="fas fa-users"></i> Senarai Pelajar</label>
+        <div id="classDetailStudents" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 300px; overflow-y: auto;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('classDetailModal')">
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PROFILE -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal" style="max-width: 440px;">
+    <div class="modal-header" style="padding: 1.8rem 1.5rem;">
+      <button class="modal-close" onclick="closeModal('profileModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-header-inner profile-hero">
+        <div class="profile-avatar-wrap">
+          <img id="profileAvatar" class="profile-avatar" style="display: none;" src="" alt="">
+          <div id="profileAvatarFallback" class="profile-avatar-fallback">?</div>
+          <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
+            <i class="fas fa-camera"></i>
+          </button>
+          <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+        </div>
+        <div style="text-align: center;">
+          <h2 class="modal-title" id="profileModalName" style="font-size: 1.3rem;">—</h2>
+          <p class="modal-sub" id="profileModalEmail">—</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="profile-info-row">
+        <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
+        <div class="profile-info-content">
+          <small>Peranan</small>
+          <strong>Guru</strong>
+        </div>
+      </div>
+      <div class="profile-info-row">
+        <div class="profile-info-icon"><i class="fas fa-calendar-alt"></i></div>
+        <div class="profile-info-content">
+          <small>Tarikh Sertai</small>
+          <strong id="profileCreated">—</strong>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('profileModal')">
+        Tutup
+      </button>
+      <button class="btn btn-primary" style="flex: 1;" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Log Keluar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where,
+    serverTimestamp, addDoc, orderBy, limit
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const CLOUDINARY_CLOUD = 'tt0ofn22';
+  const CLOUDINARY_PRESET = 'real_mpc';
+
+  // 12 AKTIVITI
+  const ACTIVITIES = [
+    { id: 1, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Keazaman Menakluk Puncak', icon: '⛰️' },
+    { id: 2, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Berpasukan Persamaan Serentak', icon: '🤝' },
+    { id: 3, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Hukum Linear: Konsisten', icon: '📈' },
+    { id: 4, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Vektor Sokongan', icon: '🧭' },
+    { id: 5, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Lengkung Keyakinan', icon: '💪' },
+    { id: 6, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Indeks & Logaritma', icon: '🔢' },
+    { id: 7, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Koordinat Hidup Saya', icon: '📍' },
+    { id: 8, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Jujukan Usaha', icon: '🔗' },
+    { id: 9, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Kes Berambigu', icon: '🧩' },
+    { id: 10, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Peta Kekuatan & Kelemahan', icon: '🗺️' },
+    { id: 11, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Refleksi Strategi', icon: '🪞' },
+    { id: 12, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Pelan Tindakan Individu', icon: '🎯' }
+  ];
+
+  let currentUser = null;
+  let currentUserData = null;
+  let teacherClasses = [];
+  let allStudents = [];
+  let clockInterval = null;
+  let currentClassCode = '';
+
+  // LIVE DATE TIME
+  const HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+  const BULAN = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
+
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  function updateClock() {
+    const now = new Date();
+    const hour24 = now.getHours();
+    const hour12raw = hour24 % 12;
+    const hour12 = hour12raw === 0 ? 12 : hour12raw;
+    const ampm = hour24 < 12 ? 'PG' : 'PT';
+
+    document.getElementById('liveHour').textContent = pad2(hour12);
+    document.getElementById('liveMinute').textContent = pad2(now.getMinutes());
+    document.getElementById('liveSecond').textContent = pad2(now.getSeconds());
+    document.getElementById('liveAmPm').textContent = ampm;
+
+    const hariNama = HARI[now.getDay()];
+    const tarikh = now.getDate();
+    const bulanNama = BULAN[now.getMonth()];
+    const tahun = now.getFullYear();
+
+    document.getElementById('liveDate').textContent = `${hariNama}, ${tarikh} ${bulanNama} ${tahun}`;
+  }
+
+  function startClock() {
+    updateClock();
+    if (clockInterval) clearInterval(clockInterval);
+    clockInterval = setInterval(updateClock, 1000);
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('hidden');
+    }, 1200);
+  });
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 2500);
+
+  startClock();
+
+  // TOAST
+  window.showToast = function(title, message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const icons = { success: 'fa-check', error: 'fa-times', info: 'fa-info', warning: 'fa-exclamation' };
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = `
+      <div class="toast-icon"><i class="fas ${icons[type]}"></i></div>
+      <div class="toast-content">
+        <strong>${title}</strong>
+        <span>${message}</span>
+      </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'toastIn 0.4s reverse';
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  };
+
+  // MODAL HELPERS
+  window.closeModal = function(id) {
+    document.getElementById(id).classList.remove('show');
+    document.body.style.overflow = '';
+  };
+
+  window.openModal = function(id) {
+    document.getElementById(id).classList.add('show');
+    document.body.style.overflow = 'hidden';
+  };
+
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target === el) closeModal(el.id);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.show').forEach(m => closeModal(m.id));
+    }
+  });
+
+  // SIDEBAR
+  window.toggleSidebar = function() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+  };
+  window.closeSidebar = function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  };
+
+  // PAGE SWITCHING
+  window.switchPage = function(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
+      el.classList.toggle('active', el.dataset.page === page);
+    });
+
+    const titles = {
+      dashboard: ['Dashboard', 'Selamat datang ke REAL-MPC'],
+      students: ['Pelajar', 'Semua pelajar dalam kelas anda'],
+      classes: ['Kelas', 'Kelola kelas anda'],
+      analytics: ['Analitik', 'Analisis perkembangan pelajar']
+    };
+    document.getElementById('topbarTitle').textContent = titles[page][0];
+    document.getElementById('topbarSubtitle').textContent = titles[page][1];
+
+    if (window.innerWidth < 1024) closeSidebar();
+
+    if (page === 'students') renderAllStudents();
+    if (page === 'classes') renderAllClasses();
+    if (page === 'analytics') renderAnalytics();
+  };
+
+  // HELPER: Nama paparan
+  function getDisplayName() {
+    let name = currentUserData?.nama;
+    if (!name || name.trim() === '' || name === 'Pengguna') {
+      name = currentUserData?.emel?.split('@')[0] || 'Guru';
+    }
+    return name;
+  }
+
+  // LOAD TEACHER DATA
+  async function loadTeacherData() {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+      if (userDoc.exists()) {
+        currentUserData = userDoc.data();
+
+        if (currentUserData.role !== 'guru') {
+          window.location.href = 'dashboard-murid.html';
+          return;
+        }
+
+        // Load classes
+        await loadClasses();
+      }
+    } catch (e) {
+      console.error('loadTeacherData error:', e);
+      showToast('Ralat', 'Gagal memuat data guru', 'error');
+    }
+  }
+
+  // GENERATE CLASS CODE (6 aksara unik — untuk kod KELAS, bukan guru)
+  function generateClassCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  }
+
+  async function generateUniqueClassCode() {
+    let attempts = 0;
+    while (attempts < 10) {
+      const code = generateClassCode();
+      try {
+        const q = query(collection(db, 'classes'), where('kod', '==', code));
+        const snap = await getDocs(q);
+        if (snap.empty) return code;
+      } catch (e) {
+        console.warn('Code check error:', e);
+        return code; // fallback
+      }
+      attempts++;
+    }
+    return generateClassCode();
+  }
+
+  async function loadClasses() {
+    try {
+      const q = query(collection(db, 'classes'), where('guruId', '==', currentUser.uid));
+      const snap = await getDocs(q);
+
+      teacherClasses = [];
+      for (const docSnap of snap.docs) {
+        const data = docSnap.data();
+        const muridIds = data.muridIds || [];
+
+        // Load student details
+        const students = [];
+        for (const uid of muridIds) {
+          try {
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            if (userDoc.exists()) {
+              students.push({ uid, ...userDoc.data() });
+            }
+          } catch (e) { console.warn('Student load error:', e); }
+        }
+
+        teacherClasses.push({
+          id: docSnap.id,
+          ...data,
+          muridIds: muridIds,
+          students: students
+        });
+      }
+
+      // Load all students into a flat list
+      allStudents = [];
+      teacherClasses.forEach(c => {
+        c.students.forEach(s => {
+          if (!allStudents.find(x => x.uid === s.uid)) {
+            allStudents.push(s);
+          }
+        });
+      });
+
+      // Load progress for each student
+      for (const student of allStudents) {
+        try {
+          const progressSnap = await getDocs(collection(db, 'progress', student.uid, 'activities'));
+          const progress = {};
+          progressSnap.forEach(d => {
+            progress[parseInt(d.id)] = d.data();
+          });
+          student.progress = progress;
+        } catch (e) {
+          student.progress = {};
+        }
+      }
+
+      console.log('✅ Classes loaded:', teacherClasses.length, 'Students:', allStudents.length);
+    } catch (e) {
+      console.error('loadClasses error:', e);
+    }
+  }
+
+  // RENDER DASHBOARD
+  function renderDashboard() {
+    const name = getDisplayName();
+    document.getElementById('welcomeTitle').textContent = `Hai, ${name}! 👋`;
+
+    const hour = new Date().getHours();
+    let greeting = 'Selamat Datang';
+    if (hour < 12) greeting = 'Selamat Pagi';
+    else if (hour < 15) greeting = 'Selamat Tengah Hari';
+    else if (hour < 19) greeting = 'Selamat Petang';
+    else greeting = 'Selamat Malam';
+    document.getElementById('welcomeGreeting').textContent = greeting;
+
+    updateUserUI();
+
+    // Stats
+    document.getElementById('statTotalStudents').textContent = allStudents.length;
+    document.getElementById('statTotalClasses').textContent = teacherClasses.length;
+    document.getElementById('studentsBadge').textContent = allStudents.length;
+    document.getElementById('classesBadge').textContent = teacherClasses.length;
+
+    // Avg progress
+    let totalCompleted = 0;
+    let totalPossible = allStudents.length * 12;
+    let totalBadges = 0;
+
+    allStudents.forEach(s => {
+      const completed = Object.values(s.progress || {}).filter(p => p.status === 'completed').length;
+      totalCompleted += completed;
+      totalBadges += Object.values(s.progress || {}).filter(p => p.badge?.earned).length;
+    });
+
+    const avgProgress = totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+    document.getElementById('statAvgProgress').textContent = avgProgress + '%';
+    document.getElementById('statTotalBadges').textContent = totalBadges;
+
+    // Ring averages (from student data)
+    computeConstructAverages();
+
+    // Render classes
+    renderClassesGrid('classesGrid');
+
+    // Recent activity
+    renderRecentActivity();
+  }
+
+  function computeConstructAverages() {
+    let resilienceSum = 0, resilienceCount = 0;
+    let efficacySum = 0, efficacyCount = 0;
+    let awarenessSum = 0, awarenessCount = 0;
+
+    allStudents.forEach(s => {
+      const p = s.progress || {};
+      const resCompleted = [1,2,3,4].filter(id => p[id]?.status === 'completed').length;
+      const effCompleted = [5,6,7,8].filter(id => p[id]?.status === 'completed').length;
+      const awaCompleted = [9,10,11,12].filter(id => p[id]?.status === 'completed').length;
+
+      resilienceSum += (resCompleted / 4) * 5;
+      resilienceCount++;
+      efficacySum += (effCompleted / 4) * 5;
+      efficacyCount++;
+      awarenessSum += (awaCompleted / 4) * 5;
+      awarenessCount++;
+    });
+
+    const resAvg = resilienceCount > 0 ? (resilienceSum / resilienceCount).toFixed(1) : '0.0';
+    const effAvg = efficacyCount > 0 ? (efficacySum / efficacyCount).toFixed(1) : '0.0';
+    const awaAvg = awarenessCount > 0 ? (awarenessSum / awarenessCount).toFixed(1) : '0.0';
+
+    document.getElementById('statResilienceAvg').textContent = resAvg;
+    document.getElementById('statEfficacyAvg').textContent = effAvg;
+    document.getElementById('statAwarenessAvg').textContent = awaAvg;
+  }
+
+  function renderClassesGrid(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (teacherClasses.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="grid-column: 1 / -1;">
+          <div class="empty-icon"><i class="fas fa-chalkboard"></i></div>
+          <h3>Belum Ada Kelas</h3>
+          <p>Cipta kelas pertama anda. Kod kelas akan dijana secara automatik untuk dikongsi dengan pelajar.</p>
+          <button class="btn btn-primary" onclick="openCreateClassModal()">
+            <i class="fas fa-plus"></i> Cipta Kelas
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = teacherClasses.map(c => `
+      <div class="class-card" onclick="openClassDetail('${c.id}')">
+        <div class="class-card-head">
+          <div>
+            <div class="class-card-title">${c.nama}</div>
+            <div class="class-card-sub">${c.subjek || 'Matematik Tambahan'}</div>
+          </div>
+          <div class="class-code-badge">${c.kod}</div>
+        </div>
+        <div class="class-card-stats">
+          <div class="class-card-stat">
+            <i class="fas fa-users"></i>
+            <span><strong>${c.muridIds?.length || 0}</strong> pelajar</span>
+          </div>
+          <div class="class-card-stat">
+            <i class="fas fa-chart-line"></i>
+            <span><strong>${avgClassProgress(c)}%</strong> progress</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function avgClassProgress(c) {
+    if (!c.students || c.students.length === 0) return 0;
+    let total = 0;
+    c.students.forEach(s => {
+      const completed = Object.values(s.progress || {}).filter(p => p.status === 'completed').length;
+      total += completed;
+    });
+    return Math.round((total / (c.students.length * 12)) * 100);
+  }
+
+  function renderRecentActivity() {
+    const container = document.getElementById('recentActivity');
+    if (!container) return;
+
+    const recent = [];
+    allStudents.forEach(s => {
+      const p = s.progress || {};
+      Object.entries(p).forEach(([id, data]) => {
+        if (data.status === 'completed' && data.completedAt) {
+          recent.push({
+            student: s,
+            activityId: parseInt(id),
+            completedAt: data.completedAt,
+            emosi: data.emosi
+          });
+        }
+      });
+    });
+
+    recent.sort((a, b) => {
+      const aTime = a.completedAt?.toDate ? a.completedAt.toDate() : new Date(a.completedAt || 0);
+      const bTime = b.completedAt?.toDate ? b.completedAt.toDate() : new Date(b.completedAt || 0);
+      return bTime - aTime;
+    });
+
+    const latest = recent.slice(0, 5);
+
+    if (latest.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-clock"></i></div>
+          <h3>Belum Ada Aktiviti</h3>
+          <p>Aktiviti pelajar akan muncul di sini apabila mereka mula belajar.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = latest.map(r => {
+      const a = ACTIVITIES.find(x => x.id === r.activityId);
+      const emoji = ['😢','😕','😐','🙂','😄'][(r.emosi || 3) - 1];
+      const date = r.completedAt?.toDate ? r.completedAt.toDate() : new Date(r.completedAt);
+      const dateStr = date.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      return `
+        <div class="student-card" onclick="openStudentDetail('${r.student.uid}')">
+          ${r.student.avatar ? `<img src="${r.student.avatar}" class="student-avatar">` : `<div class="student-avatar-fallback">${(r.student.nama || 'U').charAt(0).toUpperCase()}</div>`}
+          <div class="student-info">
+            <div class="student-name">${r.student.nama || 'Murid'}</div>
+            <div class="student-email">${a?.icon || '📘'} ${a?.tajuk || 'Aktiviti ' + r.activityId} ${emoji} · ${dateStr}</div>
+          </div>
+          <div class="student-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderAllStudents() {
+    const container = document.getElementById('allStudentsList');
+    if (!container) return;
+
+    if (allStudents.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-users"></i></div>
+          <h3>Belum Ada Pelajar</h3>
+          <p>Pelajar akan muncul di sini apabila mereka menyertai kelas anda menggunakan kod kelas.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = allStudents.map(s => {
+      const completed = Object.values(s.progress || {}).filter(p => p.status === 'completed').length;
+      const pct = Math.round((completed / 12) * 100);
+      return `
+        <div class="student-card" onclick="openStudentDetail('${s.uid}')">
+          ${s.avatar ? `<img src="${s.avatar}" class="student-avatar">` : `<div class="student-avatar-fallback">${(s.nama || 'U').charAt(0).toUpperCase()}</div>`}
+          <div class="student-info">
+            <div class="student-name">${s.nama || 'Murid'}</div>
+            <div class="student-email">${s.emel || ''}</div>
+            <div class="student-progress-bar">
+              <div class="progress-track">
+                <div class="progress-fill" style="width: ${pct}%"></div>
+              </div>
+              <div class="progress-text">${completed}/12</div>
+            </div>
+          </div>
+          <div class="student-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderAllClasses() {
+    const container = document.getElementById('allClassesGrid');
+    if (!container) return;
+    container.innerHTML = '';
+    renderClassesGrid('allClassesGrid');
+  }
+
+  function renderAnalytics() {
+    const container = document.getElementById('analyticsContent');
+    if (!container) return;
+
+    if (allStudents.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-chart-bar"></i></div>
+          <h3>Belum Ada Data</h3>
+          <p>Analitik akan muncul apabila pelajar mula menyelesaikan aktiviti.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const stats = { res: [0,0,0,0], eff: [0,0,0,0], awa: [0,0,0,0] };
+    allStudents.forEach(s => {
+      const p = s.progress || {};
+      [1,2,3,4].forEach((id, i) => { if (p[id]?.status === 'completed') stats.res[i]++; });
+      [5,6,7,8].forEach((id, i) => { if (p[id]?.status === 'completed') stats.eff[i]++; });
+      [9,10,11,12].forEach((id, i) => { if (p[id]?.status === 'completed') stats.awa[i]++; });
+    });
+
+    container.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="stat-value">${stats.res.reduce((a,b) => a+b, 0)}</div>
+          <div class="stat-label">Aktiviti Daya Tahan Selesai</div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-icon"><i class="fas fa-bolt"></i></div>
+          <div class="stat-value">${stats.eff.reduce((a,b) => a+b, 0)}</div>
+          <div class="stat-label">Aktiviti Efikasi Selesai</div>
+        </div>
+        <div class="stat-card stat-gold">
+          <div class="stat-icon"><i class="fas fa-eye"></i></div>
+          <div class="stat-value">${stats.awa.reduce((a,b) => a+b, 0)}</div>
+          <div class="stat-label">Aktiviti Kesedaran Selesai</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <h2>Statistik Setiap Aktiviti</h2>
+            <p>Berapa pelajar yang selesai setiap aktiviti</p>
+          </div>
+        </div>
+        <div class="stats-grid">
+          ${ACTIVITIES.map(a => {
+            const count = allStudents.filter(s => s.progress?.[a.id]?.status === 'completed').length;
+            const pct = allStudents.length > 0 ? Math.round((count / allStudents.length) * 100) : 0;
+            return `
+              <div class="stat-card" style="padding: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;">
+                  <span style="font-size: 1.5rem;">${a.icon}</span>
+                  <div style="flex: 1;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--navy);">${a.tajuk}</div>
+                    <div style="font-size: 0.68rem; color: var(--ink-soft);">${a.konstruk}</div>
+                  </div>
+                </div>
+                <div class="progress-track" style="height: 6px;">
+                  <div class="progress-fill" style="width: ${pct}%"></div>
+                </div>
+                <div style="font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.4rem; font-weight: 600;">
+                  ${count} / ${allStudents.length} pelajar (${pct}%)
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // UPDATE USER UI
+  function updateUserUI() {
+    const name = getDisplayName();
+    const email = currentUserData.emel || '';
+    const initial = name.charAt(0).toUpperCase();
+
+    document.getElementById('sidebarName').textContent = name;
+    document.getElementById('sidebarEmail').textContent = email;
+
+    const avatar = currentUserData.avatar;
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
+    const sidebarFallback = document.getElementById('sidebarAvatarFallback');
+
+    if (avatar) {
+      sidebarAvatar.src = avatar;
+      sidebarAvatar.style.display = 'block';
+      sidebarFallback.style.display = 'none';
+    } else {
+      sidebarAvatar.style.display = 'none';
+      sidebarFallback.style.display = 'flex';
+      sidebarFallback.textContent = initial;
+    }
+
+    document.getElementById('profileModalName').textContent = name;
+    document.getElementById('profileModalEmail').textContent = email;
+
+    if (currentUserData.createdAt) {
+      const d = currentUserData.createdAt.toDate ? currentUserData.createdAt.toDate() : new Date(currentUserData.createdAt);
+      document.getElementById('profileCreated').textContent = d.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileFallback = document.getElementById('profileAvatarFallback');
+    if (avatar) {
+      profileAvatar.src = avatar;
+      profileAvatar.style.display = 'block';
+      profileFallback.style.display = 'none';
+    } else {
+      profileAvatar.style.display = 'none';
+      profileFallback.style.display = 'flex';
+      profileFallback.textContent = initial;
+    }
+  }
+
+  // CREATE CLASS — dengan kod kelas auto-generate
+  window.openCreateClassModal = function() {
+    document.getElementById('className').value = '';
+    document.getElementById('classSubject').value = 'Matematik Tambahan';
+    openModal('createClassModal');
+    setTimeout(() => document.getElementById('className').focus(), 300);
+  };
+
+  window.handleCreateClass = async function(e) {
+    e.preventDefault();
+    const nama = document.getElementById('className').value.trim();
+    const subjek = document.getElementById('classSubject').value.trim();
+    const btn = document.getElementById('createClassBtn');
+
+    if (nama.length < 3) {
+      showToast('Nama Tidak Sah', 'Min 3 aksara', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencipta...';
+
+    try {
+      // Generate kod KELAS yang unik
+      const newCode = await generateUniqueClassCode();
+      const classRef = await addDoc(collection(db, 'classes'), {
+        nama: nama,
+        subjek: subjek,
+        guruId: currentUser.uid,
+        guruNama: currentUserData.nama,
+        kod: newCode,
+        muridIds: [],
+        createdAt: serverTimestamp()
+      });
+
+      closeModal('createClassModal');
+      showToast('Berjaya! 🎉', `Kelas "${nama}" dicipta dengan kod ${newCode}`, 'success');
+
+      // Reload classes
+      await loadClasses();
+      renderDashboard();
+
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Cipta Kelas';
+
+    } catch (err) {
+      console.error('createClass error:', err);
+      let msg = 'Gagal mencipta kelas';
+      if (err.code === 'permission-denied') msg = 'Firestore Rules tidak benarkan.';
+      showToast('Ralat', msg, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Cipta Kelas';
+    }
+  };
+
+  // CLASS DETAIL
+  window.openClassDetail = function(classId) {
+    const c = teacherClasses.find(x => x.id === classId);
+    if (!c) return;
+
+    currentClassCode = c.kod;
+
+    document.getElementById('classDetailLabel').innerHTML = `<i class="fas fa-chalkboard"></i> ${c.subjek || 'Matematik Tambahan'}`;
+    document.getElementById('classDetailTitle').textContent = c.nama;
+    document.getElementById('classDetailSub').textContent = `${c.muridIds?.length || 0} pelajar`;
+    document.getElementById('classDetailCode').textContent = c.kod;
+
+    const studentsContainer = document.getElementById('classDetailStudents');
+    if (!c.students || c.students.length === 0) {
+      studentsContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem; color: var(--ink-soft); font-size: 0.85rem;">
+        <i class="fas fa-user-plus" style="font-size: 1.5rem; opacity: 0.5; display: block; margin-bottom: 0.5rem;"></i>
+        Belum ada pelajar menyertai kelas ini.<br>Kongsi kod kelas <strong>${c.kod}</strong> kepada pelajar.
+      </div>`;
+    } else {
+      studentsContainer.innerHTML = c.students.map(s => {
+        const completed = Object.values(s.progress || {}).filter(p => p.status === 'completed').length;
+        return `
+          <div class="student-card" style="padding: 0.7rem 0.9rem;" onclick="openStudentDetail('${s.uid}')">
+            ${s.avatar ? `<img src="${s.avatar}" class="student-avatar" style="width: 38px; height: 38px; border-width: 2px;">` : `<div class="student-avatar-fallback" style="width: 38px; height: 38px; border-width: 2px; font-size: 0.9rem;">${(s.nama || 'U').charAt(0).toUpperCase()}</div>`}
+            <div class="student-info">
+              <div class="student-name" style="font-size: 0.85rem;">${s.nama || 'Murid'}</div>
+              <div class="student-progress-bar">
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: ${(completed / 12) * 100}%"></div>
+                </div>
+                <div class="progress-text" style="font-size: 0.68rem;">${completed}/12</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    openModal('classDetailModal');
+  };
+
+  // COPY CLASS CODE
+  window.copyClassCode = function() {
+    if (!currentClassCode) return;
+    navigator.clipboard.writeText(currentClassCode).then(() => {
+      showToast('Disalin! 📋', 'Kod kelas telah disalin — kongsi kepada pelajar', 'success');
+    }).catch(() => {
+      showToast('Gagal', 'Sila salin manual', 'error');
+    });
+  };
+
+  // ✅ STUDENT DETAIL — Redirect ke halaman baharu
+  window.openStudentDetail = function(uid) {
+    window.location.href = `student-detail.html?uid=${uid}`;
+  };
+
+  // PROFILE MODAL
+  window.openProfileModal = function() {
+    openModal('profileModal');
+  };
+
+  // AVATAR UPLOAD
+  window.handleAvatarUpload = async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Fail Terlalu Besar', 'Maksimum 5MB', 'error');
+      return;
+    }
+
+    showToast('Memuat Naik...', 'Sila tunggu sebentar', 'info');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_PRESET);
+      formData.append('folder', 'avatars');
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.secure_url) {
+        await updateDoc(doc(db, 'users', currentUser.uid), { avatar: data.secure_url });
+        currentUserData.avatar = data.secure_url;
+        updateUserUI();
+        showToast('Berjaya! 🎉', 'Avatar dikemas kini', 'success');
+      } else {
+        throw new Error('Upload failed');
+      }
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      showToast('Gagal', 'Tidak dapat memuat naik avatar', 'error');
+    }
+  };
+
+  // LOGOUT
+  window.handleLogout = async function() {
+    try {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    } catch (e) {
+      console.error('Logout error:', e);
+      showToast('Ralat', 'Gagal log keluar', 'error');
+    }
+  };
+
+  // AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      await loadTeacherData();
+      if (currentUserData && currentUserData.role === 'guru') {
+        renderDashboard();
+      }
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
+
+  console.log('%c REAL-MPC · Guru Dashboard ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
+  console.log('🎯 Klik pelajar → redirect ke student-detail.html');
+</script>
+</body>
+</html>

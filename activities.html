@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti · REAL-MPC</title>
+<meta name="description" content="12 aktiviti interaktif REAL-MPC untuk murid pintar cerdas.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     NAVBAR
+     ═══════════════════════════════════════════════════ */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+
+  .navbar.scrolled {
+    box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08);
+  }
+
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav-logo {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 0.95rem;
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+    flex-shrink: 0;
+  }
+
+  .nav-brand-text strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--navy);
+    display: block;
+    line-height: 1.1;
+  }
+
+  .nav-brand-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+  }
+
+  .nav-link:hover {
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+  }
+
+  .nav-link.active {
+    background: rgba(200, 16, 46, 0.08);
+    color: var(--red);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .nav-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(200, 16, 46, 0.08);
+    color: var(--red);
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .nav-logout:hover {
+    background: var(--red);
+    color: #fff;
+  }
+
+  .nav-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1.05rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow: 0 4px 12px rgba(244, 196, 48, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .nav-avatar:hover { transform: scale(1.08); }
+
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    color: var(--navy);
+    cursor: pointer;
+    padding: 0.4rem;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PAGE WRAP
+     ═══════════════════════════════════════════════════ */
+  .page-wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PAGE HEADER
+     ═══════════════════════════════════════════════════ */
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200, 16, 46, 0.08);
+    color: var(--red);
+    padding: 0.35rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 0.7rem;
+  }
+
+  .page-title .accent {
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-style: italic;
+  }
+
+  .page-sub {
+    color: var(--ink-soft);
+    font-size: 1rem;
+    max-width: 700px;
+    line-height: 1.7;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PROGRESS OVERVIEW
+     ═══════════════════════════════════════════════════ */
+  .progress-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+
+  .overview-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .overview-icon {
+    width: 46px; height: 46px;
+    border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .overview-item:nth-child(1) .overview-icon { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+  .overview-item:nth-child(2) .overview-icon { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+  .overview-item:nth-child(3) .overview-icon { background: linear-gradient(135deg, var(--navy-light), var(--navy-mid)); }
+  .overview-item:nth-child(4) .overview-icon { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy); }
+
+  .overview-content {
+    flex: 1;
+  }
+
+  .overview-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.15rem;
+  }
+
+  .overview-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .overview-value small {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     FILTER BAR
+     ═══════════════════════════════════════════════════ */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 260px;
+  }
+
+  .filter-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 50px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.25s;
+    white-space: nowrap;
+  }
+
+  .filter-tab:hover {
+    border-color: #CBD5E1;
+    transform: translateY(-2px);
+  }
+
+  .filter-tab.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    border-color: var(--red);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+
+  .filter-tab[data-filter="resilience"].active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    border-color: var(--red);
+  }
+
+  .filter-tab[data-filter="efficacy"].active {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    border-color: var(--navy);
+  }
+
+  .filter-tab[data-filter="awareness"].active {
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+    border-color: var(--navy-light);
+  }
+
+  .filter-tab i { font-size: 0.8rem; }
+
+  .filter-tab .count {
+    background: rgba(255,255,255,0.25);
+    padding: 0.1rem 0.5rem;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    margin-left: 0.2rem;
+  }
+
+  .filter-tab:not(.active) .count {
+    background: rgba(0,0,0,0.06);
+    color: var(--ink-soft);
+  }
+
+  .search-box {
+    position: relative;
+    min-width: 240px;
+    flex: 1;
+    max-width: 320px;
+  }
+
+  .search-box i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.7rem 1rem 0.7rem 2.6rem;
+    border: 2px solid var(--line);
+    border-radius: 50px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.25s;
+  }
+
+  .search-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  .search-input::placeholder { color: #94A3B8; }
+
+  /* ═══════════════════════════════════════════════════
+     ACTIVITY GRID
+     ═══════════════════════════════════════════════════ */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .activity-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.6rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    animation: cardFadeIn 0.4s ease;
+  }
+
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .activity-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 6px;
+    transition: height 0.3s;
+  }
+
+  .activity-card[data-konstruk="resilience"]::before {
+    background: linear-gradient(90deg, var(--red), var(--maroon));
+  }
+  .activity-card[data-konstruk="efficacy"]::before {
+    background: linear-gradient(90deg, var(--navy), var(--navy-mid));
+  }
+  .activity-card[data-konstruk="awareness"]::before {
+    background: linear-gradient(90deg, var(--navy-light), var(--gold));
+  }
+
+  .activity-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 48px rgba(11, 46, 78, 0.15);
+    border-color: rgba(200, 16, 46, 0.15);
+  }
+
+  .activity-card:hover::before { height: 8px; }
+
+  .activity-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+  }
+
+  .activity-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    color: #fff;
+    flex-shrink: 0;
+    transition: transform 0.35s;
+    position: relative;
+  }
+
+  .activity-icon::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 18px;
+    background: inherit;
+    filter: blur(12px);
+    opacity: 0.4;
+    z-index: -1;
+  }
+
+  .activity-card:hover .activity-icon {
+    transform: rotate(-8deg) scale(1.08);
+  }
+
+  .activity-card[data-konstruk="resilience"] .activity-icon {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+  }
+  .activity-card[data-konstruk="efficacy"] .activity-icon {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+  }
+  .activity-card[data-konstruk="awareness"] .activity-icon {
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+  }
+
+  .activity-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 50px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .status-available { background: rgba(244, 196, 48, 0.15); color: #B45309; }
+  .status-progress { background: rgba(43, 106, 158, 0.1); color: var(--navy-mid); }
+  .status-done { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+  .activity-card[data-konstruk="resilience"] .activity-status-badge.status-done {
+    background: rgba(16, 185, 129, 0.1); color: var(--success);
+  }
+
+  .activity-num-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 1.5px;
+    margin-bottom: 0.4rem;
+  }
+
+  .activity-card[data-konstruk="efficacy"] .activity-num-label { color: var(--navy-mid); }
+  .activity-card[data-konstruk="awareness"] .activity-num-label { color: var(--navy-light); }
+
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .activity-topic {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+    flex: 1;
+  }
+
+  .activity-topic i { color: var(--gold); }
+
+  .activity-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .activity-meta {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .activity-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .activity-meta i { color: var(--red); font-size: 0.75rem; }
+
+  .activity-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--red);
+    font-weight: 700;
+    transition: gap 0.3s;
+  }
+
+  .activity-card:hover .activity-cta { gap: 0.6rem; }
+
+  /* ═══════════════════════════════════════════════════
+     EMPTY STATE
+     ═══════════════════════════════════════════════════ */
+  .empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 4rem 1.5rem;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+  }
+
+  .empty-state i {
+    font-size: 3.5rem;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+
+  .empty-state h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 900;
+  }
+
+  .empty-state p {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     LOADER
+     ═══════════════════════════════════════════════════ */
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+
+  .page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .mobile-menu-btn { display: block; }
+
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-top: 1px solid var(--line);
+      gap: 0.2rem;
+      z-index: 99;
+    }
+
+    .nav-links.open .nav-link {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .nav-brand-text span { display: none; }
+    .nav-logout span { display: none; }
+    .nav-logout { padding: 0.6rem 0.75rem; }
+    .progress-overview { padding: 1.2rem; }
+    .filter-tab { padding: 0.6rem 1rem; font-size: 0.78rem; }
+    .search-box { max-width: 100%; }
+  }
+
+  @media (max-width: 480px) {
+    .activity-grid { grid-template-columns: 1fr; }
+    .overview-item { gap: 0.8rem; }
+    .overview-icon { width: 40px; height: 40px; font-size: 1rem; }
+    .overview-value { font-size: 1.2rem; }
+    .filter-tabs { gap: 0.4rem; }
+    .filter-tab { padding: 0.5rem 0.8rem; font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     NAVBAR
+     ═══════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-brand">
+      <div class="nav-logo">RM</div>
+      <div class="nav-brand-text">
+        <strong>REAL-MPC</strong>
+        <span>Aktiviti Interaktif</span>
+      </div>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+      <a href="dashboard-murid.html" class="nav-link">
+        <i class="fas fa-home"></i> Utama
+      </a>
+      <a href="activities.html" class="nav-link active">
+        <i class="fas fa-cubes"></i> Aktiviti
+      </a>
+      <a href="reflection.html" class="nav-link">
+        <i class="fas fa-edit"></i> Refleksi
+      </a>
+      <a href="portfolio.html" class="nav-link">
+        <i class="fas fa-trophy"></i> Portfolio
+      </a>
+      <a href="profile.html" class="nav-link">
+        <i class="fas fa-user"></i> Profil
+      </a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="nav-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> <span>Log Keluar</span>
+      </button>
+      <div class="nav-avatar" id="userAvatar" title="Profil">
+        <span id="avatarInitial">M</span>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE CONTENT
+     ═══════════════════════════════════════════════════ -->
+<div class="page-wrap">
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="page-badge"><i class="fas fa-cubes"></i> 12 Aktiviti Interaktif</div>
+    <h1 class="page-title">Teroka Aktiviti <span class="accent">REAL-MPC</span></h1>
+    <p class="page-sub">
+      Setiap aktiviti direka khas dengan cara belajar yang berbeza — ada drag-and-drop, live graph, canvas drawing, dan banyak lagi. 
+      Pilih aktiviti untuk mula belajar!
+    </p>
+  </section>
+
+  <!-- PROGRESS OVERVIEW -->
+  <section class="progress-overview" id="progressOverview">
+    <div class="overview-item">
+      <div class="overview-icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="overview-content">
+        <div class="overview-label">Daya Tahan</div>
+        <div class="overview-value" id="overviewResilience">0<small>/4</small></div>
+      </div>
+    </div>
+
+    <div class="overview-item">
+      <div class="overview-icon"><i class="fas fa-bolt"></i></div>
+      <div class="overview-content">
+        <div class="overview-label">Efikasi Kendiri</div>
+        <div class="overview-value" id="overviewEfficacy">0<small>/4</small></div>
+      </div>
+    </div>
+
+    <div class="overview-item">
+      <div class="overview-icon"><i class="fas fa-eye"></i></div>
+      <div class="overview-content">
+        <div class="overview-label">Kesedaran Kendiri</div>
+        <div class="overview-value" id="overviewAwareness">0<small>/4</small></div>
+      </div>
+    </div>
+
+    <div class="overview-item">
+      <div class="overview-icon"><i class="fas fa-check-circle"></i></div>
+      <div class="overview-content">
+        <div class="overview-label">Jumlah Selesai</div>
+        <div class="overview-value" id="overviewTotal">0<small>/12</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <section class="filter-bar">
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all" onclick="setFilter('all', this)">
+        <i class="fas fa-th"></i> Semua
+        <span class="count" id="countAll">12</span>
+      </button>
+      <button class="filter-tab" data-filter="resilience" onclick="setFilter('resilience', this)">
+        <i class="fas fa-shield-alt"></i> Daya Tahan
+        <span class="count" id="countResilience">4</span>
+      </button>
+      <button class="filter-tab" data-filter="efficacy" onclick="setFilter('efficacy', this)">
+        <i class="fas fa-bolt"></i> Efikasi
+        <span class="count" id="countEfficacy">4</span>
+      </button>
+      <button class="filter-tab" data-filter="awareness" onclick="setFilter('awareness', this)">
+        <i class="fas fa-eye"></i> Kesedaran
+        <span class="count" id="countAwareness">4</span>
+      </button>
+    </div>
+
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" class="search-input" placeholder="Cari aktiviti..." oninput="handleSearch(this.value)" id="searchInput">
+    </div>
+  </section>
+
+  <!-- ACTIVITY GRID -->
+  <div class="activity-grid" id="activityGrid">
+    <!-- Dynamic -->
+  </div>
+
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE SDK + LOGIC
+     ═══════════════════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, collection, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ═════════════════════════════════════════════════
+  // DATA 12 AKTIVITI (dari tesis)
+  // ═════════════════════════════════════════════════
+  const ACTIVITIES = [
+    { id: "a1", num: 1, konstruk: "resilience", tajuk: "Keazaman Menakluk Puncak", topik: "Persamaan Kuadratik", icon: "fa-square-root-alt", duration: "60 min", mekanik: "Drag & Drop Game" },
+    { id: "a2", num: 2, konstruk: "resilience", tajuk: "Berpasukan Persamaan Serentak", topik: "Persamaan Serentak", icon: "fa-equals", duration: "60 min", mekanik: "Multiplayer Race" },
+    { id: "a3", num: 3, konstruk: "resilience", tajuk: "Hukum Linear: Konsisten", topik: "Hukum Linear", icon: "fa-chart-line", duration: "60 min", mekanik: "Live Graph Plotter" },
+    { id: "a4", num: 4, konstruk: "resilience", tajuk: "Vektor Sokongan", topik: "Vektor", icon: "fa-arrow-right", duration: "60 min", mekanik: "Canvas Drawing" },
+    { id: "a5", num: 5, konstruk: "efficacy", tajuk: "Lengkung Keyakinan", topik: "Fungsi Kuadratik", icon: "fa-wave-square", duration: "60 min", mekanik: "Confidence Slider" },
+    { id: "a6", num: 6, konstruk: "efficacy", tajuk: "Indeks & Logaritma", topik: "Indeks & Logaritma", icon: "fa-superscript", duration: "60 min", mekanik: "Card Matching Game" },
+    { id: "a7", num: 7, konstruk: "efficacy", tajuk: "Koordinat Hidup Saya", topik: "Geometri Koordinat", icon: "fa-crosshairs", duration: "60 min", mekanik: "Interactive Plotter" },
+    { id: "a8", num: 8, konstruk: "efficacy", tajuk: "Jujukan Usaha", topik: "Janjang", icon: "fa-ellipsis-h", duration: "60 min", mekanik: "Habit Tracker" },
+    { id: "a9", num: 9, konstruk: "awareness", tajuk: "Kes Berambigu", topik: "Penyelesaian Segi Tiga", icon: "fa-draw-polygon", duration: "60 min", mekanik: "Decision Simulation" },
+    { id: "a10", num: 10, konstruk: "awareness", tajuk: "Peta Kekuatan & Kelemahan", topik: "Fungsi", icon: "fa-project-diagram", duration: "60 min", mekanik: "Mind-Map Builder" },
+    { id: "a11", num: 11, konstruk: "awareness", tajuk: "Refleksi Strategi", topik: "Nombor Indeks", icon: "fa-percentage", duration: "60 min", mekanik: "Self-Index Calculator" },
+    { id: "a12", num: 12, konstruk: "awareness", tajuk: "Pelan Tindakan Individu", topik: "Persamaan 3 Pembolehubah", icon: "fa-cubes", duration: "60 min", mekanik: "Goal Planner" }
+  ];
+
+  let userProgress = {};
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  // ═════════════════════════════════════════════════
+  // LOAD PROGRESS
+  // ═════════════════════════════════════════════════
+  async function loadUserProgress(userId) {
+    try {
+      const progressRef = collection(db, 'progress', userId, 'activities');
+      const snap = await getDocs(progressRef);
+      userProgress = {};
+      snap.forEach(docSnap => {
+        userProgress[docSnap.id] = docSnap.data();
+      });
+      console.log('✅ Progress loaded:', Object.keys(userProgress).length, 'aktiviti');
+    } catch (e) {
+      console.warn('⚠️ Progress load error:', e);
+      userProgress = {};
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // STATUS
+  // ═════════════════════════════════════════════════
+  function getActivityStatus(activityId) {
+    const p = userProgress[activityId];
+    if (!p) return 'available';
+    return p.status || 'available';
+  }
+
+  function statusBadge(status) {
+    const map = {
+      available: { label: 'Tersedia', icon: 'fa-play', cls: 'status-available' },
+      in_progress: { label: 'Sedang Buat', icon: 'fa-spinner', cls: 'status-progress' },
+      completed: { label: 'Selesai', icon: 'fa-check', cls: 'status-done' }
+    };
+    const s = map[status] || map.available;
+    return `<span class="activity-status-badge ${s.cls}"><i class="fas ${s.icon}"></i> ${s.label}</span>`;
+  }
+
+  // ═════════════════════════════════════════════════
+  // FILTER & SEARCH
+  // ═════════════════════════════════════════════════
+  window.setFilter = function(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderActivities();
+  };
+
+  window.handleSearch = function(value) {
+    currentSearch = value.toLowerCase().trim();
+    renderActivities();
+  };
+
+  function getFilteredActivities() {
+    let filtered = ACTIVITIES;
+
+    // Filter by konstruk
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(a => a.konstruk === currentFilter);
+    }
+
+    // Filter by search
+    if (currentSearch) {
+      filtered = filtered.filter(a =>
+        a.tajuk.toLowerCase().includes(currentSearch) ||
+        a.topik.toLowerCase().includes(currentSearch)
+      );
+    }
+
+    return filtered;
+  }
+
+  // ═════════════════════════════════════════════════
+  // RENDER ACTIVITIES
+  // ═════════════════════════════════════════════════
+  function renderActivities() {
+    const grid = document.getElementById('activityGrid');
+    if (!grid) return;
+
+    const filtered = getFilteredActivities();
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-search"></i>
+          <h3>Tiada Aktiviti Dijumpai</h3>
+          <p>Cuba cari dengan kata kunci lain atau tukar filter.</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(a => {
+      const status = getActivityStatus(a.id);
+      return `
+        <a class="activity-card" data-konstruk="${a.konstruk}" href="activity-${String(a.num).padStart(2, '0')}.html?id=${a.id}">
+          <div class="activity-icon-wrap">
+            <div class="activity-icon">
+              <i class="fas ${a.icon}"></i>
+            </div>
+            ${statusBadge(status)}
+          </div>
+
+          <div class="activity-num-label">AKTIVITI ${String(a.num).padStart(2, '0')}</div>
+          <h3 class="activity-title">${a.tajuk}</h3>
+          <div class="activity-topic">
+            <i class="fas fa-flask"></i> ${a.topik} · ${a.mekanik}
+          </div>
+
+          <div class="activity-footer">
+            <div class="activity-meta">
+              <span><i class="fas fa-clock"></i> ${a.duration}</span>
+            </div>
+            <span class="activity-cta">
+              Mula <i class="fas fa-arrow-right"></i>
+            </span>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  // ═════════════════════════════════════════════════
+  // UPDATE OVERVIEW
+  // ═════════════════════════════════════════════════
+  function updateOverview() {
+    const resilienceCount = ACTIVITIES.filter(a => a.konstruk === 'resilience' && getActivityStatus(a.id) === 'completed').length;
+    const efficacyCount = ACTIVITIES.filter(a => a.konstruk === 'efficacy' && getActivityStatus(a.id) === 'completed').length;
+    const awarenessCount = ACTIVITIES.filter(a => a.konstruk === 'awareness' && getActivityStatus(a.id) === 'completed').length;
+    const totalCount = resilienceCount + efficacyCount + awarenessCount;
+
+    document.getElementById('overviewResilience').innerHTML = `${resilienceCount}<small>/4</small>`;
+    document.getElementById('overviewEfficacy').innerHTML = `${efficacyCount}<small>/4</small>`;
+    document.getElementById('overviewAwareness').innerHTML = `${awarenessCount}<small>/4</small>`;
+    document.getElementById('overviewTotal').innerHTML = `${totalCount}<small>/12</small>`;
+
+    // Update counts on filter tabs
+    document.getElementById('countAll').textContent = ACTIVITIES.length;
+    document.getElementById('countResilience').textContent = ACTIVITIES.filter(a => a.konstruk === 'resilience').length;
+    document.getElementById('countEfficacy').textContent = ACTIVITIES.filter(a => a.konstruk === 'efficacy').length;
+    document.getElementById('countAwareness').textContent = ACTIVITIES.filter(a => a.konstruk === 'awareness').length;
+  }
+
+  // ═════════════════════════════════════════════════
+  // HANDLE LOGOUT
+  // ═════════════════════════════════════════════════
+  window.handleLogout = async function() {
+    if (!confirm('Log keluar dari REAL-MPC?')) return;
+    try {
+      await signOut(auth);
+      window.location.href = 'login.html';
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('Gagal log keluar. Cuba lagi.');
+    }
+  };
+
+  // ═════════════════════════════════════════════════
+  // MOBILE MENU
+  // ═════════════════════════════════════════════════
+  window.toggleMobileMenu = function() {
+    document.getElementById('navLinks').classList.toggle('open');
+  };
+
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+    });
+  });
+
+  // ═════════════════════════════════════════════════
+  // NAVBAR SCROLL
+  // ═════════════════════════════════════════════════
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // ═════════════════════════════════════════════════
+  // URL PARAMS — Filter dari URL
+  // ═════════════════════════════════════════════════
+  function checkURLFilter() {
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('filter');
+    if (filter && ['resilience', 'efficacy', 'awareness'].includes(filter)) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.filter === filter);
+      });
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // AUTH STATE
+  // ═════════════════════════════════════════════════
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    console.log('✅ User detected:', user.email);
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+
+        // Kalau guru, redirect
+        if (userData.role === 'guru') {
+          window.location.href = 'dashboard-guru.html';
+          return;
+        }
+
+        const nama = userData.nama || user.displayName || 'Murid';
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+        document.getElementById('userAvatar').title = `${nama} · ${userData.kelas || 'Tingkatan 4'}`;
+      } else {
+        const nama = user.displayName || 'Murid';
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+      }
+
+      // Load progress
+      await loadUserProgress(user.uid);
+
+      // Check URL filter
+      checkURLFilter();
+
+      // Render
+      updateOverview();
+      renderActivities();
+
+      // Hide loader
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 400);
+
+    } catch (e) {
+      console.error('Load error:', e);
+      const nama = user.displayName || 'Murid';
+      document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+      await loadUserProgress(user.uid);
+      updateOverview();
+      renderActivities();
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 400);
+    }
+  });
+
+  // ═════════════════════════════════════════════════
+  // INIT
+  // ═════════════════════════════════════════════════
+  console.log('%c REAL-MPC · Activities ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+  console.log('✅ 12 aktiviti loaded');
+
+  setTimeout(() => {
+    document.getElementById('pageLoader').classList.add('hidden');
+  }, 5000);
+</script>
+
+</body>
+</html>

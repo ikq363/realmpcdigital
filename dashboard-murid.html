@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Murid · REAL-MPC Digital</title>
+<meta name="description" content="Dashboard pembelajaran REAL-MPC untuk murid pintar cerdas.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --maroon: #8B1E3F;
+  --maroon-dark: #5C1329;
+  --red: #C8102E;
+  --red-bright: #E63946;
+  --gold: #F4C430;
+  --gold-soft: #FACC15;
+  --navy: #0B2E4E;
+  --navy-mid: #1A4A6E;
+  --navy-light: #2B6A9E;
+  --cream: #FDF9F0;
+  --paper: #F8F4EA;
+  --ink: #1E293B;
+  --ink-soft: #475569;
+  --line: #E2E8F0;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+#preloader {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
+  z-index: 99998;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; }
+
+.preloader-logo {
+  width: 100px; height: 100px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900; font-size: 2rem; color: #fff;
+  margin-bottom: 2rem;
+  box-shadow: 0 20px 60px rgba(200, 16, 46, 0.6);
+  animation: preloaderPulse 1.5s ease-in-out infinite;
+  position: relative;
+}
+.preloader-logo::before {
+  content: ""; position: absolute; inset: -6px;
+  border-radius: 34px;
+  background: linear-gradient(135deg, var(--gold), var(--red));
+  z-index: -1;
+  animation: preloaderRotate 3s linear infinite;
+}
+@keyframes preloaderPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+@keyframes preloaderRotate { 0%{transform:rotate(0);} 100%{transform:rotate(360deg);} }
+.preloader-text {
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 1.5rem; opacity: 0.9;
+}
+.preloader-bar {
+  width: 240px; height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50px; overflow: hidden; position: relative;
+}
+.preloader-bar::after {
+  content: ""; position: absolute; top: 0; left: 0;
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  border-radius: 50px;
+  animation: preloaderLoad 1.5s ease-in-out forwards;
+}
+@keyframes preloaderLoad { 0%{width:0;} 60%{width:75%;} 100%{width:100%;} }
+
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 30, 63, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 30, 63, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  z-index: 0; pointer-events: none;
+}
+.bg-dots {
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, rgba(11, 46, 78, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  z-index: 0; pointer-events: none;
+}
+.floating-formula {
+  position: fixed;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: rgba(139, 30, 63, 0.05);
+  pointer-events: none; user-select: none;
+  z-index: 0;
+  animation: floatSlow 14s ease-in-out infinite;
+}
+.ff-1 { top: 12%; left: 3%; font-size: 5rem; }
+.ff-2 { top: 45%; right: 4%; font-size: 4rem; animation-delay: 2s; color: rgba(11, 46, 78, 0.04); }
+.ff-3 { bottom: 15%; left: 6%; font-size: 4.5rem; animation-delay: 4s; }
+@keyframes floatSlow {
+  0%,100%{transform:translateY(0) rotate(0);}
+  50%{transform:translateY(-30px) rotate(8deg);}
+}
+
+.app-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(244,196,48,0.3); border-radius: 2px; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0 0.5rem 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none; color: inherit;
+}
+.sidebar-logo {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900; font-size: 0.95rem; color: #fff;
+  box-shadow: 0 8px 20px rgba(200,16,46,0.4);
+  flex-shrink: 0;
+}
+.sidebar-brand-text strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.sidebar-brand-text span {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.6);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sidebar-section-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 1rem 0.75rem 0.5rem;
+}
+
+.sidebar-nav {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  flex: 1;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  border: none;
+  background: none;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar-item i {
+  width: 22px;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.55);
+  transition: color 0.25s;
+}
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.sidebar-item:hover i { color: var(--gold); }
+.sidebar-item.active {
+  background: linear-gradient(90deg, rgba(244,196,48,0.18), rgba(244,196,48,0.05));
+  color: var(--gold);
+  border-left: 3px solid var(--gold);
+}
+.sidebar-item.active i { color: var(--gold); }
+
+.sidebar-item .badge-count {
+  margin-left: auto;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 1rem;
+}
+
+.sidebar-user-card {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.7rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  transition: all 0.25s;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+.sidebar-user-card:hover { background: rgba(255,255,255,0.12); }
+
+.sidebar-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sidebar-avatar-fallback {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-info strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-info span {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-logout {
+  color: rgba(255,150,150,0.85) !important;
+  font-size: 0.82rem !important;
+}
+.sidebar-logout:hover {
+  background: rgba(239,68,68,0.15) !important;
+  color: #ff9999 !important;
+}
+.sidebar-logout i { color: rgba(255,150,150,0.85) !important; }
+
+.main {
+  padding: 1.5rem 2rem 3rem;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
+.topbar-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.topbar-title p {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.topbar-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+.datetime-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.55rem 1rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.datetime-widget::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--red), var(--gold));
+}
+.datetime-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(11, 46, 78, 0.12);
+}
+.datetime-icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  animation: preloaderPulse 3s ease-in-out infinite;
+}
+.datetime-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1.15;
+}
+.datetime-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.datetime-time .colon {
+  color: var(--red);
+  animation: colonBlink 1s step-start infinite;
+}
+@keyframes colonBlink { 50% { opacity: 0.3; } }
+.datetime-time .ampm {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--red);
+  padding: 0.1rem 0.4rem;
+  background: rgba(200,16,46,0.1);
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+.datetime-date {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .datetime-widget { padding: 0.5rem 0.8rem; gap: 0.6rem; }
+  .datetime-icon { width: 32px; height: 32px; font-size: 0.8rem; }
+  .datetime-time { font-size: 0.95rem; }
+  .datetime-date { font-size: 0.65rem; }
+}
+
+@media (max-width: 500px) {
+  .datetime-date { display: none; }
+  .datetime-widget { padding: 0.5rem 0.7rem; }
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--navy);
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.mobile-menu-btn:hover { background: var(--paper); }
+
+/* CLASS BADGE (guru info dalam topbar) */
+.teacher-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.4rem;
+  background: rgba(244,196,48,0.15);
+  border: 1px solid rgba(244,196,48,0.35);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--maroon);
+}
+.teacher-chip img,
+.teacher-chip .teacher-chip-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  object-fit: cover;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 800; font-size: 0.8rem;
+  flex-shrink: 0;
+}
+.teacher-chip .teacher-chip-text {
+  display: flex; flex-direction: column;
+  line-height: 1.15;
+}
+.teacher-chip .teacher-chip-text strong {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--maroon);
+}
+.teacher-chip .teacher-chip-text span {
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+}
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s;
+}
+.btn-primary:hover::before { left: 100%; }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(200, 16, 46, 0.45);
+}
+.btn-outline {
+  background: #fff;
+  color: var(--navy);
+  border: 2px solid var(--line);
+}
+.btn-outline:hover {
+  border-color: var(--maroon);
+  color: var(--maroon);
+  background: rgba(139, 30, 63, 0.03);
+  transform: translateY(-2px);
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* WELCOME CARD */
+.welcome-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  border-radius: 28px;
+  padding: 2rem 2.2rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.8rem;
+  box-shadow: 0 24px 48px -12px rgba(11, 46, 78, 0.4);
+  isolation: isolate;
+}
+@keyframes gradientShift {
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.welcome-card::before {
+  content: ""; position: absolute;
+  top: -80px; right: -80px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(244,196,48,0.25), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 6s ease-in-out infinite;
+}
+@keyframes pulseDeco {
+  0%,100%{transform:scale(1);opacity:0.5;}
+  50%{transform:scale(1.3);opacity:0.9;}
+}
+.welcome-card::after {
+  content: ""; position: absolute;
+  inset: 0; opacity: 0.12;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -1;
+}
+.welcome-content { position: relative; z-index: 2; }
+.welcome-greeting {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.welcome-greeting::before {
+  content: "";
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--gold);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.4);opacity:0.7;}
+}
+.welcome-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(120deg, #fff 0%, #fff 40%, var(--gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shineText 4s linear infinite;
+}
+@keyframes shineText {
+  0%{background-position:0% center;}
+  100%{background-position:200% center;}
+}
+.welcome-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.85);
+  max-width: 600px;
+  line-height: 1.6;
+}
+.welcome-stats {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+  position: relative;
+  z-index: 2;
+}
+.welcome-stat {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.8rem 1.1rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+}
+.welcome-stat:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-3px);
+}
+.welcome-stat-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.welcome-stat-info strong {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+.welcome-stat-info span {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  font-weight: 500;
+}
+
+/* JOIN CLASS PROMPT */
+.join-class-prompt {
+  background: linear-gradient(135deg, rgba(244,196,48,0.15), rgba(200,16,46,0.08));
+  border: 2px dashed var(--gold);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  margin-bottom: 1.8rem;
+  position: relative;
+  overflow: hidden;
+}
+.join-class-prompt::before {
+  content: ""; position: absolute;
+  top: -50px; right: -50px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(244,196,48,0.25), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 5s ease-in-out infinite;
+}
+.join-class-icon {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  margin: 0 auto 1.2rem;
+  box-shadow: 0 16px 32px rgba(200,16,46,0.3);
+  position: relative;
+  z-index: 1;
+  animation: preloaderPulse 2s ease-in-out infinite;
+}
+.join-class-prompt h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+.join-class-prompt p {
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* TEACHER INFO CARD (dalam dashboard bila dah join kelas) */
+.teacher-info-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  margin-bottom: 1.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.teacher-info-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, var(--gold), var(--red));
+}
+.teacher-info-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(11, 46, 78, 0.1);
+}
+.teacher-info-avatar,
+.teacher-info-avatar-fallback {
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.teacher-info-avatar-fallback {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+.teacher-info-content {
+  flex: 1;
+  min-width: 0;
+}
+.teacher-info-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.3rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.teacher-info-label i { color: var(--gold); }
+.teacher-info-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+.teacher-info-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.teacher-info-meta .meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--paper);
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.teacher-info-meta .meta-chip i { color: var(--red); font-size: 0.7rem; }
+
+/* SECTION */
+.section {
+  margin-bottom: 2.2rem;
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.section-head-left h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.section-head-left p {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  background: rgba(200,16,46,0.08);
+  border-radius: 50px;
+  width: fit-content;
+}
+
+.rings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.ring-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.ring-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  transition: height 0.3s;
+}
+.ring-card.ring-resilience::before { background: linear-gradient(90deg, var(--red), var(--maroon)); }
+.ring-card.ring-efficacy::before { background: linear-gradient(90deg, var(--navy), var(--navy-mid)); }
+.ring-card.ring-awareness::before { background: linear-gradient(90deg, var(--navy-light), var(--gold)); }
+.ring-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(11, 46, 78, 0.12);
+}
+.ring-card:hover::before { height: 6px; }
+
+.ring-head {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.ring-head-icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.ring-resilience .ring-head-icon { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+.ring-efficacy .ring-head-icon { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+.ring-awareness .ring-head-icon { background: linear-gradient(135deg, var(--navy-light), var(--gold)); }
+
+.ring-head-text strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.ring-head-text span {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+}
+.ring-body {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.ring-svg-wrap { position: relative; flex-shrink: 0; }
+.ring-svg {
+  transform: rotate(-90deg);
+  display: block;
+}
+.ring-bg { stroke: #F1F5F9; }
+.ring-progress {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  stroke-linecap: round;
+}
+.ring-resilience .ring-progress { stroke: var(--red); }
+.ring-efficacy .ring-progress { stroke: var(--navy); }
+.ring-awareness .ring-progress { stroke: var(--gold); }
+
+.ring-percentage {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--navy);
+}
+.ring-resilience .ring-percentage { color: var(--red); }
+.ring-efficacy .ring-percentage { color: var(--navy); }
+.ring-awareness .ring-percentage { color: #B8860B; }
+
+.ring-info strong {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--navy);
+  font-family: 'Playfair Display', serif;
+  line-height: 1;
+}
+.ring-info strong span {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.ring-info small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  margin-top: 0.3rem;
+  font-weight: 600;
+}
+
+.overall-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  margin-bottom: 1.5rem;
+}
+.overall-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.overall-head h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--navy);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.overall-head h3 i { color: var(--gold); }
+.overall-badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  background: linear-gradient(135deg, rgba(200,16,46,0.1), rgba(244,196,48,0.15));
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--maroon);
+}
+.overall-bar-wrap {
+  height: 12px;
+  background: var(--paper);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.overall-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  border-radius: 12px;
+  width: 0%;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(244,196,48,0.4);
+  position: relative;
+}
+.overall-bar-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shineText 2s linear infinite;
+  background-size: 200% auto;
+}
+
+.next-activity-card {
+  background: linear-gradient(135deg, rgba(200,16,46,0.06), rgba(244,196,48,0.08));
+  border: 2px solid rgba(200,16,46,0.2);
+  border-radius: 24px;
+  padding: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  transition: all 0.3s;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.next-activity-card::before {
+  content: ""; position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(244,196,48,0.25), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 4s ease-in-out infinite;
+}
+.next-activity-left {
+  display: flex; align-items: center; gap: 1rem;
+  position: relative; z-index: 1;
+}
+.next-activity-icon {
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 12px 28px rgba(200,16,46,0.35);
+  animation: preloaderPulse 2s ease-in-out infinite;
+}
+.next-activity-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.2rem;
+}
+.next-activity-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.next-activity-topik {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.next-activity-right { position: relative; z-index: 1; }
+
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.activity-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.3rem;
+  border: 1px solid var(--line);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+.activity-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+.activity-card.act-resilience::before { background: linear-gradient(90deg, var(--red), var(--maroon)); }
+.activity-card.act-efficacy::before { background: linear-gradient(90deg, var(--navy), var(--navy-mid)); }
+.activity-card.act-awareness::before { background: linear-gradient(90deg, var(--navy-light), var(--gold)); }
+
+.activity-card:hover:not(.locked) {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 48px rgba(11, 46, 78, 0.15);
+  border-color: rgba(200,16,46,0.15);
+}
+.activity-card.locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.activity-card.locked:hover { transform: none; }
+
+.activity-card.completed {
+  border-color: rgba(16,185,129,0.3);
+  background: linear-gradient(135deg, #fff 0%, rgba(16,185,129,0.03) 100%);
+}
+.activity-card.in-progress {
+  border-color: rgba(244,196,48,0.5);
+  box-shadow: 0 0 0 3px rgba(244,196,48,0.12);
+}
+
+.activity-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 0.6rem;
+}
+.activity-icon {
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  transition: transform 0.35s;
+}
+.act-resilience .activity-icon { background: linear-gradient(135deg, rgba(200,16,46,0.12), rgba(139,30,63,0.15)); color: var(--red); }
+.act-efficacy .activity-icon { background: linear-gradient(135deg, rgba(11,46,78,0.1), rgba(26,74,110,0.15)); color: var(--navy); }
+.act-awareness .activity-icon { background: linear-gradient(135deg, rgba(43,106,158,0.1), rgba(244,196,48,0.2)); color: #B8860B; }
+
+.activity-card:hover:not(.locked) .activity-icon { transform: scale(1.1) rotate(-6deg); }
+
+.activity-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+.act-resilience .activity-num { background: rgba(200,16,46,0.1); color: var(--red); }
+.act-efficacy .activity-num { background: rgba(11,46,78,0.08); color: var(--navy); }
+.act-awareness .activity-num { background: rgba(244,196,48,0.2); color: #B8860B; }
+
+.activity-konstruk {
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--ink-soft);
+}
+.activity-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.activity-topik {
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+.activity-status {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+.activity-status.status-completed { color: var(--success); }
+.activity-status.status-progress { color: var(--warning); }
+.activity-status.status-locked { color: var(--ink-soft); }
+.activity-status i { font-size: 0.8rem; }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(11, 46, 78, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.modal-overlay.show { opacity: 1; visibility: visible; }
+
+.modal {
+  background: #fff;
+  border-radius: 28px;
+  max-width: 540px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 40px 80px rgba(11, 46, 78, 0.4);
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal::-webkit-scrollbar { width: 6px; }
+.modal::-webkit-scrollbar-thumb { background: var(--line); border-radius: 6px; }
+
+.modal-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.8rem 1.8rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-radius: 28px 28px 0 0;
+  overflow: hidden;
+}
+.modal-header::before {
+  content: ""; position: absolute;
+  inset: 0; opacity: 0.15;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.modal-header-inner { position: relative; z-index: 1; }
+
+.modal-close {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  z-index: 2;
+  cursor: pointer;
+}
+.modal-close:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
+
+.modal-label {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  background: rgba(244,196,48,0.15);
+  border: 1px solid rgba(244,196,48,0.3);
+  border-radius: 50px;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-bottom: 0.3rem;
+}
+.modal-sub {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.modal-body { padding: 1.5rem 1.8rem 1.8rem; }
+
+.form-block { margin-bottom: 1.3rem; }
+.form-block-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 0.7rem;
+}
+.form-block-label i { color: var(--red); font-size: 0.85rem; }
+
+.form-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: #fff;
+  transition: all 0.25s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+}
+.form-input::placeholder { color: #94A3B8; }
+
+.modal-footer {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0 1.8rem 1.8rem;
+}
+
+/* PREVIEW KELAS (dalam modal join) */
+.class-preview {
+  background: linear-gradient(135deg, rgba(244,196,48,0.1), rgba(200,16,46,0.05));
+  border: 2px solid rgba(244,196,48,0.4);
+  border-radius: 20px;
+  padding: 1.3rem;
+  margin-bottom: 1.3rem;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.class-preview::before {
+  content: "";
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(244,196,48,0.3), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 4s ease-in-out infinite;
+}
+.class-preview-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--maroon);
+  margin-bottom: 0.9rem;
+  position: relative;
+  z-index: 1;
+}
+.class-preview-head i { color: var(--success); font-size: 0.9rem; }
+.class-preview-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.class-preview-avatar {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.class-preview-avatar-fallback {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+.class-preview-info { flex: 1; min-width: 0; }
+.class-preview-info strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.2;
+  margin-bottom: 0.15rem;
+}
+.class-preview-info span {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+.class-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.class-preview-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  background: #fff;
+  border: 1px solid rgba(244,196,48,0.4);
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--maroon);
+}
+.class-preview-tag i { color: var(--gold); font-size: 0.65rem; }
+
+/* CLASS CODE INPUT (semasa preview) */
+.class-code-display {
+  text-align: center;
+  padding: 0.8rem;
+  background: rgba(11,46,78,0.05);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.25em;
+}
+
+/* PROFILE MODAL */
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+.profile-avatar-wrap {
+  position: relative;
+  display: inline-block;
+}
+.profile-avatar {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+  background: #fff;
+}
+.profile-avatar-fallback {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--gold);
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+.avatar-upload-btn {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  transition: all 0.25s;
+  box-shadow: 0 4px 12px rgba(200,16,46,0.4);
+  cursor: pointer;
+}
+.avatar-upload-btn:hover { transform: scale(1.15) rotate(-8deg); }
+
+.profile-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  background: var(--paper);
+  border-radius: 14px;
+  margin-bottom: 0.6rem;
+}
+.profile-info-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.profile-info-content { flex: 1; min-width: 0; }
+.profile-info-content small {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.profile-info-content strong {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CODE INPUT */
+.code-input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--maroon);
+  padding: 1rem;
+}
+.code-input::placeholder {
+  color: #CBD5E1;
+  letter-spacing: 0.3em;
+}
+
+/* LOADING SPINNER */
+.loading-spinner-wrap {
+  text-align: center;
+  padding: 2rem;
+}
+.loading-spinner {
+  display: inline-block;
+  width: 40px; height: 40px;
+  border: 4px solid rgba(200,16,46,0.15);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-spinner-text {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+/* ERROR STATE */
+.error-state {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: rgba(239,68,68,0.06);
+  border: 2px dashed rgba(239,68,68,0.3);
+  border-radius: 16px;
+}
+.error-state i {
+  font-size: 2.5rem;
+  color: var(--danger);
+  margin-bottom: 0.8rem;
+}
+.error-state strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+}
+.error-state p {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* PLACEHOLDER */
+.placeholder-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  text-align: center;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+}
+.placeholder-icon {
+  width: 90px; height: 90px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(200,16,46,0.1), rgba(244,196,48,0.15));
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto 1.2rem;
+}
+.placeholder-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.placeholder-card p {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.page { display: none; }
+.page.active { display: block; animation: fadeInPage 0.4s ease; }
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-container {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 99999;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  pointer-events: none;
+}
+.toast {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 12px 32px rgba(11, 46, 78, 0.15);
+  border-left: 4px solid var(--success);
+  display: flex; align-items: center; gap: 0.8rem;
+  min-width: 280px; max-width: 400px;
+  font-size: 0.88rem;
+  animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: auto;
+}
+.toast.error { border-left-color: var(--danger); }
+.toast.info { border-left-color: var(--navy-mid); }
+.toast.warning { border-left-color: var(--warning); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.toast-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.toast.error .toast-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.toast.info .toast-icon { background: rgba(43, 106, 158, 0.1); color: var(--navy-mid); }
+.toast.warning .toast-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.toast-content { flex: 1; }
+.toast-content strong { display: block; color: var(--navy); font-size: 0.85rem; }
+.toast-content span { font-size: 0.78rem; color: var(--ink-soft); }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 46, 78, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar-overlay.show { opacity: 1; }
+
+@media (max-width: 1024px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    z-index: 41;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { display: block; }
+  .mobile-menu-btn { display: flex; }
+  .main { padding: 1.2rem 1.2rem 3rem; }
+}
+
+@media (max-width: 640px) {
+  .topbar-title h1 { font-size: 1.2rem; }
+  .welcome-card { padding: 1.5rem 1.3rem; }
+  .welcome-stats { gap: 0.6rem; }
+  .welcome-stat { padding: 0.6rem 0.8rem; }
+  .welcome-stat-info strong { font-size: 0.9rem; }
+  .welcome-stat-info span { font-size: 0.65rem; }
+  .welcome-stat-icon { width: 32px; height: 32px; font-size: 0.8rem; }
+  .rings-grid { grid-template-columns: 1fr; }
+  .activities-grid { grid-template-columns: 1fr; }
+  .modal-body { padding: 1.2rem 1.3rem 1.3rem; }
+  .modal-header { padding: 1.4rem 1.3rem 1.2rem; }
+  .modal-footer { padding: 0 1.3rem 1.3rem; }
+  .modal-title { font-size: 1.2rem; }
+  .code-input { font-size: 1.1rem; letter-spacing: 0.2em; }
+  .teacher-info-card { flex-direction: column; text-align: center; }
+  .teacher-info-meta { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="preloader-logo">RM</div>
+  <div class="preloader-text">Dashboard</div>
+  <div class="preloader-bar"></div>
+</div>
+
+<div class="bg-grid"></div>
+<div class="bg-dots"></div>
+<div class="floating-formula ff-1">∑</div>
+<div class="floating-formula ff-2">√</div>
+<div class="floating-formula ff-3">π</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="app-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <div class="sidebar-logo">RM</div>
+      <div class="sidebar-brand-text">
+        <strong>REAL-MPC</strong>
+        <span>Murid Dashboard</span>
+      </div>
+    </a>
+
+    <div class="sidebar-section-label">Menu Utama</div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+        <i class="fas fa-home"></i> Dashboard
+      </button>
+      <button class="sidebar-item" data-page="activities" onclick="switchPage('activities')">
+        <i class="fas fa-cubes"></i> Aktiviti
+        <span class="badge-count" id="activitiesBadge">12</span>
+      </button>
+      <button class="sidebar-item" data-page="reflection" onclick="switchPage('reflection')">
+        <i class="fas fa-book"></i> Jurnal Refleksi
+      </button>
+      <button class="sidebar-item" data-page="portfolio" onclick="switchPage('portfolio')">
+        <i class="fas fa-trophy"></i> Portfolio
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user-card" onclick="openProfileModal()">
+        <img id="sidebarAvatar" class="sidebar-avatar" style="display:none;" src="" alt="">
+        <div id="sidebarAvatarFallback" class="sidebar-avatar-fallback">?</div>
+        <div class="sidebar-user-info">
+          <strong id="sidebarName">—</strong>
+          <span id="sidebarEmail">—</span>
+        </div>
+      </div>
+      <button class="sidebar-item sidebar-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Log Keluar
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1 id="topbarTitle">Dashboard</h1>
+          <p id="topbarSubtitle">Selamat datang ke REAL-MPC</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+
+        <div class="datetime-widget">
+          <div class="datetime-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="datetime-content">
+            <div class="datetime-time">
+              <span id="liveHour">--</span>
+              <span class="colon">:</span>
+              <span id="liveMinute">--</span>
+              <span class="colon">:</span>
+              <span id="liveSecond">--</span>
+              <span class="ampm" id="liveAmPm">--</span>
+            </div>
+            <div class="datetime-date" id="liveDate">Memuatkan...</div>
+          </div>
+        </div>
+
+        <!-- TEACHER CHIP (tunjuk guru + kelas) -->
+        <div class="teacher-chip" id="teacherChip" style="display: none;">
+          <span id="teacherChipAvatarWrap"></span>
+          <div class="teacher-chip-text">
+            <strong id="teacherChipName">—</strong>
+            <span id="teacherChipClass">—</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="openProfileModal()">
+          <i class="fas fa-user-circle"></i> Profil
+        </button>
+      </div>
+    </div>
+
+    <div class="page active" id="page-dashboard">
+
+      <div class="welcome-card">
+        <div class="welcome-content">
+          <div class="welcome-greeting">
+            <span id="welcomeGreeting">Selamat Datang</span>
+          </div>
+          <h2 class="welcome-title" id="welcomeTitle">Hai! 👋</h2>
+          <p class="welcome-subtitle" id="welcomeSubtitle">
+            Jom teruskan perjalanan pembelajaran anda. Setiap langkah kecil membina kekuatan diri.
+          </p>
+          <div class="welcome-stats">
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="welcome-stat-info">
+                <strong id="statCompleted">0 / 12</strong>
+                <span>Aktiviti Selesai</span>
+              </div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon"><i class="fas fa-fire"></i></div>
+              <div class="welcome-stat-info">
+                <strong id="statStreak">1 hari</strong>
+                <span>Streak Belajar</span>
+              </div>
+            </div>
+            <div class="welcome-stat">
+              <div class="welcome-stat-icon"><i class="fas fa-award"></i></div>
+              <div class="welcome-stat-info">
+                <strong id="statBadges">0</strong>
+                <span>Lencana Dikumpul</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="join-class-prompt" id="joinClassPrompt" style="display: none;">
+        <div class="join-class-icon">
+          <i class="fas fa-link"></i>
+        </div>
+        <h2>Sertai Kelas Anda</h2>
+        <p>Masukkan kod kelas yang diberikan oleh guru anda untuk menyertai kelas dan mula belajar bersama rakan-rakan.</p>
+        <button class="btn btn-primary" onclick="openJoinClassModal()">
+          <i class="fas fa-key"></i> Masukkan Kod Kelas
+        </button>
+      </div>
+
+      <div id="dashboardContent" style="display: none;">
+
+        <!-- TEACHER INFO CARD (dalam dashboard) -->
+        <div id="teacherInfoCardWrap"></div>
+
+        <div class="section">
+          <div class="section-head">
+            <div class="section-head-left">
+              <div class="section-label"><i class="fas fa-chart-line"></i> Progress</div>
+              <h2>Perkembangan Anda</h2>
+              <p>Pantau perkembangan 3 konstruk psikologi utama</p>
+            </div>
+          </div>
+
+          <div class="rings-grid">
+            <div class="ring-card ring-resilience">
+              <div class="ring-head">
+                <div class="ring-head-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="ring-head-text">
+                  <strong>Daya Tahan</strong>
+                  <span>Resilience</span>
+                </div>
+              </div>
+              <div class="ring-body">
+                <div class="ring-svg-wrap">
+                  <svg class="ring-svg" width="90" height="90">
+                    <circle class="ring-bg" cx="45" cy="45" r="35" fill="none" stroke-width="8"/>
+                    <circle class="ring-progress" id="ringResilience" cx="45" cy="45" r="35" fill="none" stroke-width="8"
+                      stroke-dasharray="219.9" stroke-dashoffset="219.9"/>
+                  </svg>
+                  <div class="ring-percentage" id="pctResilience">0%</div>
+                </div>
+                <div class="ring-info">
+                  <strong id="countResilience">0<span>/4</span></strong>
+                  <small>aktiviti selesai</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="ring-card ring-efficacy">
+              <div class="ring-head">
+                <div class="ring-head-icon"><i class="fas fa-bolt"></i></div>
+                <div class="ring-head-text">
+                  <strong>Efikasi Kendiri</strong>
+                  <span>Self-Efficacy</span>
+                </div>
+              </div>
+              <div class="ring-body">
+                <div class="ring-svg-wrap">
+                  <svg class="ring-svg" width="90" height="90">
+                    <circle class="ring-bg" cx="45" cy="45" r="35" fill="none" stroke-width="8"/>
+                    <circle class="ring-progress" id="ringEfficacy" cx="45" cy="45" r="35" fill="none" stroke-width="8"
+                      stroke-dasharray="219.9" stroke-dashoffset="219.9"/>
+                  </svg>
+                  <div class="ring-percentage" id="pctEfficacy">0%</div>
+                </div>
+                <div class="ring-info">
+                  <strong id="countEfficacy">0<span>/4</span></strong>
+                  <small>aktiviti selesai</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="ring-card ring-awareness">
+              <div class="ring-head">
+                <div class="ring-head-icon"><i class="fas fa-eye"></i></div>
+                <div class="ring-head-text">
+                  <strong>Kesedaran Kendiri</strong>
+                  <span>Self-Awareness</span>
+                </div>
+              </div>
+              <div class="ring-body">
+                <div class="ring-svg-wrap">
+                  <svg class="ring-svg" width="90" height="90">
+                    <circle class="ring-bg" cx="45" cy="45" r="35" fill="none" stroke-width="8"/>
+                    <circle class="ring-progress" id="ringAwareness" cx="45" cy="45" r="35" fill="none" stroke-width="8"
+                      stroke-dasharray="219.9" stroke-dashoffset="219.9"/>
+                  </svg>
+                  <div class="ring-percentage" id="pctAwareness">0%</div>
+                </div>
+                <div class="ring-info">
+                  <strong id="countAwareness">0<span>/4</span></strong>
+                  <small>aktiviti selesai</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="overall-card">
+            <div class="overall-head">
+              <h3><i class="fas fa-flag-checkered"></i> Kemajuan Keseluruhan</h3>
+              <div class="overall-badge" id="overallBadge">0 / 12 aktiviti</div>
+            </div>
+            <div class="overall-bar-wrap">
+              <div class="overall-bar-fill" id="overallBar" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="nextActivitySection"></div>
+
+        <div class="section">
+          <div class="section-head">
+            <div class="section-head-left">
+              <div class="section-label"><i class="fas fa-cubes"></i> Semua Aktiviti</div>
+              <h2>12 Aktiviti Interaktif</h2>
+              <p>Selesaikan satu demi satu untuk buka aktiviti seterusnya</p>
+            </div>
+          </div>
+          <div class="activities-grid" id="activitiesGridDashboard"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page" id="page-activities">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-cubes"></i> Semua Aktiviti</div>
+            <h2>12 Aktiviti Interaktif</h2>
+            <p>Selesaikan aktiviti mengikut turutan untuk progress optimum</p>
+          </div>
+        </div>
+        <div class="activities-grid" id="activitiesGridFull"></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-reflection">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-book"></i> Jurnal Refleksi</div>
+            <h2>Jurnal Peribadi Anda</h2>
+            <p>Semua refleksi yang anda tulis akan muncul di sini</p>
+          </div>
+        </div>
+        <div id="reflectionsList"></div>
+      </div>
+    </div>
+
+    <div class="page" id="page-portfolio">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-trophy"></i> Portfolio</div>
+            <h2>Koleksi Pencapaian Anda</h2>
+            <p>Lencana dan bukti pembelajaran yang telah anda kumpul</p>
+          </div>
+        </div>
+        <div id="portfolioContent"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: JOIN CLASS (dengan 3 state: input, loading, preview) -->
+<div class="modal-overlay" id="joinClassModal">
+  <div class="modal" style="max-width: 480px;">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal('joinClassModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-header-inner" style="text-align: center;">
+        <div class="join-class-icon" style="width: 64px; height: 64px; font-size: 1.5rem; margin-bottom: 1rem;">
+          <i class="fas fa-key"></i>
+        </div>
+        <span class="modal-label" id="joinModalLabel">Sertai Kelas</span>
+        <h2 class="modal-title" id="joinModalTitle" style="margin-top: 0.5rem;">Masukkan Kod Kelas</h2>
+        <p class="modal-sub" id="joinModalSub">Dapatkan kod 6 aksara daripada guru anda</p>
+      </div>
+    </div>
+
+    <div class="modal-body" id="joinModalBody">
+      <!-- State 1: Input kod -->
+      <div id="joinStateInput">
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-keyboard"></i> Kod Kelas</label>
+          <input
+            type="text"
+            id="joinClassCode"
+            class="form-input code-input"
+            placeholder="ABC123"
+            maxlength="6"
+            autocomplete="off"
+            style="text-transform: uppercase;"
+            oninput="onJoinCodeInput(event)"
+          >
+        </div>
+      </div>
+
+      <!-- State 2: Loading preview -->
+      <div id="joinStateLoading" style="display: none;">
+        <div class="loading-spinner-wrap">
+          <div class="loading-spinner"></div>
+          <div class="loading-spinner-text">Mencari kelas...</div>
+        </div>
+      </div>
+
+      <!-- State 3: Preview kelas -->
+      <div id="joinStatePreview" style="display: none;"></div>
+
+      <!-- State 4: Error -->
+      <div id="joinStateError" style="display: none;"></div>
+    </div>
+
+    <div class="modal-footer" id="joinModalFooter">
+      <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal('joinClassModal')">
+        Batal
+      </button>
+      <button type="button" class="btn btn-primary" style="flex: 1;" id="joinClassBtn" onclick="handleFindClass()">
+        <i class="fas fa-search"></i> Cari Kelas
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PROFILE -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal" style="max-width: 440px;">
+    <div class="modal-header" style="padding: 1.8rem 1.5rem;">
+      <button class="modal-close" onclick="closeModal('profileModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-header-inner profile-hero">
+        <div class="profile-avatar-wrap">
+          <img id="profileAvatar" class="profile-avatar" style="display: none;" src="" alt="">
+          <div id="profileAvatarFallback" class="profile-avatar-fallback">?</div>
+          <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
+            <i class="fas fa-camera"></i>
+          </button>
+          <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+        </div>
+        <div style="text-align: center;">
+          <h2 class="modal-title" id="profileModalName" style="font-size: 1.3rem;">—</h2>
+          <p class="modal-sub" id="profileModalEmail">—</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="profile-info-row">
+        <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
+        <div class="profile-info-content">
+          <small>Peranan</small>
+          <strong id="profileRole">Murid</strong>
+        </div>
+      </div>
+      <div class="profile-info-row">
+        <div class="profile-info-icon"><i class="fas fa-users"></i></div>
+        <div class="profile-info-content">
+          <small>Kelas</small>
+          <strong id="profileClass">Belum Sertai</strong>
+        </div>
+      </div>
+      <div class="profile-info-row">
+        <div class="profile-info-icon"><i class="fas fa-calendar-alt"></i></div>
+        <div class="profile-info-content">
+          <small>Tarikh Sertai</small>
+          <strong id="profileCreated">—</strong>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('profileModal')">
+        Tutup
+      </button>
+      <button class="btn btn-primary" style="flex: 1;" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Log Keluar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where,
+    serverTimestamp, arrayUnion
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const CLOUDINARY_CLOUD = 'tt0ofn22';
+  const CLOUDINARY_PRESET = 'real_mpc';
+
+  const ACTIVITIES = [
+    { id: 1, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Keazaman Menakluk Puncak', topik: 'Persamaan Kuadratik', icon: '⛰️' },
+    { id: 2, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Berpasukan Persamaan Serentak', topik: 'Persamaan Serentak', icon: '🤝' },
+    { id: 3, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Hukum Linear: Konsisten', topik: 'Hukum Linear', icon: '📈' },
+    { id: 4, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Vektor Sokongan', topik: 'Vektor', icon: '🧭' },
+    { id: 5, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Lengkung Keyakinan', topik: 'Fungsi Kuadratik', icon: '💪' },
+    { id: 6, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Indeks & Logaritma', topik: 'Indeks & Logaritma', icon: '🔢' },
+    { id: 7, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Koordinat Hidup Saya', topik: 'Geometri Koordinat', icon: '📍' },
+    { id: 8, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Jujukan Usaha', topik: 'Janjang', icon: '🔗' },
+    { id: 9, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Kes Berambigu', topik: 'Penyelesaian Segi Tiga', icon: '🧩' },
+    { id: 10, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Peta Kekuatan & Kelemahan', topik: 'Fungsi', icon: '🗺️' },
+    { id: 11, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Refleksi Strategi', topik: 'Nombor Indeks', icon: '🪞' },
+    { id: 12, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Pelan Tindakan Individu', topik: 'Persamaan Serentak 3 Pembolehubah', icon: '🎯' }
+  ];
+
+  let currentUser = null;
+  let currentUserData = null;
+  let currentClassData = null;
+  let currentTeacherData = null;
+  let userProgress = {};
+  let clockInterval = null;
+
+  // State preview kelas
+  let previewClassDoc = null; // { id, data, teacherData }
+
+  const HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+  const BULAN = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
+
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  function updateClock() {
+    const now = new Date();
+    const hour24 = now.getHours();
+    const hour12raw = hour24 % 12;
+    const hour12 = hour12raw === 0 ? 12 : hour12raw;
+    const ampm = hour24 < 12 ? 'PG' : 'PT';
+
+    document.getElementById('liveHour').textContent = pad2(hour12);
+    document.getElementById('liveMinute').textContent = pad2(now.getMinutes());
+    document.getElementById('liveSecond').textContent = pad2(now.getSeconds());
+    document.getElementById('liveAmPm').textContent = ampm;
+
+    document.getElementById('liveDate').textContent = `${HARI[now.getDay()]}, ${now.getDate()} ${BULAN[now.getMonth()]} ${now.getFullYear()}`;
+  }
+
+  function startClock() {
+    updateClock();
+    if (clockInterval) clearInterval(clockInterval);
+    clockInterval = setInterval(updateClock, 1000);
+  }
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('hidden');
+    }, 1200);
+  });
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 2500);
+
+  startClock();
+
+  // TOAST
+  window.showToast = function(title, message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const icons = { success: 'fa-check', error: 'fa-times', info: 'fa-info', warning: 'fa-exclamation' };
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = `
+      <div class="toast-icon"><i class="fas ${icons[type]}"></i></div>
+      <div class="toast-content">
+        <strong>${title}</strong>
+        <span>${message}</span>
+      </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'toastIn 0.4s reverse';
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  };
+
+  // MODAL HELPERS
+  window.closeModal = function(id) {
+    document.getElementById(id).classList.remove('show');
+    document.body.style.overflow = '';
+    if (id === 'joinClassModal') {
+      // Reset state
+      setTimeout(() => {
+        resetJoinModal();
+      }, 300);
+    }
+  };
+
+  window.openModal = function(id) {
+    document.getElementById(id).classList.add('show');
+    document.body.style.overflow = 'hidden';
+  };
+
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target === el) closeModal(el.id);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.show').forEach(m => closeModal(m.id));
+    }
+  });
+
+  // SIDEBAR
+  window.toggleSidebar = function() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+  };
+  window.closeSidebar = function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  };
+
+  window.switchPage = function(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelectorAll('.sidebar-item[data-page]').forEach(el => {
+      el.classList.toggle('active', el.dataset.page === page);
+    });
+
+    const titles = {
+      dashboard: ['Dashboard', 'Selamat datang ke REAL-MPC'],
+      activities: ['Aktiviti', '12 aktiviti interaktif'],
+      reflection: ['Jurnal Refleksi', 'Koleksi refleksi peribadi anda'],
+      portfolio: ['Portfolio', 'Koleksi pencapaian anda']
+    };
+    document.getElementById('topbarTitle').textContent = titles[page][0];
+    document.getElementById('topbarSubtitle').textContent = titles[page][1];
+
+    if (window.innerWidth < 1024) closeSidebar();
+
+    if (page === 'reflection') renderReflections();
+    if (page === 'portfolio') renderPortfolio();
+  };
+
+  function getDisplayName() {
+    let name = currentUserData?.nama;
+    if (!name || name.trim() === '' || name === 'Pengguna') {
+      name = currentUserData?.emel?.split('@')[0] || 'Murid';
+    }
+    return name;
+  }
+
+  // ============================
+  // LOAD USER
+  // ============================
+
+  async function loadUserData() {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+      if (userDoc.exists()) {
+        currentUserData = userDoc.data();
+
+        if (currentUserData.role === 'guru') {
+          window.location.href = 'dashboard-guru.html';
+          return;
+        }
+
+        // Load kelas (jika murid dah join kelas)
+        if (currentUserData.classId) {
+          try {
+            const classDoc = await getDoc(doc(db, 'classes', currentUserData.classId));
+            if (classDoc.exists()) {
+              currentClassData = { id: currentUserData.classId, ...classDoc.data() };
+
+              // Load data guru
+              if (currentClassData.guruId) {
+                try {
+                  const teacherDoc = await getDoc(doc(db, 'users', currentClassData.guruId));
+                  if (teacherDoc.exists()) {
+                    currentTeacherData = { uid: currentClassData.guruId, ...teacherDoc.data() };
+                  }
+                } catch (e) { console.warn('Teacher load error:', e); }
+              }
+            }
+          } catch (e) {
+            console.warn('Class load error:', e);
+          }
+        }
+
+        await loadProgress();
+      } else {
+        const displayName = currentUser.displayName || '';
+        await setDoc(doc(db, 'users', currentUser.uid), {
+          uid: currentUser.uid,
+          nama: displayName,
+          emel: currentUser.email,
+          role: 'murid',
+          classId: null,
+          createdAt: serverTimestamp(),
+          lastLogin: serverTimestamp()
+        });
+        await loadUserData();
+      }
+    } catch (e) {
+      console.error('loadUserData error:', e);
+      showToast('Ralat', 'Gagal memuat data pengguna', 'error');
+    }
+  }
+
+  async function loadProgress() {
+    try {
+      const snap = await getDocs(collection(db, 'progress', currentUser.uid, 'activities'));
+      userProgress = {};
+      snap.forEach(doc => {
+        userProgress[parseInt(doc.id)] = doc.data();
+      });
+    } catch (e) {
+      console.warn('loadProgress error:', e);
+      userProgress = {};
+    }
+  }
+
+  // ============================
+  // RENDER DASHBOARD
+  // ============================
+
+  function renderDashboard() {
+    const name = getDisplayName();
+    document.getElementById('welcomeTitle').textContent = `Hai, ${name}! 👋`;
+
+    const hour = new Date().getHours();
+    let greeting = 'Selamat Datang';
+    if (hour < 12) greeting = 'Selamat Pagi';
+    else if (hour < 15) greeting = 'Selamat Tengah Hari';
+    else if (hour < 19) greeting = 'Selamat Petang';
+    else greeting = 'Selamat Malam';
+    document.getElementById('welcomeGreeting').textContent = greeting;
+
+    updateUserUI();
+    updateTeacherChip();
+
+    if (currentClassData) {
+      document.getElementById('joinClassPrompt').style.display = 'none';
+      document.getElementById('dashboardContent').style.display = 'block';
+      renderTeacherInfoCard();
+    } else {
+      document.getElementById('joinClassPrompt').style.display = 'block';
+      document.getElementById('dashboardContent').style.display = 'none';
+      document.getElementById('teacherChip').style.display = 'none';
+      document.getElementById('teacherInfoCardWrap').innerHTML = '';
+    }
+
+    const completed = Object.values(userProgress).filter(p => p.status === 'completed').length;
+    const badges = Object.values(userProgress).filter(p => p.badge?.earned).length;
+    document.getElementById('statCompleted').textContent = `${completed} / 12`;
+    document.getElementById('statBadges').textContent = badges;
+
+    updateRing('resilience', [1, 2, 3, 4]);
+    updateRing('efficacy', [5, 6, 7, 8]);
+    updateRing('awareness', [9, 10, 11, 12]);
+
+    const overallPct = (completed / 12) * 100;
+    document.getElementById('overallBar').style.width = overallPct + '%';
+    document.getElementById('overallBadge').textContent = `${completed} / 12 aktiviti`;
+
+    document.getElementById('activitiesBadge').textContent = 12 - completed;
+
+    renderNextActivity();
+    renderActivitiesGrid('activitiesGridDashboard');
+    renderActivitiesGrid('activitiesGridFull');
+  }
+
+  // ═══ TEACHER CHIP (dalam topbar) ═══
+  function updateTeacherChip() {
+    const chip = document.getElementById('teacherChip');
+    const avatarWrap = document.getElementById('teacherChipAvatarWrap');
+    const nameEl = document.getElementById('teacherChipName');
+    const classEl = document.getElementById('teacherChipClass');
+
+    if (!currentTeacherData || !currentClassData) {
+      chip.style.display = 'none';
+      return;
+    }
+
+    const tName = currentTeacherData.nama || currentTeacherData.emel?.split('@')[0] || 'Guru';
+    const initial = tName.charAt(0).toUpperCase();
+
+    if (currentTeacherData.avatar) {
+      avatarWrap.innerHTML = `<img src="${currentTeacherData.avatar}" alt="${tName}">`;
+    } else {
+      avatarWrap.innerHTML = `<div class="teacher-chip-avatar">${initial}</div>`;
+    }
+
+    nameEl.textContent = tName;
+    classEl.textContent = currentClassData.nama;
+
+    chip.style.display = 'inline-flex';
+  }
+
+  // ═══ TEACHER INFO CARD (dalam dashboard) ═══
+  function renderTeacherInfoCard() {
+    const wrap = document.getElementById('teacherInfoCardWrap');
+
+    if (!currentTeacherData || !currentClassData) {
+      wrap.innerHTML = '';
+      return;
+    }
+
+    const tName = currentTeacherData.nama || currentTeacherData.emel?.split('@')[0] || 'Guru';
+    const initial = tName.charAt(0).toUpperCase();
+
+    const avatarHTML = currentTeacherData.avatar
+      ? `<img src="${currentTeacherData.avatar}" class="teacher-info-avatar" alt="${tName}">`
+      : `<div class="teacher-info-avatar-fallback">${initial}</div>`;
+
+    const tarikhJoin = currentClassData.createdAt?.toDate 
+      ? currentClassData.createdAt.toDate().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
+      : (currentClassData.createdAt ? new Date(currentClassData.createdAt).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) : '—');
+
+    wrap.innerHTML = `
+      <div class="teacher-info-card">
+        ${avatarHTML}
+        <div class="teacher-info-content">
+          <div class="teacher-info-label"><i class="fas fa-chalkboard-teacher"></i> Guru Kelas Anda</div>
+          <div class="teacher-info-name">${tName}</div>
+          <div class="teacher-info-meta">
+            <div class="meta-chip"><i class="fas fa-users"></i> ${currentClassData.nama}</div>
+            ${currentClassData.subjek ? `<div class="meta-chip"><i class="fas fa-book"></i> ${currentClassData.subjek}</div>` : ''}
+            <div class="meta-chip"><i class="fas fa-envelope"></i> ${currentTeacherData.emel || '—'}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function updateUserUI() {
+    const name = getDisplayName();
+    const email = currentUserData.emel || '';
+    const initial = name.charAt(0).toUpperCase();
+
+    document.getElementById('sidebarName').textContent = name;
+    document.getElementById('sidebarEmail').textContent = email;
+
+    const avatar = currentUserData.avatar;
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
+    const sidebarFallback = document.getElementById('sidebarAvatarFallback');
+
+    if (avatar) {
+      sidebarAvatar.src = avatar;
+      sidebarAvatar.style.display = 'block';
+      sidebarFallback.style.display = 'none';
+    } else {
+      sidebarAvatar.style.display = 'none';
+      sidebarFallback.style.display = 'flex';
+      sidebarFallback.textContent = initial;
+    }
+
+    document.getElementById('profileModalName').textContent = name;
+    document.getElementById('profileModalEmail').textContent = email;
+    document.getElementById('profileRole').textContent = currentUserData.role === 'guru' ? 'Guru' : 'Murid';
+    document.getElementById('profileClass').textContent = currentClassData ? currentClassData.nama : 'Belum Sertai';
+
+    if (currentUserData.createdAt) {
+      const d = currentUserData.createdAt.toDate ? currentUserData.createdAt.toDate() : new Date(currentUserData.createdAt);
+      document.getElementById('profileCreated').textContent = d.toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileFallback = document.getElementById('profileAvatarFallback');
+    if (avatar) {
+      profileAvatar.src = avatar;
+      profileAvatar.style.display = 'block';
+      profileFallback.style.display = 'none';
+    } else {
+      profileAvatar.style.display = 'none';
+      profileFallback.style.display = 'flex';
+      profileFallback.textContent = initial;
+    }
+  }
+
+  function updateRing(name, activityIds) {
+    const completed = activityIds.filter(id => userProgress[id]?.status === 'completed').length;
+    const total = activityIds.length;
+    const pct = (completed / total) * 100;
+
+    const circle = document.getElementById('ring' + name.charAt(0).toUpperCase() + name.slice(1));
+    const circumference = 2 * Math.PI * 35;
+    const offset = circumference - (pct / 100) * circumference;
+
+    if (circle) circle.style.strokeDashoffset = offset;
+    const pctEl = document.getElementById('pct' + name.charAt(0).toUpperCase() + name.slice(1));
+    if (pctEl) pctEl.textContent = Math.round(pct) + '%';
+    const countEl = document.getElementById('count' + name.charAt(0).toUpperCase() + name.slice(1));
+    if (countEl) countEl.innerHTML = `${completed}<span>/${total}</span>`;
+  }
+
+  function renderNextActivity() {
+    const next = ACTIVITIES.find(a => userProgress[a.id]?.status !== 'completed');
+    const section = document.getElementById('nextActivitySection');
+
+    if (!next) {
+      section.innerHTML = `
+        <div class="next-activity-card" style="justify-content: center; text-align: center; flex-direction: column;">
+          <div class="next-activity-icon" style="background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy);">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div>
+            <div class="next-activity-label" style="color: var(--gold);">Tahniah!</div>
+            <div class="next-activity-title">Anda telah menyelesaikan semua 12 aktiviti! 🎉</div>
+            <div class="next-activity-topik">Teruskan refleksi dan semak portfolio anda</div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    section.innerHTML = `
+      <div class="next-activity-card">
+        <div class="next-activity-left">
+          <div class="next-activity-icon">${next.icon}</div>
+          <div>
+            <div class="next-activity-label"><i class="fas fa-play-circle"></i> Aktiviti Seterusnya</div>
+            <div class="next-activity-title">${next.tajuk}</div>
+            <div class="next-activity-topik">${next.topik}</div>
+          </div>
+        </div>
+        <div class="next-activity-right">
+          <button class="btn btn-primary" onclick="openActivityPage(${next.id})">
+            <i class="fas fa-arrow-right"></i> Mula
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderActivitiesGrid(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = ACTIVITIES.map(a => {
+      const progress = userProgress[a.id];
+      let status = 'locked';
+      let statusLabel = 'Belum Dibuka';
+      let statusIcon = 'fa-lock';
+      let statusClass = 'status-locked';
+
+      if (progress?.status === 'completed') {
+        status = 'completed';
+        statusLabel = 'Selesai';
+        statusIcon = 'fa-check-circle';
+        statusClass = 'status-completed';
+      } else if (progress?.status === 'in_progress') {
+        status = 'in_progress';
+        statusLabel = 'Sedang Berjalan';
+        statusIcon = 'fa-hourglass-half';
+        statusClass = 'status-progress';
+      } else if (a.id === 1 || userProgress[a.id - 1]?.status === 'completed') {
+        status = 'available';
+        statusLabel = 'Boleh Mula';
+        statusIcon = 'fa-play';
+        statusClass = 'status-progress';
+      }
+
+      const submodulClass = 'act-' + a.submodul;
+      const lockedClass = status === 'locked' ? 'locked' : '';
+
+      return `
+        <div class="activity-card ${submodulClass} ${lockedClass}"
+             onclick="${status !== 'locked' ? `openActivityPage(${a.id})` : `showToast('Aktiviti Terkunci', 'Selesaikan aktiviti sebelumnya dahulu', 'warning')`}">
+          <div class="activity-head">
+            <div class="activity-icon">${a.icon}</div>
+            <div class="activity-num">#${String(a.id).padStart(2, '0')}</div>
+          </div>
+          <div class="activity-konstruk">${a.konstruk}</div>
+          <div class="activity-title">${a.tajuk}</div>
+          <div class="activity-topik">${a.topik}</div>
+          <div class="activity-status ${statusClass}">
+            <i class="fas ${statusIcon}"></i>
+            <span>${statusLabel}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.openActivityPage = function(id) {
+    const padded = String(id).padStart(2, '0');
+    window.location.href = `activity-${padded}.html`;
+  };
+
+  // ═══════════════════════════════════════════
+  // JOIN CLASS — DENGAN PREVIEW
+  // ═══════════════════════════════════════════
+
+  window.openJoinClassModal = function() {
+    resetJoinModal();
+    openModal('joinClassModal');
+    setTimeout(() => document.getElementById('joinClassCode').focus(), 300);
+  };
+
+  function resetJoinModal() {
+    previewClassDoc = null;
+    document.getElementById('joinStateInput').style.display = 'block';
+    document.getElementById('joinStateLoading').style.display = 'none';
+    document.getElementById('joinStatePreview').style.display = 'none';
+    document.getElementById('joinStateError').style.display = 'none';
+
+    document.getElementById('joinModalLabel').textContent = 'Sertai Kelas';
+    document.getElementById('joinModalTitle').textContent = 'Masukkan Kod Kelas';
+    document.getElementById('joinModalSub').textContent = 'Dapatkan kod 6 aksara daripada guru anda';
+    document.querySelector('#joinClassModal .join-class-icon i').className = 'fas fa-key';
+
+    document.getElementById('joinClassCode').value = '';
+
+    const btn = document.getElementById('joinClassBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-search"></i> Cari Kelas';
+    btn.onclick = handleFindClass;
+
+    // Reset footer batal btn
+    const cancelBtn = document.querySelector('#joinClassModal .modal-footer .btn-outline');
+    cancelBtn.innerHTML = 'Batal';
+    cancelBtn.onclick = () => closeModal('joinClassModal');
+  }
+
+  window.onJoinCodeInput = function(e) {
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    // Auto-cari bila 6 aksara
+    if (e.target.value.length === 6) {
+      // Boleh auto-trigger cari (optional)
+      // handleFindClass();
+    }
+  };
+
+  // STEP 1: CARI KELAS
+  window.handleFindClass = async function() {
+    const code = document.getElementById('joinClassCode').value.trim().toUpperCase();
+    const btn = document.getElementById('joinClassBtn');
+
+    if (code.length !== 6) {
+      showToast('Kod Tidak Sah', 'Kod kelas mesti 6 aksara', 'error');
+      return;
+    }
+
+    // Papar state loading
+    document.getElementById('joinStateInput').style.display = 'none';
+    document.getElementById('joinStateLoading').style.display = 'block';
+    document.getElementById('joinStatePreview').style.display = 'none';
+    document.getElementById('joinStateError').style.display = 'none';
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
+
+    try {
+      // Baca semua kelas
+      let allClassesSnap;
+      try {
+        allClassesSnap = await getDocs(collection(db, 'classes'));
+      } catch (readErr) {
+        console.error('❌ Gagal baca koleksi classes:', readErr);
+        showJoinError('Ralat Akses', 'Tidak dapat baca data kelas. Semak Firestore Rules.');
+        return;
+      }
+
+      // Cari kod yang padan
+      const classDocSnap = allClassesSnap.docs.find(d => {
+        const k = d.data().kod;
+        return k && k.toString().toUpperCase().trim() === code;
+      });
+
+      if (!classDocSnap) {
+        showJoinError('Kod Tidak Dijumpai', `Kod "${code}" tiada dalam sistem. Sila semak dengan guru anda.`);
+        return;
+      }
+
+      const classId = classDocSnap.id;
+      const classData = classDocSnap.data();
+
+      console.log('✅ Kelas dijumpai:', classId, classData);
+
+      // Load data guru
+      let teacherData = null;
+      if (classData.guruId) {
+        try {
+          const teacherDoc = await getDoc(doc(db, 'users', classData.guruId));
+          if (teacherDoc.exists()) {
+            teacherData = { uid: classData.guruId, ...teacherDoc.data() };
+          }
+        } catch (e) {
+          console.warn('Gagal load data guru:', e);
+        }
+      }
+
+      // Semak jika murid sudah join kelas ini
+      const muridIds = classData.muridIds || [];
+      if (muridIds.includes(currentUser.uid)) {
+        showJoinError('Sudah Sertai', `Anda sudah berada dalam kelas ${classData.nama}.`);
+        return;
+      }
+
+      // Kalau murid dah ada kelas lain, tolak
+      if (currentUserData.classId && currentUserData.classId !== classId) {
+        showJoinError('Sudah Ada Kelas', 'Anda sudah menyertai kelas lain. Hubungi guru untuk tukar kelas.');
+        return;
+      }
+
+      // Simpan preview data
+      previewClassDoc = { id: classId, data: classData, teacherData };
+
+      // Papar preview
+      showJoinPreview();
+
+    } catch (err) {
+      console.error('❌ handleFindClass error:', err);
+      showJoinError('Ralat', err.message || 'Gagal mencari kelas. Cuba lagi.');
+    }
+  };
+
+  // STEP 2: PAPAR PREVIEW
+  function showJoinPreview() {
+    const { id: classId, data: classData, teacherData } = previewClassDoc;
+
+    document.getElementById('joinStateLoading').style.display = 'none';
+    document.getElementById('joinStatePreview').style.display = 'block';
+
+    // Update modal header
+    document.getElementById('joinModalLabel').textContent = 'Kelas Dijumpai';
+    document.getElementById('joinModalTitle').textContent = classData.nama;
+    document.getElementById('joinModalSub').textContent = 'Sahkan untuk menyertai kelas ini';
+    document.querySelector('#joinClassModal .join-class-icon i').className = 'fas fa-check';
+
+    // Avatar guru
+    const tName = teacherData?.nama || teacherData?.emel?.split('@')[0] || 'Guru';
+    const tInitial = tName.charAt(0).toUpperCase();
+    const avatarHTML = teacherData?.avatar
+      ? `<img src="${teacherData.avatar}" class="class-preview-avatar" alt="${tName}">`
+      : `<div class="class-preview-avatar-fallback">${tInitial}</div>`;
+
+    // Jumlah murid semasa
+    const muridCount = (classData.muridIds || []).length;
+
+    document.getElementById('joinStatePreview').innerHTML = `
+      <div class="class-code-display">${classData.kod}</div>
+
+      <div class="class-preview">
+        <div class="class-preview-head">
+          <i class="fas fa-check-circle"></i>
+          <span>Sahkan Kelas Ini</span>
+        </div>
+        <div class="class-preview-body">
+          ${avatarHTML}
+          <div class="class-preview-info">
+            <strong>${classData.nama}</strong>
+            <span><i class="fas fa-user" style="margin-right:0.3rem;opacity:0.6;"></i>${tName}</span>
+            <div class="class-preview-tags">
+              ${classData.subjek ? `<div class="class-preview-tag"><i class="fas fa-book"></i> ${classData.subjek}</div>` : ''}
+              <div class="class-preview-tag"><i class="fas fa-users"></i> ${muridCount} murid</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:0.8rem 1rem;font-size:0.82rem;color:#047857;display:flex;align-items:flex-start;gap:0.6rem;">
+        <i class="fas fa-info-circle" style="margin-top:2px;flex-shrink:0;"></i>
+        <span>Pastikan <strong>nama kelas</strong> dan <strong>nama guru</strong> betul sebelum menyertai. Selepas sertai, anda akan dapat akses ke semua aktiviti kelas ini.</span>
+      </div>
+    `;
+
+    // Update butang
+    const btn = document.getElementById('joinClassBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-link"></i> Sertai Kelas';
+    btn.onclick = handleConfirmJoin;
+
+    // Update butang batal
+    const cancelBtn = document.querySelector('#joinClassModal .modal-footer .btn-outline');
+    cancelBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Tukar Kod';
+    cancelBtn.onclick = () => {
+      resetJoinModal();
+    };
+  }
+
+  // STEP 3: ERROR
+  function showJoinError(title, message) {
+    document.getElementById('joinStateLoading').style.display = 'none';
+    document.getElementById('joinStateError').style.display = 'block';
+    document.getElementById('joinStateInput').style.display = 'none';
+
+    document.getElementById('joinStateError').innerHTML = `
+      <div class="error-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <strong>${title}</strong>
+        <p>${message}</p>
+      </div>
+    `;
+
+    const btn = document.getElementById('joinClassBtn');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-redo"></i> Cuba Lagi';
+    btn.onclick = () => {
+      resetJoinModal();
+      document.getElementById('joinStateInput').style.display = 'block';
+    };
+
+    const cancelBtn = document.querySelector('#joinClassModal .modal-footer .btn-outline');
+    cancelBtn.innerHTML = 'Tutup';
+    cancelBtn.onclick = () => closeModal('joinClassModal');
+  }
+
+  // STEP 4: CONFIRM JOIN
+  window.handleConfirmJoin = async function() {
+    if (!previewClassDoc) return;
+
+    const { id: classId, data: classData, teacherData } = previewClassDoc;
+    const btn = document.getElementById('joinClassBtn');
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyertai...';
+
+    try {
+      // Tambah murid ke senarai muridIds dalam kelas
+      await updateDoc(doc(db, 'classes', classId), {
+        muridIds: arrayUnion(currentUser.uid)
+      });
+
+      // Update user classId
+      await updateDoc(doc(db, 'users', currentUser.uid), { classId: classId });
+      currentUserData.classId = classId;
+      currentClassData = { id: classId, ...classData, muridIds: [...(classData.muridIds || []), currentUser.uid] };
+      currentTeacherData = teacherData;
+
+      closeModal('joinClassModal');
+      showToast('Berjaya Sertai Kelas! 🎉', `Selamat datang ke ${classData.nama}`, 'success');
+      renderDashboard();
+
+    } catch (err) {
+      console.error('❌ handleConfirmJoin error:', err);
+      let msg = 'Gagal menyertai kelas. Cuba lagi.';
+      if (err.code === 'permission-denied') msg = 'Firestore Rules tidak benarkan. Semak rules.';
+      showToast('Ralat', msg, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-link"></i> Sertai Kelas';
+    }
+  };
+
+  // PROFILE
+  window.openProfileModal = function() {
+    if (!currentUserData) return;
+    updateUserUI();
+    openModal('profileModal');
+  };
+
+  window.handleAvatarUpload = async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Fail Terlalu Besar', 'Maksimum 5MB sahaja', 'error');
+      return;
+    }
+
+    showToast('Memuat Naik...', 'Sedang upload gambar anda', 'info');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_PRESET);
+      formData.append('folder', `real-mpc/avatars/${currentUser.uid}`);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || 'Upload gagal');
+
+      const avatarUrl = data.secure_url;
+
+      await updateDoc(doc(db, 'users', currentUser.uid), { avatar: avatarUrl });
+      currentUserData.avatar = avatarUrl;
+
+      updateUserUI();
+      showToast('Berjaya! 📸', 'Gambar profil telah dikemaskini', 'success');
+
+    } catch (err) {
+      console.error('Avatar upload error:', err);
+      showToast('Upload Gagal', err.message || 'Cuba lagi', 'error');
+    }
+  };
+
+  window.handleLogout = async function() {
+    try {
+      if (clockInterval) clearInterval(clockInterval);
+      await signOut(auth);
+      showToast('Log Keluar', 'Anda telah log keluar', 'info');
+      setTimeout(() => window.location.href = 'login.html', 800);
+    } catch (e) {
+      showToast('Ralat', 'Gagal log keluar', 'error');
+    }
+  };
+
+  // REFLECTIONS
+  async function renderReflections() {
+    const container = document.getElementById('reflectionsList');
+
+    try {
+      const snap = await getDocs(collection(db, 'progress', currentUser.uid, 'activities'));
+      const reflections = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (d.status === 'completed' && d.refleksi) {
+          reflections.push({ id: parseInt(doc.id), ...d });
+        }
+      });
+
+      if (reflections.length === 0) {
+        container.innerHTML = `
+          <div class="placeholder-card">
+            <div class="placeholder-icon"><i class="fas fa-book-open"></i></div>
+            <h3>Belum Ada Refleksi</h3>
+            <p>Selesaikan aktiviti dan tulis refleksi anda. Semua akan muncul di sini.</p>
+          </div>
+        `;
+        return;
+      }
+
+      reflections.sort((a, b) => a.id - b.id);
+
+      container.innerHTML = reflections.map(r => {
+        const a = ACTIVITIES.find(x => x.id === r.id);
+        const emoji = ['😢','😕','😐','🙂','😄'][(r.emosi || 3) - 1];
+        return `
+          <div class="overall-card" style="margin-bottom: 1rem;">
+            <div class="overall-head">
+              <h3><span style="font-size: 1.3rem; margin-right: 0.4rem;">${a?.icon || '📘'}</span> ${a?.tajuk || 'Aktiviti ' + r.id}</h3>
+              <div style="display: flex; align-items: center; gap: 0.6rem;">
+                <span style="font-size: 1.6rem;">${emoji}</span>
+                <span class="overall-badge">${a?.konstruk || ''}</span>
+              </div>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--ink-soft); line-height: 1.65; padding-top: 0.8rem; border-top: 1px solid var(--line);">
+              ${r.refleksi}
+            </p>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      console.error('renderReflections error:', e);
+      container.innerHTML = `<div class="placeholder-card"><p>Ralat memuat refleksi.</p></div>`;
+    }
+  }
+
+  // PORTFOLIO
+  function renderPortfolio() {
+    const container = document.getElementById('portfolioContent');
+    const completed = Object.values(userProgress).filter(p => p.status === 'completed').length;
+    const badges = Object.values(userProgress).filter(p => p.badge?.earned).length;
+
+    container.innerHTML = `
+      <div class="rings-grid" style="margin-bottom: 1.5rem;">
+        <div class="overall-card" style="margin: 0;">
+          <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+            <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--navy);">${badges}</div>
+            <div style="font-size: 0.78rem; color: var(--ink-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Lencana</div>
+          </div>
+        </div>
+        <div class="overall-card" style="margin: 0;">
+          <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✅</div>
+            <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--navy);">${completed}</div>
+            <div style="font-size: 0.78rem; color: var(--ink-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Aktiviti</div>
+          </div>
+        </div>
+        <div class="overall-card" style="margin: 0;">
+          <div style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</div>
+            <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--navy);">${Math.round((completed/12)*100)}%</div>
+            <div style="font-size: 0.78rem; color: var(--ink-soft); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">Selesai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="overall-card">
+        <div class="overall-head">
+          <h3><i class="fas fa-medal"></i> Lencana Dikumpul</h3>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; padding-top: 1rem;">
+          ${ACTIVITIES.map(a => {
+            const done = userProgress[a.id]?.status === 'completed';
+            return `
+              <div style="text-align: center; padding: 1rem; border-radius: 16px; background: ${done ? 'linear-gradient(135deg, rgba(244,196,48,0.15), rgba(200,16,46,0.08))' : 'var(--paper)'}; border: 2px solid ${done ? 'var(--gold)' : 'var(--line)'}; opacity: ${done ? '1' : '0.5'}; transition: all 0.3s;">
+                <div style="font-size: 2rem; margin-bottom: 0.4rem; filter: ${done ? 'none' : 'grayscale(1)'};">${a.icon}</div>
+                <div style="font-size: 0.72rem; font-weight: 700; color: ${done ? 'var(--maroon)' : 'var(--ink-soft)'}; text-transform: uppercase; letter-spacing: 0.5px;">${a.konstruk}</div>
+                <div style="font-size: 0.78rem; font-weight: 700; color: var(--navy); margin-top: 0.2rem; line-height: 1.3;">${a.tajuk}</div>
+                <div style="font-size: 0.7rem; margin-top: 0.4rem; color: ${done ? 'var(--success)' : 'var(--ink-soft)'}; font-weight: 700;">
+                  ${done ? '✅ Diperoleh' : '🔒 Belum'}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // AUTH
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      await loadUserData();
+      renderDashboard();
+    } else {
+      if (clockInterval) clearInterval(clockInterval);
+      window.location.href = 'login.html';
+    }
+  });
+
+  console.log('%c REAL-MPC · Murid Dashboard ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+  console.log('🎯 Bila taip kod kelas → preview dulu → baru join');
+</script>
+
+</body>
+</html>

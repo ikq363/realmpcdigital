@@ -1,0 +1,2690 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail Pelajar · REAL-MPC Digital</title>
+<meta name="description" content="Halaman detail lengkap pelajar REAL-MPC.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --maroon: #8B1E3F;
+  --maroon-dark: #5C1329;
+  --red: #C8102E;
+  --red-bright: #E63946;
+  --gold: #F4C430;
+  --gold-soft: #FACC15;
+  --navy: #0B2E4E;
+  --navy-mid: #1A4A6E;
+  --navy-light: #2B6A9E;
+  --cream: #FDF9F0;
+  --paper: #F8F4EA;
+  --ink: #1E293B;
+  --ink-soft: #475569;
+  --line: #E2E8F0;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.65;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+#preloader {
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
+  z-index: 99998;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.6s, visibility 0.6s;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; }
+
+.preloader-logo {
+  width: 100px; height: 100px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900; font-size: 2rem; color: #fff;
+  margin-bottom: 2rem;
+  box-shadow: 0 20px 60px rgba(200, 16, 46, 0.6);
+  animation: preloaderPulse 1.5s ease-in-out infinite;
+  position: relative;
+}
+.preloader-logo::before {
+  content: ""; position: absolute; inset: -6px;
+  border-radius: 34px;
+  background: linear-gradient(135deg, var(--gold), var(--red));
+  z-index: -1;
+  animation: preloaderRotate 3s linear infinite;
+}
+@keyframes preloaderPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+@keyframes preloaderRotate { 0%{transform:rotate(0);} 100%{transform:rotate(360deg);} }
+.preloader-text {
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 1.5rem; opacity: 0.9;
+}
+.preloader-bar {
+  width: 240px; height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50px; overflow: hidden; position: relative;
+}
+.preloader-bar::after {
+  content: ""; position: absolute; top: 0; left: 0;
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  border-radius: 50px;
+  animation: preloaderLoad 1.5s ease-in-out forwards;
+}
+@keyframes preloaderLoad { 0%{width:0;} 60%{width:75%;} 100%{width:100%;} }
+
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 30, 63, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 30, 63, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  z-index: 0; pointer-events: none;
+}
+.bg-dots {
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, rgba(11, 46, 78, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  z-index: 0; pointer-events: none;
+}
+.floating-formula {
+  position: fixed;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: rgba(139, 30, 63, 0.05);
+  pointer-events: none; user-select: none;
+  z-index: 0;
+  animation: floatSlow 14s ease-in-out infinite;
+}
+.ff-1 { top: 12%; left: 3%; font-size: 5rem; }
+.ff-2 { top: 45%; right: 4%; font-size: 4rem; animation-delay: 2s; color: rgba(11, 46, 78, 0.04); }
+.ff-3 { bottom: 15%; left: 6%; font-size: 4.5rem; animation-delay: 4s; }
+@keyframes floatSlow {
+  0%,100%{transform:translateY(0) rotate(0);}
+  50%{transform:translateY(-30px) rotate(8deg);}
+}
+
+.app-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.5rem 1rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(244,196,48,0.3); border-radius: 2px; }
+
+.sidebar-brand {
+  display: flex; align-items: center; gap: 0.8rem;
+  padding: 0 0.5rem 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none; color: inherit;
+}
+.sidebar-logo {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900; font-size: 0.95rem; color: #fff;
+  box-shadow: 0 8px 20px rgba(200,16,46,0.4);
+  flex-shrink: 0;
+}
+.sidebar-brand-text strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem; font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.sidebar-brand-text span {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.6);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.sidebar-section-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 1rem 0.75rem 0.5rem;
+}
+
+.sidebar-nav {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  flex: 1;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all 0.25s;
+  border: none;
+  background: none;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.sidebar-item i {
+  width: 22px;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.55);
+  transition: color 0.25s;
+}
+.sidebar-item:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.sidebar-item:hover i { color: var(--gold); }
+.sidebar-item.active {
+  background: linear-gradient(90deg, rgba(244,196,48,0.18), rgba(244,196,48,0.05));
+  color: var(--gold);
+  border-left: 3px solid var(--gold);
+}
+.sidebar-item.active i { color: var(--gold); }
+
+.sidebar-footer {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 1rem;
+}
+
+.sidebar-user-card {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.7rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  transition: all 0.25s;
+  margin-bottom: 0.5rem;
+}
+.sidebar-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.sidebar-avatar-fallback {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-info strong {
+  display: block;
+  font-size: 0.82rem;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-info span {
+  display: block;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-logout {
+  color: rgba(255,150,150,0.85) !important;
+  font-size: 0.82rem !important;
+}
+.sidebar-logout:hover {
+  background: rgba(239,68,68,0.15) !important;
+  color: #ff9999 !important;
+}
+.sidebar-logout i { color: rgba(255,150,150,0.85) !important; }
+
+.main {
+  padding: 1.5rem 2rem 3rem;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
+.topbar-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.topbar-title p {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.topbar-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 2px solid var(--line);
+  color: var(--navy);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: pointer;
+  font-family: inherit;
+}
+.back-btn:hover {
+  border-color: var(--maroon);
+  color: var(--maroon);
+  background: rgba(139,30,63,0.03);
+  transform: translateX(-3px);
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--navy);
+  font-size: 1rem;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  cursor: pointer;
+}
+.mobile-menu-btn:hover { background: var(--paper); }
+
+.profile-hero-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  border-radius: 28px;
+  padding: 2rem 2.2rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.8rem;
+  box-shadow: 0 24px 48px -12px rgba(11, 46, 78, 0.4);
+  isolation: isolate;
+}
+@keyframes gradientShift {
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.profile-hero-card::before {
+  content: ""; position: absolute;
+  top: -80px; right: -80px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(244,196,48,0.25), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 6s ease-in-out infinite;
+}
+@keyframes pulseDeco {
+  0%,100%{transform:scale(1);opacity:0.5;}
+  50%{transform:scale(1.3);opacity:0.9;}
+}
+.profile-hero-card::after {
+  content: ""; position: absolute;
+  inset: 0; opacity: 0.12;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -1;
+}
+.profile-hero-content {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  position: relative;
+  z-index: 2;
+  flex-wrap: wrap;
+}
+.profile-hero-avatar {
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  border: 5px solid var(--gold);
+  object-fit: cover;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+  background: #fff;
+}
+.profile-hero-avatar-fallback {
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  border: 5px solid var(--gold);
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  flex-shrink: 0;
+}
+.profile-hero-info { flex: 1; min-width: 0; }
+.profile-hero-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.profile-hero-label::before {
+  content: "";
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--gold);
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%,100%{transform:scale(1);opacity:1;}
+  50%{transform:scale(1.4);opacity:0.7;}
+}
+.profile-hero-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(120deg, #fff 0%, #fff 40%, var(--gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shineText 4s linear infinite;
+}
+@keyframes shineText {
+  0%{background-position:0% center;}
+  100%{background-position:200% center;}
+}
+.profile-hero-email {
+  font-size: 0.92rem;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  margin-bottom: 0.8rem;
+  word-break: break-all;
+}
+.profile-hero-chips {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+}
+.hero-chip i { color: var(--gold); font-size: 0.8rem; }
+
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+.stat-mini {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.3rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.stat-mini::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+.stat-mini.stat-blue::before { background: linear-gradient(90deg, var(--navy), var(--navy-mid)); }
+.stat-mini.stat-red::before { background: linear-gradient(90deg, var(--red), var(--maroon)); }
+.stat-mini.stat-gold::before { background: linear-gradient(90deg, var(--gold), var(--gold-soft)); }
+.stat-mini.stat-green::before { background: linear-gradient(90deg, var(--success), #059669); }
+.stat-mini:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(11, 46, 78, 0.12);
+}
+.stat-mini-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 1.05rem;
+  margin-bottom: 0.8rem;
+}
+.stat-blue .stat-mini-icon { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+.stat-red .stat-mini-icon { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+.stat-gold .stat-mini-icon { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy); }
+.stat-green .stat-mini-icon { background: linear-gradient(135deg, var(--success), #059669); }
+.stat-mini-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.stat-mini-label {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.section-head-left h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.section-head-left p {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.4rem;
+  padding: 0.25rem 0.7rem;
+  background: rgba(200,16,46,0.08);
+  border-radius: 50px;
+  width: fit-content;
+}
+
+.rings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.ring-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.ring-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+.ring-card.ring-resilience::before { background: linear-gradient(90deg, var(--red), var(--maroon)); }
+.ring-card.ring-efficacy::before { background: linear-gradient(90deg, var(--navy), var(--navy-mid)); }
+.ring-card.ring-awareness::before { background: linear-gradient(90deg, var(--navy-light), var(--gold)); }
+.ring-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(11, 46, 78, 0.12);
+}
+.ring-head {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.ring-head-icon {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.ring-resilience .ring-head-icon { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+.ring-efficacy .ring-head-icon { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+.ring-awareness .ring-head-icon { background: linear-gradient(135deg, var(--navy-light), var(--gold)); }
+.ring-head-text strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.2;
+}
+.ring-head-text span {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+}
+.ring-body {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.ring-svg-wrap { position: relative; flex-shrink: 0; }
+.ring-svg {
+  transform: rotate(-90deg);
+  display: block;
+}
+.ring-bg { stroke: #F1F5F9; }
+.ring-progress {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  stroke-linecap: round;
+}
+.ring-resilience .ring-progress { stroke: var(--red); }
+.ring-efficacy .ring-progress { stroke: var(--navy); }
+.ring-awareness .ring-progress { stroke: var(--gold); }
+.ring-percentage {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--navy);
+}
+.ring-resilience .ring-percentage { color: var(--red); }
+.ring-efficacy .ring-percentage { color: var(--navy); }
+.ring-awareness .ring-percentage { color: #B8860B; }
+.ring-info strong {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--navy);
+  font-family: 'Playfair Display', serif;
+  line-height: 1;
+}
+.ring-info strong span {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.ring-info small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  margin-top: 0.3rem;
+  font-weight: 600;
+}
+
+/* ACTIVITY DETAIL LIST */
+.activity-detail-list {
+  display: grid;
+  gap: 1rem;
+}
+.activity-detail-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 16px rgba(11, 46, 78, 0.04);
+  overflow: hidden;
+  transition: all 0.3s;
+  position: relative;
+}
+.activity-detail-card::before {
+  content: ""; position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 5px;
+}
+.activity-detail-card.act-resilience::before { background: linear-gradient(180deg, var(--red), var(--maroon)); }
+.activity-detail-card.act-efficacy::before { background: linear-gradient(180deg, var(--navy), var(--navy-mid)); }
+.activity-detail-card.act-awareness::before { background: linear-gradient(180deg, var(--navy-light), var(--gold)); }
+.activity-detail-card:hover {
+  box-shadow: 0 16px 32px rgba(11, 46, 78, 0.1);
+}
+.activity-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.3rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.activity-detail-head:hover {
+  background: var(--paper);
+}
+.activity-detail-icon {
+  width: 52px; height: 52px;
+  border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+.act-resilience .activity-detail-icon { background: linear-gradient(135deg, rgba(200,16,46,0.12), rgba(139,30,63,0.15)); }
+.act-efficacy .activity-detail-icon { background: linear-gradient(135deg, rgba(11,46,78,0.1), rgba(26,74,110,0.15)); }
+.act-awareness .activity-detail-icon { background: linear-gradient(135deg, rgba(43,106,158,0.1), rgba(244,196,48,0.2)); }
+.activity-detail-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+.activity-detail-konstruk {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--ink-soft);
+  margin-bottom: 0.15rem;
+}
+.activity-detail-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1.25;
+  margin-bottom: 0.15rem;
+}
+.activity-detail-topik {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.activity-detail-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.status-pill.completed {
+  background: rgba(16,185,129,0.1);
+  color: var(--success);
+}
+.status-pill.locked {
+  background: rgba(148,163,184,0.15);
+  color: var(--ink-soft);
+}
+.status-pill.in-progress {
+  background: rgba(245,158,11,0.12);
+  color: var(--warning);
+}
+.status-pill.available {
+  background: rgba(200,16,46,0.08);
+  color: var(--red);
+}
+.status-pill.not-started {
+  background: rgba(148,163,184,0.15);
+  color: var(--ink-soft);
+}
+.status-pill i { font-size: 0.7rem; }
+
+.expand-icon {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  transition: transform 0.3s;
+}
+.activity-detail-card.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+.activity-detail-body {
+  display: none;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--line);
+  animation: slideDown 0.35s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.activity-detail-card.expanded .activity-detail-body {
+  display: block;
+  padding-top: 1.3rem;
+}
+
+/* NOT STARTED STATE */
+.not-started-state {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: linear-gradient(135deg, rgba(148,163,184,0.08), rgba(200,16,46,0.03));
+  border-radius: 16px;
+  border: 2px dashed var(--line);
+}
+.not-started-icon {
+  width: 80px; height: 80px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(148,163,184,0.15), rgba(148,163,184,0.08));
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.2rem;
+}
+.not-started-state h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.not-started-state p {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  max-width: 420px;
+  margin: 0 auto 1rem;
+  line-height: 1.6;
+}
+.not-started-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(244,196,48,0.15);
+  border: 1px solid rgba(244,196,48,0.4);
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--maroon);
+}
+.not-started-info i { color: var(--gold); }
+
+/* LOCKED STATE */
+.locked-state {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--paper);
+  border-radius: 16px;
+  border: 2px dashed var(--line);
+}
+.locked-icon {
+  width: 70px; height: 70px;
+  border-radius: 20px;
+  background: rgba(148,163,184,0.15);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 1rem;
+}
+.locked-state h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+.locked-state p {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* IN-PROGRESS BANNER */
+.in-progress-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1.2rem;
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 12px;
+  margin-bottom: 1.2rem;
+}
+.in-progress-banner i {
+  color: var(--warning);
+  font-size: 1.2rem;
+}
+.in-progress-banner div {
+  flex: 1;
+}
+.in-progress-banner strong {
+  display: block;
+  color: var(--navy);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+.in-progress-banner span {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+}
+
+/* SUB-SECTION */
+.sub-section {
+  margin-bottom: 1.5rem;
+}
+.sub-section:last-child {
+  margin-bottom: 0;
+}
+.sub-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--line);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.sub-section-title i {
+  color: var(--red);
+  font-size: 0.85rem;
+}
+.sub-section-title .badge-mini {
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  background: var(--paper);
+  border-radius: 50px;
+  color: var(--ink-soft);
+  letter-spacing: 0;
+}
+
+/* DETAIL GRID */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+.detail-item {
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  border-left: 3px solid var(--gold);
+}
+.detail-item-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+  margin-bottom: 0.4rem;
+  display: flex; align-items: center; gap: 0.35rem;
+}
+.detail-item-label i { color: var(--red); font-size: 0.7rem; }
+.detail-item-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  word-break: break-word;
+  line-height: 1.45;
+}
+.detail-item-value.emoji-large {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+.detail-item-value.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* TIMELINE */
+.timeline-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.timeline-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--paper);
+  border-radius: 12px;
+  border-left: 3px solid var(--line);
+  transition: all 0.2s;
+}
+.timeline-row.timeline-start {
+  border-left-color: var(--navy);
+  background: linear-gradient(90deg, rgba(11,46,78,0.04), var(--paper));
+}
+.timeline-row.timeline-end {
+  border-left-color: var(--success);
+  background: linear-gradient(90deg, rgba(16,185,129,0.05), var(--paper));
+}
+.timeline-row.timeline-update {
+  border-left-color: var(--warning);
+  background: linear-gradient(90deg, rgba(245,158,11,0.05), var(--paper));
+}
+.timeline-icon-wrap {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  font-size: 0.95rem;
+}
+.timeline-start .timeline-icon-wrap {
+  background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+}
+.timeline-end .timeline-icon-wrap {
+  background: linear-gradient(135deg, var(--success), #059669);
+}
+.timeline-update .timeline-icon-wrap {
+  background: linear-gradient(135deg, var(--warning), #D97706);
+}
+.timeline-content {
+  flex: 1;
+  min-width: 0;
+}
+.timeline-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink-soft);
+  margin-bottom: 0.15rem;
+}
+.timeline-value {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--navy);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.timeline-value-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+  margin-top: 0.15rem;
+  display: block;
+}
+
+/* TIME DISPLAY */
+.time-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.1em;
+}
+.time-display .time-num {
+  display: inline-block;
+}
+.time-display .time-sep {
+  color: var(--red);
+  opacity: 0.6;
+  animation: timeSepBlink 1.5s ease-in-out infinite;
+}
+@keyframes timeSepBlink {
+  0%,100% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+}
+.time-display.time-display-large {
+  font-size: 1.4rem;
+}
+
+/* TIME BADGE */
+.timeline-duration {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  background: linear-gradient(135deg, rgba(200,16,46,0.08), rgba(244,196,48,0.15));
+  border: 1px solid rgba(244,196,48,0.4);
+  border-radius: 50px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--maroon);
+  white-space: nowrap;
+}
+.timeline-duration i {
+  color: var(--gold);
+  font-size: 0.75rem;
+}
+
+/* DURASI HERO CARD */
+.duration-hero-card {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.2rem 1.4rem;
+  background: linear-gradient(135deg, rgba(200,16,46,0.06), rgba(244,196,48,0.08));
+  border: 2px solid rgba(244,196,48,0.4);
+  border-radius: 18px;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.duration-hero-card::before {
+  content: "";
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(244,196,48,0.3), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 4s ease-in-out infinite;
+}
+.duration-hero-icon {
+  width: 62px; height: 62px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(200,16,46,0.3);
+  position: relative;
+  z-index: 1;
+}
+.duration-hero-content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+.duration-hero-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--maroon);
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.duration-hero-label i { color: var(--gold); }
+.duration-hero-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.1;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+}
+.duration-hero-value .unit-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-left: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.duration-hero-value .time-sep {
+  color: var(--red);
+  opacity: 0.5;
+}
+.duration-hero-sub {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 0.3rem;
+  font-weight: 600;
+}
+
+/* ANSWERS */
+.answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.answer-item {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  transition: all 0.2s;
+}
+.answer-item:hover {
+  border-color: rgba(200,16,46,0.2);
+  box-shadow: 0 4px 12px rgba(11,46,78,0.06);
+}
+.answer-question {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+  display: flex; align-items: flex-start; gap: 0.4rem;
+}
+.answer-question i {
+  color: var(--red);
+  font-size: 0.75rem;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.answer-text {
+  font-size: 0.88rem;
+  color: var(--ink);
+  padding-left: 1.1rem;
+  word-break: break-word;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.answer-text.empty {
+  color: var(--ink-soft);
+  font-style: italic;
+  opacity: 0.7;
+}
+.answer-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  opacity: 0.6;
+  margin-left: 0.3rem;
+}
+
+/* REFLECTION */
+.reflection-content {
+  background: linear-gradient(135deg, rgba(244,196,48,0.08), rgba(200,16,46,0.04));
+  border: 1px solid rgba(244,196,48,0.3);
+  border-radius: 14px;
+  padding: 1.1rem 1.3rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.7;
+  font-style: italic;
+  position: relative;
+  white-space: pre-wrap;
+}
+.reflection-content.empty {
+  font-style: normal;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--paper);
+  border: 1px dashed var(--line);
+}
+
+/* RAW DATA */
+.raw-data-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: var(--paper);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: all 0.25s;
+  user-select: none;
+}
+.raw-data-toggle:hover {
+  background: #fff;
+  border-color: var(--maroon);
+  color: var(--maroon);
+}
+.raw-data-toggle i.chevron {
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+.raw-data-toggle.open i.chevron {
+  transform: rotate(180deg);
+}
+.raw-data-content {
+  display: none;
+  margin-top: 0.7rem;
+  background: #0B2E4E;
+  color: #E2E8F0;
+  border-radius: 12px;
+  padding: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.raw-data-content.open {
+  display: block;
+}
+.raw-data-content::-webkit-scrollbar { width: 8px; height: 8px; }
+.raw-data-content::-webkit-scrollbar-thumb {
+  background: rgba(244,196,48,0.4);
+  border-radius: 4px;
+}
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, rgba(244,196,48,0.15), rgba(200,16,46,0.08));
+  color: var(--maroon);
+  border: 1px solid rgba(244,196,48,0.4);
+}
+.badge-pill.earned {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  border-color: var(--gold);
+}
+
+.empty-state {
+  background: #fff;
+  border-radius: 20px;
+  padding: 3rem 2rem;
+  text-align: center;
+  border: 2px dashed var(--line);
+}
+.empty-icon {
+  width: 80px; height: 80px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(200,16,46,0.1), rgba(244,196,48,0.15));
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.2rem;
+}
+.empty-state h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+.empty-state p {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, var(--paper) 25%, #fff 50%, var(--paper) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 12px;
+  height: 100px;
+  margin-bottom: 1rem;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.toast-container {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  z-index: 99999;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  pointer-events: none;
+}
+.toast {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 12px 32px rgba(11, 46, 78, 0.15);
+  border-left: 4px solid var(--success);
+  display: flex; align-items: center; gap: 0.8rem;
+  min-width: 280px; max-width: 400px;
+  font-size: 0.88rem;
+  animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: auto;
+}
+.toast.error { border-left-color: var(--danger); }
+.toast.info { border-left-color: var(--navy-mid); }
+.toast.warning { border-left-color: var(--warning); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.toast-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.toast.error .toast-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.toast.info .toast-icon { background: rgba(43, 106, 158, 0.1); color: var(--navy-mid); }
+.toast.warning .toast-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.toast-content { flex: 1; }
+.toast-content strong { display: block; color: var(--navy); font-size: 0.85rem; }
+.toast-content span { font-size: 0.78rem; color: var(--ink-soft); }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 46, 78, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 39;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sidebar-overlay.show { opacity: 1; }
+
+@media (max-width: 1024px) {
+  .app-layout { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+    z-index: 41;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { display: block; }
+  .mobile-menu-btn { display: flex; }
+  .main { padding: 1.2rem 1.2rem 3rem; }
+}
+
+@media (max-width: 640px) {
+  .topbar-title h1 { font-size: 1.2rem; }
+  .profile-hero-card { padding: 1.5rem 1.3rem; }
+  .profile-hero-content { gap: 1rem; }
+  .profile-hero-avatar, .profile-hero-avatar-fallback { width: 90px; height: 90px; font-size: 2rem; }
+  .profile-hero-avatar-fallback { border-width: 4px; }
+  .profile-hero-avatar { border-width: 4px; }
+  .activity-detail-head { padding: 1rem; gap: 0.8rem; }
+  .activity-detail-icon { width: 44px; height: 44px; font-size: 1.2rem; }
+  .activity-detail-title { font-size: 0.95rem; }
+  .activity-detail-status { flex-direction: column; gap: 0.3rem; }
+  .expand-icon { display: none; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .rings-grid { grid-template-columns: 1fr; }
+  .timeline-row { padding: 0.8rem; }
+  .timeline-icon-wrap { width: 36px; height: 36px; font-size: 0.85rem; }
+  .duration-hero-value { font-size: 1.3rem; }
+  .duration-hero-icon { width: 52px; height: 52px; font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="preloader-logo">RM</div>
+  <div class="preloader-text">Detail Pelajar</div>
+  <div class="preloader-bar"></div>
+</div>
+
+<div class="bg-grid"></div>
+<div class="bg-dots"></div>
+<div class="floating-formula ff-1">∑</div>
+<div class="floating-formula ff-2">√</div>
+<div class="floating-formula ff-3">π</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="app-layout">
+
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <div class="sidebar-logo">RM</div>
+      <div class="sidebar-brand-text">
+        <strong>REAL-MPC</strong>
+        <span>Detail Pelajar</span>
+      </div>
+    </a>
+
+    <div class="sidebar-section-label">Navigasi</div>
+    <nav class="sidebar-nav">
+      <a class="sidebar-item" href="dashboard-guru.html">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+      <a class="sidebar-item" href="dashboard-guru.html">
+        <i class="fas fa-users"></i> Pelajar
+      </a>
+      <a class="sidebar-item" href="dashboard-guru.html">
+        <i class="fas fa-chalkboard"></i> Kelas
+      </a>
+      <a class="sidebar-item" href="dashboard-guru.html">
+        <i class="fas fa-chart-bar"></i> Analitik
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user-card">
+        <img id="sidebarAvatar" class="sidebar-avatar" style="display:none;" src="" alt="">
+        <div id="sidebarAvatarFallback" class="sidebar-avatar-fallback">?</div>
+        <div class="sidebar-user-info">
+          <strong id="sidebarName">—</strong>
+          <span id="sidebarEmail">—</span>
+        </div>
+      </div>
+      <button class="sidebar-item sidebar-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Log Keluar
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="topbar-title">
+          <h1 id="topbarTitle">Detail Pelajar</h1>
+          <p id="topbarSubtitle">Memuatkan data pelajar...</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="back-btn" onclick="window.location.href='dashboard-guru.html'">
+          <i class="fas fa-arrow-left"></i> Kembali
+        </button>
+      </div>
+    </div>
+
+    <div id="content">
+      <div class="loading-skeleton"></div>
+      <div class="loading-skeleton"></div>
+      <div class="loading-skeleton"></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, collection, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const ACTIVITIES = [
+    { id: 1, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Keazaman Menakluk Puncak', topik: 'Persamaan Kuadratik', icon: '⛰️' },
+    { id: 2, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Berpasukan Persamaan Serentak', topik: 'Persamaan Serentak', icon: '🤝' },
+    { id: 3, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Hukum Linear: Konsisten', topik: 'Hukum Linear', icon: '📈' },
+    { id: 4, submodul: 'resilience', konstruk: 'Daya Tahan', tajuk: 'Vektor Sokongan', topik: 'Vektor', icon: '🧭' },
+    { id: 5, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Lengkung Keyakinan', topik: 'Fungsi Kuadratik', icon: '💪' },
+    { id: 6, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Indeks & Logaritma', topik: 'Indeks & Logaritma', icon: '🔢' },
+    { id: 7, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Koordinat Hidup Saya', topik: 'Geometri Koordinat', icon: '📍' },
+    { id: 8, submodul: 'efficacy', konstruk: 'Efikasi Kendiri', tajuk: 'Jujukan Usaha', topik: 'Janjang', icon: '🔗' },
+    { id: 9, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Kes Berambigu', topik: 'Penyelesaian Segi Tiga', icon: '🧩' },
+    { id: 10, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Peta Kekuatan & Kelemahan', topik: 'Fungsi', icon: '🗺️' },
+    { id: 11, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Refleksi Strategi', topik: 'Nombor Indeks', icon: '🪞' },
+    { id: 12, submodul: 'awareness', konstruk: 'Kesedaran Kendiri', tajuk: 'Pelan Tindakan Individu', topik: 'Persamaan Serentak 3 Pembolehubah', icon: '🎯' }
+  ];
+
+  const EMOJI_EMOSI = ['😢', '😕', '😐', '🙂', '😄'];
+  const LABEL_EMOSI = ['Sangat Sedih', 'Sedih', 'Biasa', 'Gembira', 'Sangat Gembira'];
+
+  // Berapa lama sebelum aktiviti in-progress dianggap "idle" (tak aktif)
+  const IDLE_THRESHOLD_MS = 60 * 60 * 1000; // 1 jam
+
+  const KNOWN_FIELDS = new Set([
+    'status', 'completedAt', 'startedAt', 'lastUpdate', 'updatedAt',
+    'emosi', 'mood', 'refleksi', 'reflection', 'badge',
+    'skor', 'score', 'jawapan', 'answers', 'durasi', 'duration',
+    'attempts', 'cubaan', 'timeSpent', 'masa'
+  ]);
+
+  let currentUser = null;
+  let studentUid = null;
+  let studentData = null;
+  let studentProgress = {};
+  let studentClass = null;
+
+  window.showToast = function(title, message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const icons = { success: 'fa-check', error: 'fa-times', info: 'fa-info', warning: 'fa-exclamation' };
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    toast.innerHTML = `
+      <div class="toast-icon"><i class="fas ${icons[type]}"></i></div>
+      <div class="toast-content">
+        <strong>${title}</strong>
+        <span>${message}</span>
+      </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'toastIn 0.4s reverse';
+      setTimeout(() => toast.remove(), 400);
+    }, 3500);
+  };
+
+  window.toggleSidebar = function() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('show');
+  };
+  window.closeSidebar = function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('show');
+  };
+
+  window.handleLogout = async function() {
+    try {
+      await signOut(auth);
+      window.location.href = 'index.html';
+    } catch (e) {
+      showToast('Ralat', 'Gagal log keluar', 'error');
+    }
+  };
+
+  function getUidFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('uid');
+  }
+
+  function toDate(val) {
+    if (!val) return null;
+    if (val.toDate && typeof val.toDate === 'function') return val.toDate();
+    if (val instanceof Date) return val;
+    if (typeof val === 'number') return new Date(val);
+    if (typeof val === 'string') {
+      const d = new Date(val);
+      if (!isNaN(d.getTime())) return d;
+    }
+    if (val.seconds !== undefined) return new Date(val.seconds * 1000);
+    return null;
+  }
+
+  function formatFullDate(date) {
+    if (!date) return '—';
+    return date.toLocaleDateString('ms-MY', {
+      weekday: 'long',
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+  }
+
+  function formatTimeOnly(date) {
+    if (!date) return '—';
+    return date.toLocaleTimeString('ms-MY', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    });
+  }
+
+  function formatShortDate(date) {
+    if (!date) return '—';
+    return date.toLocaleDateString('ms-MY', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+  }
+
+  // ═══════════════════════════════════════════
+  // DURASI
+  // ═══════════════════════════════════════════
+  function getDurationParts(start, end) {
+    if (!start || !end) return null;
+    const ms = end.getTime() - start.getTime();
+    if (ms < 0) return null;
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return { hours, minutes, seconds, totalSeconds };
+  }
+
+  function formatDurationShort(parts) {
+    if (!parts) return null;
+    const { hours, minutes, seconds } = parts;
+    const p = [];
+    if (hours > 0) p.push(hours + 'j');
+    if (minutes > 0) p.push(minutes + 'm');
+    if (seconds > 0 || p.length === 0) p.push(seconds + 's');
+    return p.join(' ');
+  }
+
+  function formatDurationLong(parts) {
+    if (!parts) return null;
+    const { hours, minutes, seconds } = parts;
+    const p = [];
+    if (hours > 0) p.push(hours + ' jam');
+    if (minutes > 0) p.push(minutes + ' minit');
+    if (seconds > 0 || p.length === 0) p.push(seconds + ' saat');
+    return p.join(' ');
+  }
+
+  function renderTimeDisplay(parts, options = {}) {
+    if (!parts) return '<span style="opacity:0.5;">—</span>';
+    const { hours, minutes, seconds } = parts;
+    const large = options.large ? ' time-display-large' : '';
+    const hh = String(hours).padStart(2, '0');
+    const mm = String(minutes).padStart(2, '0');
+    const ss = String(seconds).padStart(2, '0');
+    return `<span class="time-display${large}"><span class="time-num">${hh}</span><span class="time-sep">:</span><span class="time-num">${mm}</span><span class="time-sep">:</span><span class="time-num">${ss}</span></span>`;
+  }
+
+  // ═══════════════════════════════════════════
+  // ANALISIS MASA AKTIVITI
+  // ═══════════════════════════════════════════
+  function analyzeActivityTime(p) {
+    if (!p) return { status: 'not_started', parts: null };
+
+    const startedAt = toDate(p.startedAt || p.mula || p.startTime);
+    const completedAt = toDate(p.completedAt || p.tamat || p.endTime);
+    const lastUpdate = toDate(p.lastUpdate || p.updatedAt);
+
+    // COMPLETED
+    if (p.status === 'completed' && startedAt && completedAt) {
+      const parts = getDurationParts(startedAt, completedAt);
+      if (!parts && typeof (p.durasi || p.duration || p.timeSpent) === 'number') {
+        const totalSeconds = Math.floor(p.durasi || p.duration || p.timeSpent);
+        return {
+          status: 'completed',
+          parts: {
+            hours: Math.floor(totalSeconds / 3600),
+            minutes: Math.floor((totalSeconds % 3600) / 60),
+            seconds: totalSeconds % 60,
+            totalSeconds
+          },
+          startDate: startedAt,
+          endDate: completedAt
+        };
+      }
+      return { status: 'completed', parts, startDate: startedAt, endDate: completedAt };
+    }
+
+    // IN PROGRESS
+    if (p.status === 'in_progress') {
+      if (!startedAt) {
+        return { status: 'in_progress_unknown', parts: null, startDate: null, endDate: null };
+      }
+
+      if (lastUpdate && lastUpdate.getTime() >= startedAt.getTime()) {
+        const now = new Date();
+        const timeSinceLastUpdate = now.getTime() - lastUpdate.getTime();
+
+        if (timeSinceLastUpdate > IDLE_THRESHOLD_MS) {
+          return {
+            status: 'in_progress_idle',
+            parts: null,
+            startDate: startedAt,
+            endDate: lastUpdate,
+            idleSince: lastUpdate
+          };
+        }
+
+        const parts = getDurationParts(startedAt, lastUpdate);
+        return { status: 'in_progress_active', parts, startDate: startedAt, endDate: lastUpdate };
+      }
+
+      return { status: 'in_progress_unknown', parts: null, startDate: startedAt, endDate: null };
+    }
+
+    return { status: 'not_started', parts: null };
+  }
+
+  // ═══════════════════════════════════════════
+  // LOAD DATA
+  // ═══════════════════════════════════════════
+  async function loadStudentData() {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', studentUid));
+      if (!userDoc.exists()) {
+        showToast('Ralat', 'Pelajar tidak dijumpai', 'error');
+        setTimeout(() => window.location.href = 'dashboard-guru.html', 1500);
+        return;
+      }
+      studentData = userDoc.data();
+
+      if (studentData.classId) {
+        try {
+          const classDoc = await getDoc(doc(db, 'classes', studentData.classId));
+          if (classDoc.exists()) {
+            studentClass = { id: studentData.classId, ...classDoc.data() };
+          }
+        } catch (e) { console.warn('Class load error:', e); }
+      }
+
+      const snap = await getDocs(collection(db, 'progress', studentUid, 'activities'));
+      studentProgress = {};
+      snap.forEach(d => {
+        studentProgress[parseInt(d.id)] = { _id: d.id, ...d.data() };
+      });
+
+      console.log('✅ Student loaded:', studentData.nama);
+      console.log('📊 Progress details:', studentProgress);
+
+      renderPage();
+    } catch (e) {
+      console.error('loadStudentData error:', e);
+      showToast('Ralat', 'Gagal memuat data pelajar', 'error');
+    }
+  }
+
+  // ═══════════════════════════════════════════
+  // STATS
+  // ═══════════════════════════════════════════
+  function computeStats() {
+    const resCompleted = [1,2,3,4].filter(id => studentProgress[id]?.status === 'completed').length;
+    const effCompleted = [5,6,7,8].filter(id => studentProgress[id]?.status === 'completed').length;
+    const awaCompleted = [9,10,11,12].filter(id => studentProgress[id]?.status === 'completed').length;
+    const totalCompleted = resCompleted + effCompleted + awaCompleted;
+
+    const totalBadges = Object.values(studentProgress).filter(x => x.badge?.earned || x.badge === true).length;
+
+    const emosiValues = Object.values(studentProgress)
+      .filter(x => (x.emosi || x.mood) && x.status === 'completed')
+      .map(x => x.emosi || x.mood);
+    const emosiAvg = emosiValues.length > 0
+      ? (emosiValues.reduce((a, b) => a + b, 0) / emosiValues.length) : 0;
+
+    const refleksiCount = Object.values(studentProgress)
+      .filter(x => (x.refleksi || x.reflection) && (x.refleksi || x.reflection).toString().trim() !== '').length;
+
+    const allDates = Object.values(studentProgress)
+      .flatMap(x => [toDate(x.startedAt), toDate(x.completedAt), toDate(x.lastUpdate), toDate(x.updatedAt)])
+      .filter(Boolean)
+      .sort((a, b) => a - b);
+
+    const firstActivity = allDates[0] || null;
+    const lastActivity = allDates[allDates.length - 1] || null;
+
+    let totalDurationSeconds = 0;
+    let durationCount = 0;
+    Object.values(studentProgress).forEach(x => {
+      const timeInfo = analyzeActivityTime(x);
+      if (timeInfo.status === 'completed' && timeInfo.parts) {
+        totalDurationSeconds += timeInfo.parts.totalSeconds;
+        durationCount++;
+      }
+    });
+
+    let totalDurationParts = null;
+    if (totalDurationSeconds > 0) {
+      totalDurationParts = {
+        hours: Math.floor(totalDurationSeconds / 3600),
+        minutes: Math.floor((totalDurationSeconds % 3600) / 60),
+        seconds: totalDurationSeconds % 60,
+        totalSeconds: totalDurationSeconds
+      };
+    }
+
+    return {
+      resCompleted, effCompleted, awaCompleted, totalCompleted,
+      totalBadges, emosiAvg, refleksiCount,
+      firstActivity, lastActivity, totalDurationParts, durationCount
+    };
+  }
+
+  // ═══════════════════════════════════════════
+  // RENDER PAGE
+  // ═══════════════════════════════════════════
+  function renderPage() {
+    const stats = computeStats();
+    const name = studentData.nama || studentData.emel?.split('@')[0] || 'Pelajar';
+    const initial = name.charAt(0).toUpperCase();
+
+    document.getElementById('topbarTitle').textContent = `Detail: ${name}`;
+    document.getElementById('topbarSubtitle').textContent = studentData.emel || '';
+
+    updateSidebarUser();
+
+    const avatarHTML = studentData.avatar
+      ? `<img src="${studentData.avatar}" class="profile-hero-avatar" alt="${name}">`
+      : `<div class="profile-hero-avatar-fallback">${initial}</div>`;
+
+    const emosiDisplay = stats.emosiAvg > 0
+      ? `${EMOJI_EMOSI[Math.round(stats.emosiAvg) - 1] || '😐'} ${stats.emosiAvg.toFixed(1)} / 5`
+      : '—';
+
+    document.getElementById('content').innerHTML = `
+      <div class="profile-hero-card">
+        <div class="profile-hero-content">
+          ${avatarHTML}
+          <div class="profile-hero-info">
+            <div class="profile-hero-label">Profil Pelajar</div>
+            <h2 class="profile-hero-name">${name}</h2>
+            <p class="profile-hero-email"><i class="fas fa-envelope" style="color:var(--gold);margin-right:0.4rem;"></i>${studentData.emel || '—'}</p>
+            <div class="profile-hero-chips">
+              <div class="hero-chip">
+                <i class="fas fa-users"></i>
+                <span>${studentClass ? studentClass.nama : 'Tiada Kelas'}</span>
+              </div>
+              <div class="hero-chip">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Sertai ${formatShortDate(toDate(studentData.createdAt))}</span>
+              </div>
+              ${studentClass ? `<div class="hero-chip"><i class="fas fa-key"></i><span>Kod: ${studentClass.kod}</span></div>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-overview">
+        <div class="stat-mini stat-blue">
+          <div class="stat-mini-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="stat-mini-value">${stats.totalCompleted} / 12</div>
+          <div class="stat-mini-label">Aktiviti Selesai</div>
+        </div>
+        <div class="stat-mini stat-gold">
+          <div class="stat-mini-icon"><i class="fas fa-award"></i></div>
+          <div class="stat-mini-value">${stats.totalBadges}</div>
+          <div class="stat-mini-label">Lencana Dikumpul</div>
+        </div>
+        <div class="stat-mini stat-red">
+          <div class="stat-mini-icon"><i class="fas fa-book"></i></div>
+          <div class="stat-mini-value">${stats.refleksiCount}</div>
+          <div class="stat-mini-label">Refleksi Ditulis</div>
+        </div>
+        <div class="stat-mini stat-green">
+          <div class="stat-mini-icon"><i class="fas fa-smile"></i></div>
+          <div class="stat-mini-value" style="font-size:1.4rem;">${emosiDisplay}</div>
+          <div class="stat-mini-label">Purata Emosi</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-chart-line"></i> Progress Konstruk</div>
+            <h2>Perkembangan Psikologi</h2>
+            <p>3 konstruk utama: Daya Tahan, Efikasi Kendiri, Kesedaran Kendiri</p>
+          </div>
+        </div>
+
+        <div class="rings-grid">
+          <div class="ring-card ring-resilience">
+            <div class="ring-head">
+              <div class="ring-head-icon"><i class="fas fa-shield-alt"></i></div>
+              <div class="ring-head-text">
+                <strong>Daya Tahan</strong>
+                <span>Resilience</span>
+              </div>
+            </div>
+            <div class="ring-body">
+              <div class="ring-svg-wrap">
+                <svg class="ring-svg" width="90" height="90">
+                  <circle class="ring-bg" cx="45" cy="45" r="35" fill="none" stroke-width="8"/>
+                  <circle class="ring-progress" cx="45" cy="45" r="35" fill="none" stroke-width="8"
+                    stroke-dasharray="219.9" stroke-dashoffset="${219.9 - (stats.resCompleted / 4) * 219.9}"/>
+                </svg>
+                <div class="ring-percentage">${Math.round((stats.resCompleted / 4) * 100)}%</div>
+              </div>
+              <div class="ring-info">
+                <strong>${stats.resCompleted}<span>/4</span></strong>
+                <small>aktiviti selesai</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="ring-card ring-efficacy">
+            <div class="ring-head">
+              <div class="ring-head-icon"><i class="fas fa-bolt"></i></div>
+              <div class="ring-head-text">
+                <strong>Efikasi Kendiri</strong>
+                <span>Self-Efficacy</span>
+              </div>
+            </div>
+            <div class="ring-body">
+              <div class="ring-svg-wrap">
+                <svg class="ring-svg" width="90" height="90">
+                  <circle class="ring-bg" cx="45" cy="45" r="35" fill="none" stroke-width="8"/>
+                  <circle class="ring-progress" cx="45" cy="45" r="35" fill="none" stroke-width="8"
+                    stroke-dasharray="219.9" stroke-dashoffset="${219.9 - (stats.effCompleted / 4) * 219.9}"/>
+                </svg>
+                <div class="ring-percentage">${Math.round((stats.effCompleted / 4) * 100)}%</div>
+              </div>
+              <div class="ring-info">
+                <strong>${stats.effCompleted}<span>/4</span></strong>
+                <small>aktiviti selesai</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="ring-card ring-awareness">
+            <div class="ring-head">
+              <div class="ring-head-icon"><i class="fas fa-eye"></i></div>
+              <div class="ring-head-text">
+                <strong>Kesedaran Kendiri</strong>
+                <span>Self-Awareness</span>
+              </div>
+            </div>
+            <div class="ring-body">
+              <div class="ring-svg-wrap">
+                <svg class="ring-svg" width="90" height="90">
+                  <circle class="ring-bg" cx="45" cy="45" r="35" fill="none" stroke-width="8"/>
+                  <circle class="ring-progress" cx="45" cy="45" r="35" fill="none" stroke-width="8"
+                    stroke-dasharray="219.9" stroke-dashoffset="${219.9 - (stats.awaCompleted / 4) * 219.9}"/>
+                </svg>
+                <div class="ring-percentage">${Math.round((stats.awaCompleted / 4) * 100)}%</div>
+              </div>
+              <div class="ring-info">
+                <strong>${stats.awaCompleted}<span>/4</span></strong>
+                <small>aktiviti selesai</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-head-left">
+            <div class="section-label"><i class="fas fa-clipboard-list"></i> Semua Aktiviti</div>
+            <h2>Detail 12 Aktiviti</h2>
+            <p>Klik setiap aktiviti untuk buka semua data: masa, jawapan, refleksi, emosi, & maklumat penuh</p>
+          </div>
+        </div>
+
+        <div class="activity-detail-list">
+          ${ACTIVITIES.map(a => renderActivityDetail(a)).join('')}
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="stat-mini" style="grid-column:1/-1;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;font-size:0.85rem;">
+            <div><strong style="color:var(--navy);">Mula Pertama:</strong><br>${stats.firstActivity ? formatFullDate(stats.firstActivity) + ' · ' + formatTimeOnly(stats.firstActivity) : '—'}</div>
+            <div><strong style="color:var(--navy);">Terakhir Aktif:</strong><br>${stats.lastActivity ? formatFullDate(stats.lastActivity) + ' · ' + formatTimeOnly(stats.lastActivity) : '—'}</div>
+            <div><strong style="color:var(--navy);">Jumlah Masa Belajar:</strong><br>${stats.totalDurationParts ? renderTimeDisplay(stats.totalDurationParts, { large: false }) + ' <span style="opacity:0.6;font-size:0.78rem;">(' + formatDurationLong(stats.totalDurationParts) + ')</span>' : '—'} <span style="opacity:0.6;">· ${stats.durationCount} aktiviti selesai</span></div>
+            <div><strong style="color:var(--navy);">UID:</strong><br><code style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;background:var(--paper);padding:0.15rem 0.4rem;border-radius:4px;">${studentUid}</code></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ═══════════════════════════════════════════
+  // RENDER ACTIVITY CARD
+  // ═══════════════════════════════════════════
+  function renderActivityDetail(a) {
+    const p = studentProgress[a.id];
+    const isCompleted = p?.status === 'completed';
+    const isInProgress = p?.status === 'in_progress';
+    const isAvailable = !isCompleted && !isInProgress && (a.id === 1 || studentProgress[a.id - 1]?.status === 'completed');
+    const notStarted = !p;
+
+    let statusPill;
+
+    if (isCompleted) {
+      statusPill = `<span class="status-pill completed"><i class="fas fa-check-circle"></i> Selesai</span>`;
+    } else if (isInProgress) {
+      statusPill = `<span class="status-pill in-progress"><i class="fas fa-hourglass-half"></i> Sedang Berjalan</span>`;
+    } else if (notStarted && !isAvailable) {
+      statusPill = `<span class="status-pill locked"><i class="fas fa-lock"></i> Belum Dibuka</span>`;
+    } else {
+      statusPill = `<span class="status-pill not-started"><i class="fas fa-circle-notch"></i> Belum Dimulakan</span>`;
+    }
+
+    const bodyContent = renderActivityBody(a, p, { isCompleted, isInProgress, isAvailable, notStarted });
+
+    return `
+      <div class="activity-detail-card act-${a.submodul}" onclick="toggleActivity(event, this)">
+        <div class="activity-detail-head">
+          <div class="activity-detail-icon">${a.icon}</div>
+          <div class="activity-detail-title-wrap">
+            <div class="activity-detail-konstruk">${a.konstruk}</div>
+            <div class="activity-detail-title">${a.tajuk}</div>
+            <div class="activity-detail-topik">Topik: ${a.topik}</div>
+          </div>
+          <div class="activity-detail-status">
+            ${statusPill}
+            <i class="fas fa-chevron-down expand-icon"></i>
+          </div>
+        </div>
+        ${bodyContent}
+      </div>
+    `;
+  }
+
+  // ═══════════════════════════════════════════
+  // RENDER TIMELINE ROW
+  // ═══════════════════════════════════════════
+  function renderTimelineRow({ type, label, date, extraHTML = '' }) {
+    const iconMap = {
+      start: 'fa-play',
+      end: 'fa-flag-checkered',
+      update: 'fa-rotate'
+    };
+    const clsMap = {
+      start: 'timeline-start',
+      end: 'timeline-end',
+      update: 'timeline-update'
+    };
+
+    return `
+      <div class="timeline-row ${clsMap[type] || ''}">
+        <div class="timeline-icon-wrap">
+          <i class="fas ${iconMap[type] || 'fa-circle'}"></i>
+        </div>
+        <div class="timeline-content">
+          <span class="timeline-label">${label}</span>
+          <span class="timeline-value">${formatFullDate(date)}</span>
+          <span class="timeline-value-time">
+            <i class="fas fa-clock" style="opacity:0.5;font-size:0.7rem;"></i>
+            ${formatTimeOnly(date)}
+          </span>
+        </div>
+        ${extraHTML}
+      </div>
+    `;
+  }
+
+  // ═══════════════════════════════════════════
+  // RENDER ACTIVITY BODY
+  // ═══════════════════════════════════════════
+  function renderActivityBody(a, p, state) {
+    const { isCompleted, isInProgress, isAvailable, notStarted } = state;
+
+    // LOCKED
+    if (notStarted && !isAvailable) {
+      return `
+        <div class="activity-detail-body">
+          <div class="locked-state">
+            <div class="locked-icon"><i class="fas fa-lock"></i></div>
+            <h3>Aktiviti Belum Dibuka</h3>
+            <p>Murid perlu selesaikan aktiviti sebelum ini dahulu sebelum boleh mula aktiviti ini.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // NOT STARTED
+    if (notStarted && isAvailable) {
+      return `
+        <div class="activity-detail-body">
+          <div class="not-started-state">
+            <div class="not-started-icon"><i class="fas fa-hourglass-start"></i></div>
+            <h3>Murid Masih Belum Mula</h3>
+            <p>Murid <strong>belum mula membuat aktiviti ini</strong>. Tiada data, jawapan, atau refleksi direkodkan setakat ini.</p>
+            <div class="not-started-info">
+              <i class="fas fa-info-circle"></i>
+              <span>Aktiviti ini tersedia dan boleh dimulakan</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // IN PROGRESS
+    if (isInProgress) {
+      const startedAt = toDate(p.startedAt || p.mula || p.startTime);
+      const lastUpdate = toDate(p.lastUpdate || p.updatedAt);
+      const timeInfo = analyzeActivityTime(p);
+
+      let durationBannerHTML = '';
+      if (timeInfo.status === 'in_progress_active' && timeInfo.parts) {
+        durationBannerHTML = `
+          <div class="duration-hero-card" style="border-color: rgba(245,158,11,0.5); background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03));">
+            <div class="duration-hero-icon" style="background: linear-gradient(135deg, var(--warning), #D97706);">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="duration-hero-content">
+              <div class="duration-hero-label" style="color: var(--warning);">
+                <i class="fas fa-stopwatch"></i> Sedang Berjalan (Aktif)
+              </div>
+              <div class="duration-hero-value">
+                ${String(timeInfo.parts.hours).padStart(2, '0')}
+                <span class="time-sep">:</span>
+                ${String(timeInfo.parts.minutes).padStart(2, '0')}
+                <span class="time-sep">:</span>
+                ${String(timeInfo.parts.seconds).padStart(2, '0')}
+                <span class="unit-label">JAM · MIN · SAAT</span>
+              </div>
+              <div class="duration-hero-sub">
+                Aktif sejak kemaskini terakhir · ${lastUpdate ? formatTimeOnly(lastUpdate) : formatTimeOnly(startedAt)}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (timeInfo.status === 'in_progress_idle') {
+        const idleSince = timeInfo.idleSince;
+        const idleFor = idleSince ? getDurationParts(idleSince, new Date()) : null;
+        durationBannerHTML = `
+          <div class="duration-hero-card" style="border-color: rgba(148,163,184,0.5); background: linear-gradient(135deg, rgba(148,163,184,0.1), rgba(148,163,184,0.03));">
+            <div class="duration-hero-icon" style="background: linear-gradient(135deg, #64748B, #475569);">
+              <i class="fas fa-bed"></i>
+            </div>
+            <div class="duration-hero-content">
+              <div class="duration-hero-label" style="color: var(--ink-soft);">
+                <i class="fas fa-exclamation-triangle"></i> Tidak Aktif
+              </div>
+              <div class="duration-hero-value" style="font-size: 1.1rem; font-family: 'Inter', sans-serif;">
+                Aktiviti tidak diteruskan
+              </div>
+              <div class="duration-hero-sub">
+                ${idleSince ? `Terhenti sejak ${formatFullDate(idleSince)} · ${formatTimeOnly(idleSince)}` : ''}
+                ${idleFor ? ` (${formatDurationShort(idleFor)} lalu)` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        durationBannerHTML = `
+          <div class="duration-hero-card" style="border-color: rgba(148,163,184,0.5); background: linear-gradient(135deg, rgba(148,163,184,0.08), rgba(148,163,184,0.03));">
+            <div class="duration-hero-icon" style="background: linear-gradient(135deg, #64748B, #475569);">
+              <i class="fas fa-question"></i>
+            </div>
+            <div class="duration-hero-content">
+              <div class="duration-hero-label" style="color: var(--ink-soft);">
+                <i class="fas fa-info-circle"></i> Data Tidak Mencukupi
+              </div>
+              <div class="duration-hero-value" style="font-size: 1.1rem; font-family: 'Inter', sans-serif;">
+                Masa tidak dapat dikira
+              </div>
+              <div class="duration-hero-sub">
+                Murid telah buka aktiviti tetapi tiada rekod kemaskini. Masa hanya akan dikira setelah murid mula menjawab.
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      let timelineHTML = '';
+      if (startedAt) {
+        timelineHTML = `
+          <div class="sub-section">
+            <div class="sub-section-title">
+              <i class="fas fa-clock"></i> Timeline
+            </div>
+            <div class="timeline-flow">
+              ${renderTimelineRow({ type: 'start', label: 'Mula', date: startedAt })}
+              ${lastUpdate && lastUpdate.getTime() !== startedAt.getTime()
+                ? renderTimelineRow({ type: 'update', label: 'Kemaskini Terakhir', date: lastUpdate })
+                : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="activity-detail-body">
+          <div class="in-progress-banner">
+            <i class="fas fa-hourglass-half"></i>
+            <div>
+              <strong>Sedang Berjalan</strong>
+              <span>Murid telah mula tetapi belum selesaikan aktiviti ini</span>
+            </div>
+          </div>
+
+          ${durationBannerHTML}
+          ${timelineHTML}
+          ${renderAnswersSection(p)}
+          ${renderReflectionSection(p, { emptyMessage: 'Murid belum tulis refleksi untuk aktiviti ini.' })}
+          ${renderExtraFields(p)}
+        </div>
+      `;
+    }
+
+    // COMPLETED
+    if (isCompleted) {
+      const startedAt = toDate(p.startedAt || p.mula || p.startTime);
+      const completedAt = toDate(p.completedAt || p.tamat || p.endTime);
+      const lastUpdate = toDate(p.lastUpdate || p.updatedAt);
+
+      const timeInfo = analyzeActivityTime(p);
+      const durasiParts = timeInfo.parts;
+      const durasiLong = durasiParts ? formatDurationLong(durasiParts) : null;
+
+      let durationHeroHTML = '';
+      if (durasiParts) {
+        durationHeroHTML = `
+          <div class="duration-hero-card">
+            <div class="duration-hero-icon">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="duration-hero-content">
+              <div class="duration-hero-label"><i class="fas fa-stopwatch"></i> Tempoh Ambil Masa</div>
+              <div class="duration-hero-value">
+                ${String(durasiParts.hours).padStart(2, '0')}
+                <span class="time-sep">:</span>
+                ${String(durasiParts.minutes).padStart(2, '0')}
+                <span class="time-sep">:</span>
+                ${String(durasiParts.seconds).padStart(2, '0')}
+                <span class="unit-label">JAM · MIN · SAAT</span>
+              </div>
+              <div class="duration-hero-sub">${durasiLong}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        durationHeroHTML = `
+          <div class="duration-hero-card" style="border-color: rgba(148,163,184,0.4); background: var(--paper);">
+            <div class="duration-hero-icon" style="background: linear-gradient(135deg, #64748B, #475569);">
+              <i class="fas fa-question"></i>
+            </div>
+            <div class="duration-hero-content">
+              <div class="duration-hero-label" style="color: var(--ink-soft);">
+                <i class="fas fa-info-circle"></i> Tempoh Ambil Masa
+              </div>
+              <div class="duration-hero-value" style="font-size: 1.1rem; font-family: 'Inter', sans-serif;">
+                Tiada rekod masa
+              </div>
+              <div class="duration-hero-sub">Masa mula atau tamat tidak direkodkan untuk aktiviti ini</div>
+            </div>
+          </div>
+        `;
+      }
+
+      let timelineHTML = '';
+      if (startedAt || completedAt || lastUpdate) {
+        timelineHTML = `
+          <div class="sub-section">
+            <div class="sub-section-title">
+              <i class="fas fa-clock"></i> Timeline Masa
+            </div>
+            <div class="timeline-flow">
+              ${startedAt ? renderTimelineRow({ type: 'start', label: 'Mula', date: startedAt }) : ''}
+              ${completedAt ? renderTimelineRow({
+                type: 'end',
+                label: 'Selesai',
+                date: completedAt,
+                extraHTML: (startedAt && durasiParts) ? `
+                  <div class="timeline-duration">
+                    <i class="fas fa-clock"></i>
+                    ${formatDurationShort(durasiParts)}
+                  </div>
+                ` : ''
+              }) : ''}
+              ${lastUpdate && (!completedAt || lastUpdate.getTime() !== completedAt.getTime())
+                ? renderTimelineRow({ type: 'update', label: 'Kemaskini', date: lastUpdate })
+                : ''}
+            </div>
+          </div>
+        `;
+      }
+
+      const emosi = p.emosi || p.mood || null;
+      const emosiEmoji = emosi ? EMOJI_EMOSI[emosi - 1] : '—';
+      const emosiLabel = emosi ? LABEL_EMOSI[emosi - 1] : 'Tiada data';
+      const badgeEarned = p.badge?.earned || p.badge === true;
+      const badgeName = p.badge?.name || 'Lencana';
+      const skor = p.skor !== undefined ? p.skor : (p.score !== undefined ? p.score : null);
+      const cubaan = p.attempts || p.cubaan || null;
+      const percubaan = p.percubaan || null;
+
+      const prestasiHTML = `
+        <div class="sub-section">
+          <div class="sub-section-title">
+            <i class="fas fa-chart-simple"></i> Status & Prestasi
+          </div>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-item-label"><i class="fas fa-info-circle"></i> Status</div>
+              <div class="detail-item-value">Selesai</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-item-label"><i class="fas fa-face-smile"></i> Emosi Semasa</div>
+              <div class="detail-item-value emoji-large">${emosiEmoji} <span style="font-size:0.9rem;color:var(--ink-soft);font-weight:600;">${emosiLabel}</span></div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-item-label"><i class="fas fa-award"></i> Lencana</div>
+              <div class="detail-item-value">${badgeEarned ? `<span class="badge-pill earned"><i class="fas fa-trophy"></i> ${badgeName}</span>` : '🔒 Belum Diperoleh'}</div>
+            </div>
+            ${skor !== null ? `
+              <div class="detail-item">
+                <div class="detail-item-label"><i class="fas fa-star"></i> Skor</div>
+                <div class="detail-item-value">${skor}</div>
+              </div>
+            ` : ''}
+            ${cubaan !== null ? `
+              <div class="detail-item">
+                <div class="detail-item-label"><i class="fas fa-redo"></i> Bilangan Cubaan</div>
+                <div class="detail-item-value">${cubaan} kali</div>
+              </div>
+            ` : ''}
+            ${percubaan !== null ? `
+              <div class="detail-item">
+                <div class="detail-item-label"><i class="fas fa-redo"></i> Percubaan</div>
+                <div class="detail-item-value">${percubaan} kali</div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+
+      return `
+        <div class="activity-detail-body">
+          ${durationHeroHTML}
+          ${timelineHTML}
+          ${prestasiHTML}
+          ${renderAnswersSection(p)}
+          ${renderReflectionSection(p, { emptyMessage: 'Tiada refleksi bertulis untuk aktiviti ini.' })}
+          ${renderExtraFields(p)}
+          ${renderRawData(p)}
+        </div>
+      `;
+    }
+
+    return '';
+  }
+
+  // ═══ SECTION RENDERERS ═══
+  function renderAnswersSection(p) {
+    const jawapanRaw = p.jawapan || p.answers || p.responses || null;
+
+    if (jawapanRaw && typeof jawapanRaw === 'object' && Object.keys(jawapanRaw).length > 0) {
+      const answerEntries = Object.entries(jawapanRaw);
+      return `
+        <div class="sub-section">
+          <div class="sub-section-title">
+            <i class="fas fa-pen-to-square"></i> Jawapan Pelajar
+            <span class="badge-mini">${answerEntries.length} item</span>
+          </div>
+          <div class="answers-list">
+            ${answerEntries.map(([key, val]) => `
+              <div class="answer-item">
+                <div class="answer-question">
+                  <i class="fas fa-question-circle"></i>
+                  <span>${formatKey(key)} <span class="answer-key">${key}</span></span>
+                </div>
+                <div class="answer-text ${isEmpty(val) ? 'empty' : ''}">${formatAnswer(val)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else if (jawapanRaw) {
+      return `
+        <div class="sub-section">
+          <div class="sub-section-title">
+            <i class="fas fa-pen-to-square"></i> Jawapan Pelajar
+          </div>
+          <div class="answer-item">
+            <div class="answer-text">${escapeHtml(String(jawapanRaw))}</div>
+          </div>
+        </div>
+      `;
+    }
+    return '';
+  }
+
+  function renderReflectionSection(p, opts = {}) {
+    const refleksi = p.refleksi || p.reflection || p.reflect || '';
+    const emptyMsg = opts.emptyMessage || 'Tiada refleksi bertulis.';
+    return `
+      <div class="sub-section">
+        <div class="sub-section-title">
+          <i class="fas fa-book"></i> Refleksi Pelajar
+        </div>
+        ${refleksi && refleksi.toString().trim() !== ''
+          ? `<div class="reflection-content">${escapeHtml(refleksi.toString())}</div>`
+          : `<div class="reflection-content empty"><i class="fas fa-book-open" style="margin-right:0.4rem;opacity:0.5;"></i> ${emptyMsg}</div>`
+        }
+      </div>
+    `;
+  }
+
+  function renderExtraFields(p) {
+    const extraFields = Object.entries(p).filter(([key]) => !KNOWN_FIELDS.has(key) && key !== '_id');
+    if (extraFields.length === 0) return '';
+
+    return `
+      <div class="sub-section">
+        <div class="sub-section-title">
+          <i class="fas fa-circle-info"></i> Maklumat Tambahan
+          <span class="badge-mini">${extraFields.length} field</span>
+        </div>
+        <div class="detail-grid">
+          ${extraFields.map(([key, val]) => `
+            <div class="detail-item">
+              <div class="detail-item-label"><i class="fas fa-tag"></i> ${formatKey(key)} <span style="opacity:0.5;font-weight:400;">(${key})</span></div>
+              <div class="detail-item-value">${formatAnswer(val)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRawData(p) {
+    const rawJSON = JSON.stringify(p, (k, v) => {
+      if (v && v.seconds !== undefined && v.nanoseconds !== undefined) {
+        return new Date(v.seconds * 1000).toISOString();
+      }
+      if (v instanceof Date) return v.toISOString();
+      return v;
+    }, 2);
+
+    return `
+      <div class="sub-section">
+        <div class="sub-section-title">
+          <i class="fas fa-database"></i> Data Mentah (Raw)
+        </div>
+        <div class="raw-data-toggle" onclick="toggleRaw(event, this)">
+          <i class="fas fa-code"></i>
+          <span>Lihat semua data Firestore</span>
+          <i class="fas fa-chevron-down chevron"></i>
+        </div>
+        <pre class="raw-data-content">${escapeHtml(rawJSON)}</pre>
+      </div>
+    `;
+  }
+
+  // ═══ HELPERS ═══
+  function isEmpty(val) {
+    if (val === null || val === undefined) return true;
+    if (typeof val === 'string' && val.trim() === '') return true;
+    if (Array.isArray(val) && val.length === 0) return true;
+    if (typeof val === 'object' && Object.keys(val).length === 0) return true;
+    return false;
+  }
+
+  function formatAnswer(val) {
+    if (val === null || val === undefined) return '<span style="opacity:0.5;">—</span>';
+    if (typeof val === 'string') return escapeHtml(val);
+    if (typeof val === 'number') return val;
+    if (typeof val === 'boolean') return val ? '✅ Ya' : '❌ Tidak';
+    if (Array.isArray(val)) {
+      if (val.length === 0) return '<span style="opacity:0.5;">—</span>';
+      return val.map(v => escapeHtml(String(v))).join('<br>');
+    }
+    if (typeof val === 'object') {
+      if (val.seconds !== undefined) {
+        const d = new Date(val.seconds * 1000);
+        return `${formatFullDate(d)} · ${formatTimeOnly(d)}`;
+      }
+      return Object.entries(val).map(([k, v]) =>
+        `<div style="margin-bottom:0.3rem;"><strong style="color:var(--navy);">${formatKey(k)}:</strong> ${escapeHtml(String(v))}</div>`
+      ).join('');
+    }
+    return escapeHtml(String(val));
+  }
+
+  function formatKey(key) {
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/[_-]/g, ' ')
+      .replace(/^\w/, c => c.toUpperCase())
+      .trim();
+  }
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+  }
+
+  // ═══ EVENTS ═══
+  window.toggleActivity = function(event, el) {
+    if (event.target.closest('.raw-data-toggle')) return;
+    if (event.target.closest('.raw-data-content')) return;
+    el.classList.toggle('expanded');
+  };
+
+  window.toggleRaw = function(event, el) {
+    event.stopPropagation();
+    el.classList.toggle('open');
+    const content = el.nextElementSibling;
+    if (content) content.classList.toggle('open');
+  };
+
+  // ═══ SIDEBAR USER ═══
+  async function updateSidebarUser() {
+    try {
+      const teacherDoc = await getDoc(doc(db, 'users', currentUser.uid));
+      if (!teacherDoc.exists()) return;
+      const t = teacherDoc.data();
+      const tName = t.nama || t.emel?.split('@')[0] || 'Guru';
+      const tEmail = t.emel || '';
+
+      document.getElementById('sidebarName').textContent = tName;
+      document.getElementById('sidebarEmail').textContent = tEmail;
+
+      const sidebarAvatar = document.getElementById('sidebarAvatar');
+      const sidebarFallback = document.getElementById('sidebarAvatarFallback');
+
+      if (t.avatar) {
+        sidebarAvatar.src = t.avatar;
+        sidebarAvatar.style.display = 'block';
+        sidebarFallback.style.display = 'none';
+      } else {
+        sidebarAvatar.style.display = 'none';
+        sidebarFallback.style.display = 'flex';
+        sidebarFallback.textContent = tName.charAt(0).toUpperCase();
+      }
+    } catch (e) {
+      console.warn('updateSidebarUser error:', e);
+    }
+  }
+
+  // ═══ AUTH ═══
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+
+      const teacherDoc = await getDoc(doc(db, 'users', user.uid));
+      if (!teacherDoc.exists()) {
+        window.location.href = 'login.html';
+        return;
+      }
+      const role = teacherDoc.data().role;
+      if (role !== 'guru') {
+        window.location.href = 'dashboard-murid.html';
+        return;
+      }
+
+      studentUid = getUidFromUrl();
+      if (!studentUid) {
+        showToast('Ralat', 'UID pelajar tidak diberikan', 'error');
+        setTimeout(() => window.location.href = 'dashboard-guru.html', 1500);
+        return;
+      }
+
+      await loadStudentData();
+
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+      }, 800);
+    } else {
+      window.location.href = 'login.html';
+    }
+  });
+
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 2500);
+
+  console.log('%c REAL-MPC · Detail Pelajar ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
+</script>
+
+</body>
+</html>

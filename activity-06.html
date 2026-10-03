@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 6: Indeks & Logaritma · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Indeks & Logaritma dengan Card Matching Game.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+  }
+
+  /* PAGE WRAP */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ACTIVITY HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(244,196,48,0.2), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* STEPS BAR */
+  .steps-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(200, 16, 46, 0.3);
+  }
+  .step-item.done {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+  }
+  .step-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* CONTENT GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.4rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--red); font-size: 0.9rem; }
+
+  /* MATCHING STATS BAR */
+  .matching-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .matching-stat {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .matching-stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .matching-stat-icon.pairs { background: linear-gradient(135deg, var(--red), var(--maroon)); }
+  .matching-stat-icon.moves { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); }
+  .matching-stat-icon.time { background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: var(--navy); }
+  .matching-stat-icon.accuracy { background: linear-gradient(135deg, var(--success), #059669); }
+  .matching-stat-content { flex: 1; }
+  .matching-stat-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.1rem;
+  }
+  .matching-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  /* GAME HEADER */
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .game-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .game-title i { color: var(--red); }
+  .difficulty-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(244, 196, 48, 0.15);
+    color: #B45309;
+  }
+
+  /* ═══════════════════════════════════════════════════
+     CARD GRID — FIXED 3D FLIP
+     ═══════════════════════════════════════════════════ */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 700px) {
+    .card-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  }
+  @media (max-width: 480px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Container kad */
+  .game-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    perspective: 1200px;
+  }
+
+  /* Inner wrapper — yang pusing */
+  .game-card-inner {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform: rotateY(0deg);
+    will-change: transform;
+  }
+
+  .game-card.flipped .game-card-inner,
+  .game-card.matched .game-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  /* Face (depan/belakang) */
+  .game-card-face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(11, 46, 78, 0.08);
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* FRONT face — tertutup */
+  .game-card-front {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: #fff;
+    z-index: 2;
+    transform: rotateY(0deg) translateZ(1px);
+  }
+  .game-card-front::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+  .game-card-front i {
+    font-size: 1.8rem;
+    color: var(--gold);
+    opacity: 0.9;
+    margin-bottom: 0.3rem;
+    position: relative;
+    z-index: 1;
+  }
+  .game-card-front .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1.5px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* BACK face — kandungan */
+  .game-card-back {
+    background: linear-gradient(135deg, #fff, var(--paper));
+    border: 2px solid var(--line);
+    transform: rotateY(180deg) translateZ(1px);
+    z-index: 1;
+  }
+  .game-card-back.formula {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    border-color: var(--gold);
+  }
+  .game-card-back.example {
+    background: linear-gradient(135deg, #DBEAFE, #BFDBFE);
+    border-color: var(--navy-light);
+  }
+
+  .game-card-back-content {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.4;
+    padding: 0.3rem;
+    word-break: break-word;
+    position: relative;
+    z-index: 1;
+  }
+  .game-card-back-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ink-soft);
+    margin-bottom: 0.3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Matched state */
+  .game-card.matched .game-card-back {
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+    border-color: var(--success);
+  }
+
+  .game-card.matched::after {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--success);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.5);
+    animation: checkPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes checkPop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* Wrong state */
+  .game-card.wrong .game-card-inner {
+    animation: wrongShake 0.5s ease;
+  }
+  @keyframes wrongShake {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    25% { transform: rotateY(180deg) translateX(-8px); }
+    75% { transform: rotateY(180deg) translateX(8px); }
+  }
+
+  .game-card.wrong .game-card-back {
+    background: linear-gradient(135deg, #FEE2E2, #FECACA);
+    border-color: var(--danger);
+  }
+
+  /* Disabled */
+  .game-card.disabled {
+    pointer-events: none;
+  }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.3);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(200, 16, 46, 0.45); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--maroon);
+    color: var(--maroon);
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success { background: rgba(16, 185, 129, 0.1); color: #047857; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .feedback-msg.error { background: rgba(239, 68, 68, 0.1); color: #B91C1C; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .feedback-msg.info { background: rgba(244, 196, 48, 0.1); color: #92400E; border: 1px solid rgba(244, 196, 48, 0.3); }
+
+  /* SIDE CONTENT */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; color: var(--success);
+    font-size: 0.75rem; flex-shrink: 0; margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    font-size: 0.82rem; color: var(--ink-soft); line-height: 1.5;
+    padding: 0.7rem 0.9rem; background: var(--paper);
+    border-radius: 10px; border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: #fff; border-radius: 12px; padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem; text-align: center;
+    margin-bottom: 0.8rem; line-height: 1.6;
+  }
+  .formula-box strong {
+    color: var(--gold); display: block; margin-bottom: 0.4rem;
+    font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* CONFETTI */
+  .confetti {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    top: -20px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+  }
+  @keyframes confettiFall {
+    0% { top: -20px; opacity: 1; transform: rotate(0deg) scale(1); }
+    100% { top: 100vh; opacity: 0; transform: rotate(720deg) scale(0.5); }
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none; align-items: center; justify-content: center;
+    padding: 1.5rem; animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff; border-radius: 24px;
+    padding: 2.5rem 2rem; max-width: 480px; width: 100%;
+    text-align: center; position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem; color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--navy); margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem; font-weight: 900;
+    color: var(--navy); line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700;
+  }
+
+  /* REFLECTION MODAL */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px; padding: 1.5rem;
+    margin-bottom: 1.5rem; text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem; font-weight: 700;
+    color: var(--navy); margin-bottom: 0.7rem; display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px; border-radius: 14px;
+    border: 2px solid var(--line); background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 1.05rem;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold); transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--red), var(--maroon));
+    color: #fff; border-color: var(--red);
+    box-shadow: 0 8px 20px rgba(200, 16, 46, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%; padding: 0.9rem 1rem;
+    border: 2px solid var(--line); border-radius: 12px;
+    font-family: inherit; font-size: 0.9rem; color: var(--ink);
+    background: #fff; resize: vertical; min-height: 90px;
+    outline: none; transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed; inset: 0;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 900;
+    color: var(--navy); letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+    .game-card-back-content { font-size: 0.75rem; }
+    .game-card-front i { font-size: 1.4rem; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+    .game-card-back-content { font-size: 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="activities.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-superscript"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 6</strong>
+        <span>Indeks & Logaritma</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 6</small>
+      </div>
+      <div class="nav-avatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <!-- ACTIVITY HEADER -->
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-bolt"></i> Efikasi Kendiri
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Indeks & Logaritma
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Padankan Hukum! 🃏</h1>
+        <p class="activity-subtitle">
+          Padankan <strong>hukum indeks & logaritma</strong> dengan contoh ungkapan yang betul. 
+          Setiap padanan betul mengukuhkan keyakinan anda!
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statPairs">0/6</div>
+          <div class="activity-stat-label">Padanan</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statMoves">0</div>
+          <div class="activity-stat-label">Pergerakan</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS BAR -->
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Padan Kad</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Selesai Semua</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <!-- MAIN GRID -->
+  <div class="content-grid">
+
+    <!-- MAIN PANEL -->
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- MATCHING STATS -->
+      <div class="matching-stats">
+        <div class="matching-stat">
+          <div class="matching-stat-icon pairs"><i class="fas fa-link"></i></div>
+          <div class="matching-stat-content">
+            <div class="matching-stat-label">Padanan</div>
+            <div class="matching-stat-value"><span id="pairsFound">0</span>/6</div>
+          </div>
+        </div>
+
+        <div class="matching-stat">
+          <div class="matching-stat-icon moves"><i class="fas fa-hand-pointer"></i></div>
+          <div class="matching-stat-content">
+            <div class="matching-stat-label">Pergerakan</div>
+            <div class="matching-stat-value" id="movesCount">0</div>
+          </div>
+        </div>
+
+        <div class="matching-stat">
+          <div class="matching-stat-icon time"><i class="fas fa-clock"></i></div>
+          <div class="matching-stat-content">
+            <div class="matching-stat-label">Masa</div>
+            <div class="matching-stat-value" id="timeDisplay">0:00</div>
+          </div>
+        </div>
+
+        <div class="matching-stat">
+          <div class="matching-stat-icon accuracy"><i class="fas fa-bullseye"></i></div>
+          <div class="matching-stat-content">
+            <div class="matching-stat-label">Ketepatan</div>
+            <div class="matching-stat-value" id="accuracyDisplay">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME HEADER -->
+      <div class="game-header">
+        <div class="game-title">
+          <i class="fas fa-layer-group"></i>
+          Padankan Kad
+        </div>
+        <span class="difficulty-badge">
+          <i class="fas fa-brain"></i> 6 Pasang
+        </span>
+      </div>
+
+      <!-- CARD GRID -->
+      <div class="card-grid" id="cardGrid">
+        <!-- Dynamic -->
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetGame()">
+          <i class="fas fa-redo"></i> Reset Game
+        </button>
+        <button class="btn btn-primary" id="nextBtn" onclick="checkFinish()" disabled>
+          <i class="fas fa-check"></i> Selesai & Refleksi
+        </button>
+      </div>
+
+    </div>
+
+    <!-- SIDE PANEL -->
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Fahami 6 hukum indeks & logaritma</li>
+          <li>Padan hukum dengan contoh betul</li>
+          <li>Kukuhkan memori melalui permainan</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Tips Padanan
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-eye"></i>
+            <span>Perhatikan <strong>corak</strong> dalam contoh</span>
+          </li>
+          <li>
+            <i class="fas fa-brain"></i>
+            <span>Ingat <strong>hukum asas</strong> dulu</span>
+          </li>
+          <li>
+            <i class="fas fa-heart"></i>
+            <span>Jangan gelabah — <strong>fikir dahulu</strong></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Hukum Penting
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.8;">
+          <div style="margin-bottom: 0.5rem;"><strong style="color: var(--navy);">aᵐ × aⁿ = aᵐ⁺ⁿ</strong></div>
+          <div style="margin-bottom: 0.5rem;"><strong style="color: var(--navy);">aᵐ ÷ aⁿ = aᵐ⁻ⁿ</strong></div>
+          <div style="margin-bottom: 0.5rem;"><strong style="color: var(--navy);">(aᵐ)ⁿ = aᵐⁿ</strong></div>
+          <div style="margin-bottom: 0.5rem;"><strong style="color: var(--navy);">log(xy) = log x + log y</strong></div>
+          <div style="margin-bottom: 0.5rem;"><strong style="color: var(--navy);">log(x/y) = log x - log y</strong></div>
+          <div><strong style="color: var(--navy);">log(xⁿ) = n log x</strong></div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.3rem;">
+              <span style="font-weight: 600;">Padanan Ditemui</span>
+              <strong id="sidePairs" style="color: var(--red);">0 / 6</strong>
+            </div>
+            <div class="progress-mini" style="width: 100%; height: 6px; background: var(--line); border-radius: 10px; overflow: hidden;">
+              <div id="sideProgressFill" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--red), var(--gold)); border-radius: 10px; transition: width 0.5s;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda berjaya padankan semua 6 pasang kad!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalMoves">0</div>
+        <div class="modal-stat-label">Pergerakan</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalTime">0:00</div>
+        <div class="modal-stat-label">Masa</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalAccuracy">0%</div>
+        <div class="modal-stat-label">Ketepatan</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalStars">⭐⭐⭐</div>
+        <div class="modal-stat-label">Rating</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Diri
+      </button>
+      <button class="btn btn-outline" onclick="playAgain()" style="flex: none;">
+        <i class="fas fa-redo"></i> Main Lagi
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan & pemikiran tentang permainan ini</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Hukum mana paling susah untuk anda ingat?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Saya selalu keliru antara hukum tambah dan darab log..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // ═════════════════════════════════════════════════
+  // CARD PAIRS DATA
+  // ═════════════════════════════════════════════════
+  const CARD_PAIRS = [
+    { id: 'p1', formula: 'aᵐ × aⁿ = aᵐ⁺ⁿ', example: '2³ × 2⁴ = 2⁷', topic: 'Hukum Darab Indeks' },
+    { id: 'p2', formula: 'aᵐ ÷ aⁿ = aᵐ⁻ⁿ', example: '3⁵ ÷ 3² = 3³', topic: 'Hukum Bahagi Indeks' },
+    { id: 'p3', formula: '(aᵐ)ⁿ = aᵐⁿ', example: '(5²)³ = 5⁶', topic: 'Hukum Kuasa Indeks' },
+    { id: 'p4', formula: 'log(xy) = log x + log y', example: 'log 6 = log 2 + log 3', topic: 'Hukum Darab Log' },
+    { id: 'p5', formula: 'log(x/y) = log x - log y', example: 'log 2 = log 6 - log 3', topic: 'Hukum Bahagi Log' },
+    { id: 'p6', formula: 'log(xⁿ) = n log x', example: 'log 8 = 3 log 2', topic: 'Hukum Kuasa Log' }
+  ];
+
+  let deck = [];
+  let flippedCards = [];
+  let matchedPairs = 0;
+  let moves = 0;
+  let correctMatches = 0;
+  let wrongMatches = 0;
+  let isProcessing = false;
+  let currentUser = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+  let selectedEmotion = null;
+
+  // ═════════════════════════════════════════════════
+  // TIMER
+  // ═════════════════════════════════════════════════
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      const timeStr = `${m}:${String(s).padStart(2, '0')}`;
+      const el = document.getElementById('timeDisplay');
+      if (el) el.textContent = timeStr;
+    }, 1000);
+  }
+
+  // ═════════════════════════════════════════════════
+  // BUILD DECK
+  // ═════════════════════════════════════════════════
+  function buildDeck() {
+    const cards = [];
+    CARD_PAIRS.forEach(pair => {
+      cards.push({
+        id: pair.id + '_f',
+        pairId: pair.id,
+        type: 'formula',
+        content: pair.formula,
+        topic: pair.topic
+      });
+      cards.push({
+        id: pair.id + '_e',
+        pairId: pair.id,
+        type: 'example',
+        content: pair.example,
+        topic: pair.topic
+      });
+    });
+
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+
+    return cards;
+  }
+
+  // ═════════════════════════════════════════════════
+  // RENDER CARDS
+  // ═════════════════════════════════════════════════
+  function renderCards() {
+    const grid = document.getElementById('cardGrid');
+    grid.innerHTML = deck.map((card, i) => `
+      <div class="game-card" data-index="${i}" data-id="${card.id}" onclick="flipCard(${i})">
+        <div class="game-card-inner">
+          <div class="game-card-face game-card-front">
+            <i class="fas fa-question"></i>
+            <div class="card-num">${String(i + 1).padStart(2, '0')}</div>
+          </div>
+          <div class="game-card-face game-card-back ${card.type}">
+            <div class="game-card-back-label">${card.type === 'formula' ? 'HUKUM' : 'CONTOH'}</div>
+            <div class="game-card-back-content">${card.content}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // ═════════════════════════════════════════════════
+  // FLIP CARD
+  // ═════════════════════════════════════════════════
+  window.flipCard = function(index) {
+    if (isProcessing) return;
+
+    const cardEl = document.querySelector(`.game-card[data-index="${index}"]`);
+    if (!cardEl) return;
+    if (cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+    cardEl.classList.add('flipped');
+    flippedCards.push(index);
+
+    if (flippedCards.length === 2) {
+      moves++;
+      document.getElementById('movesCount').textContent = moves;
+      document.getElementById('statMoves').textContent = moves;
+      checkMatch();
+    }
+  };
+
+  // ═════════════════════════════════════════════════
+  // CHECK MATCH
+  // ═════════════════════════════════════════════════
+  function checkMatch() {
+    isProcessing = true;
+    const [i1, i2] = flippedCards;
+    const card1 = deck[i1];
+    const card2 = deck[i2];
+
+    if (card1.pairId === card2.pairId && card1.type !== card2.type) {
+      // MATCH
+      correctMatches++;
+      matchedPairs++;
+
+      setTimeout(() => {
+        document.querySelector(`.game-card[data-index="${i1}"]`).classList.add('matched');
+        document.querySelector(`.game-card[data-index="${i2}"]`).classList.add('matched');
+
+        document.getElementById('pairsFound').textContent = matchedPairs;
+        document.getElementById('statPairs').textContent = `${matchedPairs}/6`;
+        document.getElementById('sidePairs').textContent = `${matchedPairs} / 6`;
+        document.getElementById('sideProgressFill').style.width = (matchedPairs / 6 * 100) + '%';
+
+        const pairData = CARD_PAIRS.find(p => p.id === card1.pairId);
+        showFeedback('success', `✅ Betul! ${pairData.topic}`);
+
+        flippedCards = [];
+        isProcessing = false;
+
+        if (matchedPairs === CARD_PAIRS.length) {
+          setTimeout(() => finishGame(), 600);
+        }
+      }, 500);
+    } else {
+      // NO MATCH
+      wrongMatches++;
+
+      setTimeout(() => {
+        const el1 = document.querySelector(`.game-card[data-index="${i1}"]`);
+        const el2 = document.querySelector(`.game-card[data-index="${i2}"]`);
+
+        el1.classList.add('wrong');
+        el2.classList.add('wrong');
+
+        setTimeout(() => {
+          el1.classList.remove('flipped', 'wrong');
+          el2.classList.remove('flipped', 'wrong');
+          flippedCards = [];
+          isProcessing = false;
+        }, 700);
+      }, 500);
+
+      showFeedback('error', `❌ Tidak padan. Cuba lagi!`);
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // FINISH GAME
+  // ═════════════════════════════════════════════════
+  function finishGame() {
+    if (timerInterval) clearInterval(timerInterval);
+    launchConfetti();
+    saveToFirestore();
+    setTimeout(() => {
+      showResultModal();
+    }, 500);
+  }
+
+  function launchConfetti() {
+    const colors = ['#C8102E', '#F4C430', '#0B2E4E', '#10B981', '#E63946'];
+    for (let i = 0; i < 50; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animation = `confettiFall ${1.5 + Math.random() * 1.5}s linear ${Math.random() * 0.5}s forwards`;
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = c.style.width;
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3000);
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // SAVE TO FIRESTORE
+  // ═════════════════════════════════════════════════
+  async function saveToFirestore() {
+    if (!currentUser) return;
+
+    try {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const accuracy = moves > 0 ? Math.round((correctMatches / moves) * 100) : 0;
+
+      const progressRef = doc(db, 'progress', currentUser.uid, 'activities', 'a6');
+      await setDoc(progressRef, {
+        status: 'completed',
+        matchedPairs: matchedPairs,
+        totalPairs: CARD_PAIRS.length,
+        moves: moves,
+        correctMatches: correctMatches,
+        wrongMatches: wrongMatches,
+        accuracy: accuracy,
+        timeSpent: elapsed,
+        completedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      console.log('✅ Progress saved to Firestore');
+    } catch (e) {
+      console.error('❌ Save error:', e);
+    }
+  }
+
+  // ═════════════════════════════════════════════════
+  // RESULT MODAL
+  // ═════════════════════════════════════════════════
+  function showResultModal() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    const accuracy = moves > 0 ? Math.round((correctMatches / moves) * 100) : 0;
+
+    document.getElementById('modalMoves').textContent = moves;
+    document.getElementById('modalTime').textContent = `${m}:${String(s).padStart(2, '0')}`;
+    document.getElementById('modalAccuracy').textContent = accuracy + '%';
+
+    let stars = '⭐';
+    if (moves <= 8) stars = '⭐⭐⭐';
+    else if (moves <= 12) stars = '⭐⭐';
+    document.getElementById('modalStars').textContent = stars;
+
+    const icon = document.getElementById('modalIcon');
+    const title = document.getElementById('modalTitle');
+    const sub = document.getElementById('modalSub');
+
+    if (moves <= 8) {
+      icon.className = 'modal-icon';
+      icon.innerHTML = '<i class="fas fa-trophy"></i>';
+      title.textContent = 'Sempurna! 🏆';
+      sub.textContent = 'Anda padankan semua kad dengan sangat efisien! Memori hebat!';
+    } else if (moves <= 12) {
+      icon.className = 'modal-icon good';
+      icon.innerHTML = '<i class="fas fa-star"></i>';
+      title.textContent = 'Hebat! ⭐';
+      sub.textContent = 'Anda berjaya padankan semua kad dengan baik!';
+    } else {
+      icon.className = 'modal-icon';
+      icon.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+      title.textContent = 'Bagus! 👍';
+      sub.textContent = 'Anda berjaya selesaikan permainan. Cuba lagi untuk lebih pantas!';
+    }
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  window.playAgain = function() {
+    document.getElementById('resultModal').classList.remove('active');
+    resetGame();
+  };
+
+  window.resetGame = function() {
+    if (!confirm('Reset game? Semua progress akan hilang.')) return;
+    initializeGame();
+  };
+
+  window.checkFinish = function() {
+    if (matchedPairs === CARD_PAIRS.length) {
+      finishGame();
+    }
+  };
+
+  function initializeGame() {
+    deck = buildDeck();
+    flippedCards = [];
+    matchedPairs = 0;
+    moves = 0;
+    correctMatches = 0;
+    wrongMatches = 0;
+    isProcessing = false;
+
+    document.getElementById('pairsFound').textContent = '0';
+    document.getElementById('statPairs').textContent = '0/6';
+    document.getElementById('movesCount').textContent = '0';
+    document.getElementById('statMoves').textContent = '0';
+    document.getElementById('sidePairs').textContent = '0 / 6';
+    document.getElementById('sideProgressFill').style.width = '0%';
+    document.getElementById('accuracyDisplay').textContent = '—';
+    document.getElementById('nextBtn').disabled = true;
+
+    renderCards();
+    startTimer();
+    hideFeedback();
+  }
+
+  // ═════════════════════════════════════════════════
+  // REFLECTION
+  // ═════════════════════════════════════════════════
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const accuracy = moves > 0 ? Math.round((correctMatches / moves) * 100) : 0;
+
+    try {
+      if (currentUser) {
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', 'a6');
+        await setDoc(progressRef, {
+          emotion: selectedEmotion,
+          finalReflection: text,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        const reflectionRef = doc(db, 'reflections', `${currentUser.uid}_a6_${Date.now()}`);
+        await setDoc(reflectionRef, {
+          userId: currentUser.uid,
+          activityId: 'a6',
+          activityTitle: 'Padankan Hukum (Indeks & Logaritma)',
+          emotion: selectedEmotion,
+          reflection: text,
+          moves: moves,
+          accuracy: accuracy,
+          timeSpent: elapsed,
+          createdAt: serverTimestamp()
+        });
+
+        console.log('✅ Reflection saved');
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon good';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai! 🎉';
+    document.getElementById('modalSub').textContent = 'Refleksi anda telah disimpan. Teruskan ke aktiviti seterusnya!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="activities.html" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-cubes"></i> Aktiviti Seterusnya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // ═════════════════════════════════════════════════
+  // FEEDBACK
+  // ═════════════════════════════════════════════════
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 2500);
+  }
+
+  function hideFeedback() {
+    document.getElementById('feedbackMsg').classList.remove('active');
+  }
+
+  // Update accuracy + check button
+  setInterval(() => {
+    if (moves > 0) {
+      const acc = Math.round((correctMatches / moves) * 100);
+      const el = document.getElementById('accuracyDisplay');
+      if (el) el.textContent = acc + '%';
+    }
+    if (matchedPairs === CARD_PAIRS.length) {
+      const btn = document.getElementById('nextBtn');
+      if (btn && btn.disabled) btn.disabled = false;
+    }
+  }, 300);
+
+  // ═════════════════════════════════════════════════
+  // FALLBACK
+  // ═════════════════════════════════════════════════
+  setTimeout(() => { hideLoader(); }, 2000);
+
+  // ═════════════════════════════════════════════════
+  // AUTH STATE
+  // ═════════════════════════════════════════════════
+  onAuthStateChanged(auth, async (user) => {
+    console.log('Auth state:', user ? user.email : 'no user');
+
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        const nama = data.nama || user.displayName || 'Murid';
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+      } else {
+        const nama = user.displayName || 'Murid';
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    initializeGame();
+    hideLoader();
+  });
+
+  // ═════════════════════════════════════════════════
+  // NAVBAR SCROLL
+  // ═════════════════════════════════════════════════
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 6 · Padankan Hukum ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 12: Pelan Tindakan Individu · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Persamaan 3 Pembolehubah dengan Goal Planner.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --purple: #8B5CF6;
+    --pink: #EC4899;
+    --teal: #14B8A6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(20, 184, 166, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    overflow: hidden;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  /* PAGE */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(20,184,166,0.3), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* STEPS */
+  .steps-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(20, 184, 166, 0.3);
+  }
+  .step-item.done { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .step-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.4rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--teal); font-size: 0.9rem; }
+
+  /* INTRO */
+  .intro-panel {
+    background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(244,196,48,0.06));
+    border: 2px solid rgba(20,184,166,0.15);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .intro-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 24px rgba(20, 184, 166, 0.3);
+  }
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .intro-desc {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .concept-box {
+    background: #fff;
+    border: 2px dashed var(--teal);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+  .concept-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--navy);
+    text-align: center;
+    padding: 0.5rem;
+    background: rgba(20, 184, 166, 0.05);
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+  }
+  .concept-formula strong { color: var(--teal); }
+  .concept-text {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  /* THREE VARIABLES */
+  .variables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .variable-card {
+    border-radius: 14px;
+    padding: 1rem;
+    border: 2px solid var(--line);
+    background: linear-gradient(135deg, var(--paper), #fff);
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .variable-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 5px; height: 100%;
+  }
+  .variable-card.akademik::before { background: linear-gradient(180deg, var(--navy-light), var(--navy-mid)); }
+  .variable-card.keluarga::before { background: linear-gradient(180deg, var(--pink), #BE185D); }
+  .variable-card.diri::before { background: linear-gradient(180deg, var(--teal), #0D9488); }
+
+  .variable-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(11, 46, 78, 0.1);
+  }
+  .variable-card.selected {
+    border-color: var(--teal);
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.15);
+  }
+
+  .variable-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.7rem;
+  }
+  .variable-emoji {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .variable-card.akademik .variable-emoji { background: rgba(43, 106, 158, 0.1); }
+  .variable-card.keluarga .variable-emoji { background: rgba(236, 72, 153, 0.1); }
+  .variable-card.diri .variable-emoji { background: rgba(20, 184, 166, 0.1); }
+
+  .variable-info { flex: 1; }
+  .variable-name {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 0.15rem;
+  }
+  .variable-current {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+
+  .variable-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--line);
+    border-radius: 50px;
+    outline: none;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+  }
+  .variable-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 3px 10px rgba(20, 184, 166, 0.4);
+    border: 2px solid #fff;
+  }
+  .variable-slider::-moz-range-thumb {
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 3px 10px rgba(20, 184, 166, 0.4);
+    border: 2px solid #fff;
+  }
+
+  .variable-slider-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+  .variable-slider-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--teal);
+    background: rgba(20, 184, 166, 0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+  }
+
+  /* BALANCE VISUALIZATION */
+  .balance-panel {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    border-radius: 16px;
+    padding: 1.5rem;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .balance-panel::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(244,196,48,0.2), transparent 70%);
+    border-radius: 50%;
+  }
+  .balance-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .balance-header i { color: var(--gold); font-size: 1.1rem; }
+  .balance-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin: 0;
+  }
+  .balance-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+  }
+  .balance-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .balance-bar-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 90px;
+    color: rgba(255,255,255,0.85);
+  }
+  .balance-bar-track {
+    flex: 1;
+    height: 12px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+  }
+  .balance-bar-fill {
+    height: 100%;
+    border-radius: 50px;
+    transition: width 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .balance-bar-fill.akademik { background: linear-gradient(90deg, var(--navy-light), #4A90C2); }
+  .balance-bar-fill.keluarga { background: linear-gradient(90deg, var(--pink), #EC4899); }
+  .balance-bar-fill.diri { background: linear-gradient(90deg, var(--teal), #14B8A6); }
+  .balance-bar-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--gold);
+    min-width: 30px;
+    text-align: right;
+  }
+
+  .balance-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  .balance-summary-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .balance-summary-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .balance-summary-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  /* SMART GOALS */
+  .goals-section {
+    margin-bottom: 1.5rem;
+  }
+  .goals-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .goals-title i { color: var(--teal); font-size: 0.95rem; }
+
+  .goal-card {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.8rem;
+    transition: all 0.25s;
+  }
+  .goal-card:hover { border-color: rgba(20, 184, 166, 0.3); }
+  .goal-card.akademik { border-left: 4px solid var(--navy-light); }
+  .goal-card.keluarga { border-left: 4px solid var(--pink); }
+  .goal-card.diri { border-left: 4px solid var(--teal); }
+
+  .goal-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.8rem;
+  }
+  .goal-emoji {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .goal-card.akademik .goal-emoji { background: rgba(43, 106, 158, 0.1); }
+  .goal-card.keluarga .goal-emoji { background: rgba(236, 72, 153, 0.1); }
+  .goal-card.diri .goal-emoji { background: rgba(20, 184, 166, 0.1); }
+
+  .goal-info { flex: 1; }
+  .goal-label {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--navy);
+  }
+  .goal-sublabel {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+  }
+
+  .goal-input {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    color: var(--ink);
+    background: #fff;
+    outline: none;
+    transition: all 0.2s;
+    resize: vertical;
+    min-height: 50px;
+  }
+  .goal-input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  }
+
+  /* ACTION STEPS */
+  .action-section {
+    background: linear-gradient(135deg, rgba(20,184,166,0.04), rgba(244,196,48,0.04));
+    border: 2px dashed rgba(20, 184, 166, 0.3);
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .action-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .action-title i { color: var(--teal); }
+
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .action-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+  .action-checkbox {
+    width: 20px; height: 20px;
+    accent-color: var(--teal);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .action-input {
+    flex: 1;
+    padding: 0.5rem 0.8rem;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--ink);
+    background: #fff;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .action-input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  }
+
+  .add-action-btn {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--teal);
+    border: 2px dashed rgba(20, 184, 166, 0.3);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .add-action-btn:hover {
+    background: rgba(20, 184, 166, 0.15);
+    border-style: solid;
+  }
+
+  /* TIMELINE */
+  .timeline-section {
+    margin-bottom: 1.5rem;
+  }
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .timeline-title i { color: var(--teal); font-size: 0.95rem; }
+
+  .timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+  @media (max-width: 600px) {
+    .timeline-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .timeline-item {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 0.8rem;
+    text-align: center;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .timeline-item:hover { border-color: var(--teal); transform: translateY(-3px); }
+  .timeline-item.done { background: linear-gradient(135deg, rgba(20,184,166,0.08), rgba(16,185,129,0.05)); border-color: var(--success); }
+
+  .timeline-week {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+  }
+  .timeline-desc {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    min-height: 30px;
+  }
+  .timeline-status {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.3rem;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .timeline-status:focus { border-color: var(--teal); }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.35);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(20, 184, 166, 0.5); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success { background: rgba(16, 185, 129, 0.1); color: #047857; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .feedback-msg.error { background: rgba(239, 68, 68, 0.1); color: #B91C1C; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .feedback-msg.info { background: rgba(20, 184, 166, 0.1); color: #0D9488; border: 1px solid rgba(20, 184, 166, 0.25); }
+
+  /* SIDE */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--success);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 0.7rem 0.9rem;
+    background: var(--paper);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+  }
+  .formula-box strong {
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* REFLECTION */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--teal), var(--navy-mid));
+    color: #fff;
+    border-color: var(--teal);
+    box-shadow: 0 8px 20px rgba(20, 184, 166, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+    .variables-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-cubes"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 12</strong>
+        <span>Pelan Tindakan Individu</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 3</small>
+      </div>
+      <div class="nav-avatar" id="navAvatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-eye"></i> Kesedaran Kendiri
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Persamaan 3 Pembolehubah
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Pelan Tindakan Individu 🎯</h1>
+        <p class="activity-subtitle">
+          Bina <strong>pelan tindakan peribadi</strong> berdasarkan konsep persamaan 3 pembolehubah — 
+          <strong>akademik</strong>, <strong>keluarga</strong>, dan <strong>diri sendiri</strong>.
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statGoals">0/3</div>
+          <div class="activity-stat-label">Matlamat</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statTime">0:00</div>
+          <div class="activity-stat-label">Masa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Fahami Konsep</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Bina Pelan</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <div class="content-grid">
+
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- INTRO -->
+      <div class="intro-panel">
+        <div class="intro-icon"><i class="fas fa-compass"></i></div>
+        <div class="intro-title">3 Pembolehubah Hidup</div>
+        <div class="intro-desc">
+          Dalam matematik, persamaan 3 pembolehubah memerlukan keseimbangan antara x, y, z. 
+          Dalam hidup, kita ada 3 <strong>"pembolehubah"</strong> yang perlu diseimbangkan: 
+          <strong>Akademik</strong>, <strong>Keluarga</strong>, dan <strong>Diri Sendiri</strong>.
+        </div>
+        <div class="concept-box">
+          <div class="concept-formula">
+            <strong>A + K + D = Keseimbangan Hidup</strong>
+          </div>
+          <div class="concept-text">
+            Kalau kita fokus 100% pada satu aspek sahaja, aspek lain akan terabai. 
+            Keseimbangan = keputusan bijak.
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 VARIABLES -->
+      <div class="variables-grid">
+        <div class="variable-card akademik" id="varAkademik">
+          <div class="variable-header">
+            <div class="variable-emoji">📚</div>
+            <div class="variable-info">
+              <div class="variable-name">Akademik</div>
+              <div class="variable-current">Add Math, ujian, belajar</div>
+            </div>
+          </div>
+          <input type="range" class="variable-slider" id="sliderAkademik" min="0" max="10" step="1" value="5" oninput="updateBalance()">
+          <div class="variable-slider-display">
+            <span>Fokus sekarang</span>
+            <span class="variable-slider-value" id="valAkademik">5/10</span>
+          </div>
+        </div>
+
+        <div class="variable-card keluarga" id="varKeluarga">
+          <div class="variable-header">
+            <div class="variable-emoji">👨‍👩‍👧</div>
+            <div class="variable-info">
+              <div class="variable-name">Keluarga</div>
+              <div class="variable-current">Ibu bapa, adik-beradik</div>
+            </div>
+          </div>
+          <input type="range" class="variable-slider" id="sliderKeluarga" min="0" max="10" step="1" value="5" oninput="updateBalance()">
+          <div class="variable-slider-display">
+            <span>Fokus sekarang</span>
+            <span class="variable-slider-value" id="valKeluarga">5/10</span>
+          </div>
+        </div>
+
+        <div class="variable-card diri" id="varDiri">
+          <div class="variable-header">
+            <div class="variable-emoji">🌟</div>
+            <div class="variable-info">
+              <div class="variable-name">Diri Sendiri</div>
+              <div class="variable-current">Rehat, hobi, kesihatan</div>
+            </div>
+          </div>
+          <input type="range" class="variable-slider" id="sliderDiri" min="0" max="10" step="1" value="5" oninput="updateBalance()">
+          <div class="variable-slider-display">
+            <span>Fokus sekarang</span>
+            <span class="variable-slider-value" id="valDiri">5/10</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BALANCE VISUALIZATION -->
+      <div class="balance-panel">
+        <div class="balance-header">
+          <i class="fas fa-balance-scale"></i>
+          <h3>Keseimbangan Anda Sekarang</h3>
+        </div>
+        <div class="balance-bars">
+          <div class="balance-bar-row">
+            <div class="balance-bar-label">📚 Akademik</div>
+            <div class="balance-bar-track">
+              <div class="balance-bar-fill akademik" id="barAkademik" style="width: 50%;"></div>
+            </div>
+            <div class="balance-bar-value" id="barValAkademik">5</div>
+          </div>
+          <div class="balance-bar-row">
+            <div class="balance-bar-label">👨‍👩‍👧 Keluarga</div>
+            <div class="balance-bar-track">
+              <div class="balance-bar-fill keluarga" id="barKeluarga" style="width: 50%;"></div>
+            </div>
+            <div class="balance-bar-value" id="barValKeluarga">5</div>
+          </div>
+          <div class="balance-bar-row">
+            <div class="balance-bar-label">🌟 Diri Sendiri</div>
+            <div class="balance-bar-track">
+              <div class="balance-bar-fill diri" id="barDiri" style="width: 50%;"></div>
+            </div>
+            <div class="balance-bar-value" id="barValDiri">5</div>
+          </div>
+        </div>
+        <div class="balance-summary">
+          <div class="balance-summary-item">
+            <div class="balance-summary-label">Jumlah Fokus</div>
+            <div class="balance-summary-value" id="totalFocus">15 / 30</div>
+          </div>
+          <div class="balance-summary-item">
+            <div class="balance-summary-label">Status</div>
+            <div class="balance-summary-value" id="balanceStatus">Seimbang</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOALS -->
+      <div class="goals-section">
+        <div class="goals-title">
+          <i class="fas fa-flag-checkered"></i> Matlamat SMART Saya
+        </div>
+
+        <div class="goal-card akademik">
+          <div class="goal-header">
+            <div class="goal-emoji">📚</div>
+            <div class="goal-info">
+              <div class="goal-label">Matlamat Akademik</div>
+              <div class="goal-sublabel">Contoh: Skor 80% dalam ujian Add Math</div>
+            </div>
+          </div>
+          <textarea class="goal-input" id="goalAkademik" placeholder="Tulis matlamat akademik anda yang SMART (Specific, Measurable, Achievable, Relevant, Time-bound)..." oninput="updateGoals()"></textarea>
+        </div>
+
+        <div class="goal-card keluarga">
+          <div class="goal-header">
+            <div class="goal-emoji">👨‍👩‍👧</div>
+            <div class="goal-info">
+              <div class="goal-label">Matlamat Keluarga</div>
+              <div class="goal-sublabel">Contoh: Luang 30 minit sehari dengan keluarga</div>
+            </div>
+          </div>
+          <textarea class="goal-input" id="goalKeluarga" placeholder="Tulis matlamat keluarga anda..." oninput="updateGoals()"></textarea>
+        </div>
+
+        <div class="goal-card diri">
+          <div class="goal-header">
+            <div class="goal-emoji">🌟</div>
+            <div class="goal-info">
+              <div class="goal-label">Matlamat Diri Sendiri</div>
+              <div class="goal-sublabel">Contoh: Tidur sebelum 11 malam setiap hari</div>
+            </div>
+          </div>
+          <textarea class="goal-input" id="goalDiri" placeholder="Tulis matlamat diri sendiri..." oninput="updateGoals()"></textarea>
+        </div>
+      </div>
+
+      <!-- ACTION STEPS -->
+      <div class="action-section">
+        <div class="action-title">
+          <i class="fas fa-list-check"></i> Langkah Tindakan
+        </div>
+        <div class="action-list" id="actionList"></div>
+        <button class="add-action-btn" onclick="addActionStep()">
+          <i class="fas fa-plus"></i> Tambah Langkah
+        </button>
+      </div>
+
+      <!-- TIMELINE -->
+      <div class="timeline-section">
+        <div class="timeline-title">
+          <i class="fas fa-calendar-check"></i> Timeline 4 Minggu
+        </div>
+        <div class="timeline-grid">
+          <div class="timeline-item">
+            <div class="timeline-week">MINGGU 1</div>
+            <div class="timeline-desc" id="timeline1">Mula bina tabiat</div>
+            <select class="timeline-status" id="status1" onchange="updateTimeline()">
+              <option value="pending">Belum Mula</option>
+              <option value="progress">Sedang Buat</option>
+              <option value="done">Selesai</option>
+            </select>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-week">MINGGU 2</div>
+            <div class="timeline-desc" id="timeline2">Kekalkan momentum</div>
+            <select class="timeline-status" id="status2" onchange="updateTimeline()">
+              <option value="pending">Belum Mula</option>
+              <option value="progress">Sedang Buat</option>
+              <option value="done">Selesai</option>
+            </select>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-week">MINGGU 3</div>
+            <div class="timeline-desc" id="timeline3">Tingkatkan cabaran</div>
+            <select class="timeline-status" id="status3" onchange="updateTimeline()">
+              <option value="pending">Belum Mula</option>
+              <option value="progress">Sedang Buat</option>
+              <option value="done">Selesai</option>
+            </select>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-week">MINGGU 4</div>
+            <div class="timeline-desc" id="timeline4">Refleksi & teruskan</div>
+            <select class="timeline-status" id="status4" onchange="updateTimeline()">
+              <option value="pending">Belum Mula</option>
+              <option value="progress">Sedang Buat</option>
+              <option value="done">Selesai</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetPlan(this)">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="saveBtn" onclick="savePlan()" disabled>
+          <i class="fas fa-check"></i> Simpan Pelan
+        </button>
+      </div>
+
+    </div>
+
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Fahami konsep 3 pembolehubah dalam hidup</li>
+          <li>Bina matlamat SMART peribadi</li>
+          <li>Rancang langkah tindakan & timeline</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Matlamat SMART
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-bullseye"></i>
+            <span><strong>S</strong>pecific — Jelas & khusus</span>
+          </li>
+          <li>
+            <i class="fas fa-ruler"></i>
+            <span><strong>M</strong>easurable — Boleh diukur</span>
+          </li>
+          <li>
+            <i class="fas fa-check"></i>
+            <span><strong>A</strong>chievable — Boleh dicapai</span>
+          </li>
+          <li>
+            <i class="fas fa-heart"></i>
+            <span><strong>R</strong>elevant — Relevan dengan diri</span>
+          </li>
+          <li>
+            <i class="fas fa-clock"></i>
+            <span><strong>T</strong>ime-bound — Ada masa</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Konsep Matematik
+        </div>
+        <div class="formula-box">
+          <strong>Persamaan 3 Pembolehubah</strong>
+          x + y + z = k
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.6;">
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">x</strong> = Akademik</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">y</strong> = Keluarga</div>
+          <div><strong style="color: var(--navy);">z</strong> = Diri Sendiri</div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Matlamat</span>
+            <strong id="sideGoals" style="color: var(--teal);">0 / 3</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Langkah</span>
+            <strong id="sideActions" style="color: var(--teal);">0</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Masa</span>
+            <strong id="sideTime" style="color: var(--navy);">0:00</strong>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda berjaya bina Pelan Tindakan Individu!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalGoals">0</div>
+        <div class="modal-stat-label">Matlamat</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalActions">0</div>
+        <div class="modal-stat-label">Langkah</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Diri
+      </button>
+      <button class="btn btn-outline" onclick="closeModal()" style="flex: none;">
+        <i class="fas fa-times"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan tentang pelan tindakan anda</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Apakah langkah pertama yang anda akan ambil selepas ini?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Saya akan mula tidur awal malam ini..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ═════════════════════════════════════════════════
+  // METADATA — ACTIVITY TERAKHIR
+  // ═════════════════════════════════════════════════
+  const ACTIVITY_ID = '12';
+  const ACTIVITY_NUMBER = 12;
+  const ACTIVITY_TITLE = 'Pelan Tindakan Individu';
+  const ACTIVITY_KONSTRUK = 'Kesedaran Kendiri';
+  const IS_LAST_ACTIVITY = true; // ✅ Aktiviti terakhir — takde next
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // ═════════════════════════════════════════════════
+  // STATE
+  // ═════════════════════════════════════════════════
+  let actionSteps = [];
+  let actionIdCounter = 0;
+  let currentUser = null;
+  let selectedEmotion = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+
+  // TIMER
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      const el = document.getElementById('statTime');
+      const el2 = document.getElementById('sideTime');
+      const timeStr = `${m}:${String(s).padStart(2, '0')}`;
+      if (el) el.textContent = timeStr;
+      if (el2) el2.textContent = timeStr;
+    }, 1000);
+  }
+
+  // UPDATE BALANCE
+  window.updateBalance = function() {
+    const akademik = parseInt(document.getElementById('sliderAkademik').value);
+    const keluarga = parseInt(document.getElementById('sliderKeluarga').value);
+    const diri = parseInt(document.getElementById('sliderDiri').value);
+
+    document.getElementById('valAkademik').textContent = `${akademik}/10`;
+    document.getElementById('valKeluarga').textContent = `${keluarga}/10`;
+    document.getElementById('valDiri').textContent = `${diri}/10`;
+
+    document.getElementById('barAkademik').style.width = `${akademik * 10}%`;
+    document.getElementById('barKeluarga').style.width = `${keluarga * 10}%`;
+    document.getElementById('barDiri').style.width = `${diri * 10}%`;
+
+    document.getElementById('barValAkademik').textContent = akademik;
+    document.getElementById('barValKeluarga').textContent = keluarga;
+    document.getElementById('barValDiri').textContent = diri;
+
+    const total = akademik + keluarga + diri;
+    document.getElementById('totalFocus').textContent = `${total} / 30`;
+
+    const statusEl = document.getElementById('balanceStatus');
+    const max = Math.max(akademik, keluarga, diri);
+    const min = Math.min(akademik, keluarga, diri);
+    const diff = max - min;
+
+    if (diff <= 2) {
+      statusEl.textContent = 'Seimbang';
+      statusEl.style.color = '#10B981';
+    } else if (diff <= 4) {
+      statusEl.textContent = 'Agak Seimbang';
+      statusEl.style.color = '#F59E0B';
+    } else {
+      statusEl.textContent = 'Tak Seimbang';
+      statusEl.style.color = '#EF4444';
+    }
+  };
+
+  // UPDATE GOALS
+  window.updateGoals = function() {
+    const g1 = document.getElementById('goalAkademik').value.trim();
+    const g2 = document.getElementById('goalKeluarga').value.trim();
+    const g3 = document.getElementById('goalDiri').value.trim();
+
+    const count = [g1, g2, g3].filter(g => g.length > 5).length;
+
+    document.getElementById('statGoals').textContent = `${count}/3`;
+    document.getElementById('sideGoals').textContent = `${count} / 3`;
+    document.getElementById('navScore').textContent = count;
+
+    checkSaveReady();
+  };
+
+  // ADD ACTION STEP
+  window.addActionStep = function() {
+    if (actionSteps.length >= 6) {
+      showFeedback('error', '⚠️ Maksimum 6 langkah tindakan.');
+      return;
+    }
+
+    actionSteps.push({
+      id: ++actionIdCounter,
+      text: '',
+      done: false
+    });
+
+    renderActions();
+    checkSaveReady();
+  };
+
+  window.removeActionStep = function(id) {
+    actionSteps = actionSteps.filter(a => a.id !== id);
+    renderActions();
+    checkSaveReady();
+  };
+
+  window.updateActionStep = function(id, text) {
+    const a = actionSteps.find(x => x.id === id);
+    if (a) a.text = text;
+    checkSaveReady();
+  };
+
+  window.toggleActionDone = function(id, checked) {
+    const a = actionSteps.find(x => x.id === id);
+    if (a) a.done = checked;
+    renderActions();
+  };
+
+  function renderActions() {
+    const list = document.getElementById('actionList');
+
+    if (actionSteps.length === 0) {
+      list.innerHTML = `
+        <div style="text-align: center; padding: 1.5rem 1rem; color: var(--ink-soft); font-size: 0.85rem;">
+          Belum ada langkah tindakan. Klik "Tambah Langkah" untuk mula.
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = actionSteps.map((a, i) => `
+      <div class="action-item">
+        <input type="checkbox" class="action-checkbox" ${a.done ? 'checked' : ''} onchange="toggleActionDone(${a.id}, this.checked)">
+        <input type="text" class="action-input" value="${a.text}" placeholder="Langkah ${i + 1}: Contoh - Buat jadual belajar harian" oninput="updateActionStep(${a.id}, this.value)" style="${a.done ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
+        <button style="background: transparent; border: none; color: var(--danger); cursor: pointer; padding: 0.3rem;" onclick="removeActionStep(${a.id})">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    `).join('');
+
+    document.getElementById('sideActions').textContent = actionSteps.filter(a => a.text.trim()).length;
+  }
+
+  // TIMELINE
+  window.updateTimeline = function() {
+    for (let i = 1; i <= 4; i++) {
+      const status = document.getElementById(`status${i}`).value;
+      const item = document.querySelectorAll('.timeline-item')[i - 1];
+      if (status === 'done') {
+        item.classList.add('done');
+      } else {
+        item.classList.remove('done');
+      }
+    }
+    checkSaveReady();
+  };
+
+  // CHECK SAVE READY
+  function checkSaveReady() {
+    const g1 = document.getElementById('goalAkademik').value.trim();
+    const g2 = document.getElementById('goalKeluarga').value.trim();
+    const g3 = document.getElementById('goalDiri').value.trim();
+
+    const goalsOk = g1.length > 5 && g2.length > 5 && g3.length > 5;
+    const actionsOk = actionSteps.filter(a => a.text.trim().length > 3).length >= 2;
+
+    document.getElementById('saveBtn').disabled = !(goalsOk && actionsOk);
+  }
+
+  // RESET (double-click confirm)
+  window.resetPlan = function(btn) {
+    const hasContent = document.getElementById('goalAkademik').value.trim() ||
+                       document.getElementById('goalKeluarga').value.trim() ||
+                       document.getElementById('goalDiri').value.trim() ||
+                       actionSteps.length > 0;
+
+    if (!hasContent) {
+      showFeedback('info', 'ℹ️ Tiada pelan untuk direset.');
+      return;
+    }
+
+    const resetBtn = btn || document.querySelector('.btn-outline[onclick*="resetPlan"]');
+
+    if (!resetBtn.dataset.confirming) {
+      resetBtn.dataset.confirming = 'true';
+      resetBtn.style.borderColor = 'var(--danger)';
+      resetBtn.style.color = 'var(--danger)';
+      showFeedback('error', '⚠️ Klik sekali lagi untuk RESET semua pelan!');
+      setTimeout(() => {
+        delete resetBtn.dataset.confirming;
+        resetBtn.style.borderColor = '';
+        resetBtn.style.color = '';
+      }, 3000);
+      return;
+    }
+
+    delete resetBtn.dataset.confirming;
+    resetBtn.style.borderColor = '';
+    resetBtn.style.color = '';
+
+    document.getElementById('goalAkademik').value = '';
+    document.getElementById('goalKeluarga').value = '';
+    document.getElementById('goalDiri').value = '';
+    document.getElementById('sliderAkademik').value = 5;
+    document.getElementById('sliderKeluarga').value = 5;
+    document.getElementById('sliderDiri').value = 5;
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('status' + i).value = 'pending';
+    }
+    actionSteps = [];
+    actionIdCounter = 0;
+
+    updateBalance();
+    updateGoals();
+    renderActions();
+    updateTimeline();
+    hideFeedback();
+    showFeedback('success', '🔄 Semua pelan direset.');
+  };
+
+  // SAVE PLAN
+  window.savePlan = function() {
+    const g1 = document.getElementById('goalAkademik').value.trim();
+    const g2 = document.getElementById('goalKeluarga').value.trim();
+    const g3 = document.getElementById('goalDiri').value.trim();
+
+    if (g1.length < 5 || g2.length < 5 || g3.length < 5) {
+      showFeedback('error', '❌ Sila isi semua 3 matlamat dengan lengkap.');
+      return;
+    }
+
+    document.getElementById('stepBar2').classList.remove('active');
+    document.getElementById('stepBar2').classList.add('done');
+    document.getElementById('stepBar3').classList.add('active');
+
+    showResultModal();
+  };
+
+  // FEEDBACK
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 3500);
+  }
+
+  function hideFeedback() {
+    document.getElementById('feedbackMsg').classList.remove('active');
+  }
+
+  // RESULT MODAL
+  function showResultModal() {
+    const goalsCount = 3;
+    const actionsCount = actionSteps.filter(a => a.text.trim()).length;
+
+    document.getElementById('modalGoals').textContent = goalsCount;
+    document.getElementById('modalActions').textContent = actionsCount;
+
+    // Update modal untuk aktiviti terakhir
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-crown"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai Semua 12 Aktiviti! 🏆';
+    document.getElementById('modalSub').textContent = `Anda telah menamatkan keseluruhan Modul REAL-MPC. Hebat!`;
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  // REFLECTION
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  // ✅ SUBMIT REFLECTION — Integrated, TAK auto-unlock next
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const goals = {
+      akademik: document.getElementById('goalAkademik').value.trim(),
+      keluarga: document.getElementById('goalKeluarga').value.trim(),
+      diri: document.getElementById('goalDiri').value.trim()
+    };
+    const balance = {
+      akademik: parseInt(document.getElementById('sliderAkademik').value),
+      keluarga: parseInt(document.getElementById('sliderKeluarga').value),
+      diri: parseInt(document.getElementById('sliderDiri').value)
+    };
+    const timeline = {
+      week1: document.getElementById('status1').value,
+      week2: document.getElementById('status2').value,
+      week3: document.getElementById('status3').value,
+      week4: document.getElementById('status4').value
+    };
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+    try {
+      if (currentUser) {
+        // ✅ Save ke progress/{uid}/activities/12
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+        await setDoc(progressRef, {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          refleksi: text,
+          emosi: selectedEmotion,
+          badge: { earned: true, type: 'module_complete' },
+          goals: goals,
+          balance: balance,
+          actions: actionSteps.filter(a => a.text.trim()).map(a => ({ text: a.text, done: a.done })),
+          timeline: timeline,
+          timeSpent: elapsed,
+          activityTitle: ACTIVITY_TITLE,
+          konstruk: ACTIVITY_KONSTRUK
+        }, { merge: true });
+
+        // ⚠️ TAK AUTO-UNLOCK — ini aktiviti terakhir
+        console.log('✅ Aktiviti terakhir selesai!');
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan & Selesai';
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-crown"></i>';
+    document.getElementById('modalTitle').textContent = 'TAHNIAH! 🏆';
+    document.getElementById('modalSub').textContent = 'Anda telah menyelesaikan SEMUA 12 aktiviti Modul REAL-MPC!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="dashboard-murid.html" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-trophy"></i> Lihat Portfolio Saya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Balik Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // FALLBACK
+  setTimeout(() => { hideLoader(); }, 2000);
+
+  // AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        let nama = data.nama;
+        if (!nama || nama.trim() === '' || nama === 'Pengguna') {
+          nama = data.emel?.split('@')[0] || 'Murid';
+        }
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+
+        if (data.avatar) {
+          const navAvatar = document.getElementById('navAvatar');
+          navAvatar.innerHTML = `<img src="${data.avatar}" alt="${nama}">`;
+        }
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    updateBalance();
+    updateGoals();
+    renderActions();
+    startTimer();
+    hideLoader();
+  });
+
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 12 · Pelan Tindakan Individu ', 'background:linear-gradient(135deg,#14B8A6,#1A4A6E);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+  console.log('🎯 Goal Planner · Aktiviti terakhir — Module Complete!');
+</script>
+
+</body>
+</html>

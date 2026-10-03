@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 10: Peta Kekuatan & Kelemahan · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Fungsi dengan Mind-Map Builder.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --purple: #8B5CF6;
+    --orange: #F97316;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(43, 106, 158, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    overflow: hidden;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  /* PAGE */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(139,92,246,0.3), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* STEPS */
+  .steps-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+  }
+  .step-item.done { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .step-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.4rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--purple); font-size: 0.9rem; }
+
+  /* INTRO */
+  .intro-panel {
+    background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(244,196,48,0.06));
+    border: 2px solid rgba(139,92,246,0.15);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .intro-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 24px rgba(139, 92, 246, 0.3);
+  }
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .intro-desc {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  /* FUNCTION CONCEPT */
+  .function-concept {
+    background: #fff;
+    border: 2px dashed var(--purple);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .func-visual { flex-shrink: 0; }
+  .func-text { flex: 1; }
+  .func-text strong {
+    display: block;
+    color: var(--navy);
+    margin-bottom: 0.3rem;
+    font-size: 0.92rem;
+  }
+  .func-text span {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* NODE PALETTE */
+  .palette-section { margin-bottom: 1.5rem; }
+  .palette-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .palette-title i { color: var(--purple); }
+
+  .palette-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.9rem;
+    background: var(--paper);
+    border-radius: 12px;
+    border: 2px dashed var(--line);
+    min-height: 60px;
+  }
+
+  .palette-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 50px;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: grab;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .palette-node:hover {
+    border-color: var(--purple);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.15);
+  }
+  .palette-node:active { cursor: grabbing; }
+  .palette-node.strength { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); color: #047857; }
+  .palette-node.weakness { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); color: #B91C1C; }
+  .palette-node.custom { border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.05); color: var(--purple); cursor: pointer; }
+  .palette-node i { font-size: 0.75rem; }
+
+  /* CANVAS */
+  .canvas-instructions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+    background: rgba(139, 92, 246, 0.08);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 12px;
+    font-size: 0.82rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .canvas-instructions i { color: var(--purple); margin-right: 0.3rem; }
+  .canvas-instructions span { display: inline-flex; align-items: center; }
+
+  .canvas-container {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    border: 2px solid var(--line);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    touch-action: none;
+  }
+  .mindmap-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+    cursor: grab;
+  }
+  .mindmap-canvas.dragging { cursor: grabbing; }
+
+  .canvas-toolbar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 0.4rem;
+    background: rgba(255,255,255,0.95);
+    padding: 0.4rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+  }
+  .tool-btn {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .tool-btn:hover { background: var(--paper); color: var(--purple); }
+  .tool-btn.active {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  }
+
+  .canvas-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 46, 78, 0.9);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .canvas-hint i { color: var(--gold); }
+
+  /* INFO PANEL */
+  .info-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .info-item {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .info-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--purple);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .info-icon.green { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .info-icon.red { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+  .info-icon.gold { background: rgba(244, 196, 48, 0.15); color: #B45309; }
+  .info-content { flex: 1; }
+  .info-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.1rem;
+  }
+  .info-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(139, 92, 246, 0.5); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success { background: rgba(16, 185, 129, 0.1); color: #047857; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .feedback-msg.error { background: rgba(239, 68, 68, 0.1); color: #B91C1C; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .feedback-msg.info { background: rgba(139, 92, 246, 0.1); color: #5B21B6; border: 1px solid rgba(139, 92, 246, 0.25); }
+
+  /* SIDE */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--success);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 0.7rem 0.9rem;
+    background: var(--paper);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+  }
+  .formula-box strong {
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* REFLECTION */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    border-color: var(--purple);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--purple);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+    .function-concept { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+    .palette-node { font-size: 0.75rem; padding: 0.4rem 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-project-diagram"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 10</strong>
+        <span>Peta Kekuatan & Kelemahan</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 6</small>
+      </div>
+      <div class="nav-avatar" id="navAvatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-eye"></i> Kesedaran Kendiri
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Fungsi
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Peta Kekuatan & Kelemahan 🧩</h1>
+        <p class="activity-subtitle">
+          Bina <strong>mind-map interaktif</strong> tentang diri anda — guna konsep fungsi 
+          (input → proses → output) untuk kenal pasti kekuatan & kelemahan diri.
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statNodes">0</div>
+          <div class="activity-stat-label">Node</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statTime">0:00</div>
+          <div class="activity-stat-label">Masa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Fahami Fungsi</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Bina Peta</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <div class="content-grid">
+
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- INTRO -->
+      <div class="intro-panel">
+        <div class="intro-icon"><i class="fas fa-brain"></i></div>
+        <div class="intro-title">Fungsi Diri Saya</div>
+        <div class="intro-desc">
+          Dalam matematik, <strong>fungsi</strong> ada 3 bahagian: <strong>input</strong> (domain), 
+          <strong>proses</strong> (pemetaan), dan <strong>output</strong> (julat). 
+          Dalam hidup, kita pun macam fungsi — ada input (apa yang kita ada), proses (cara kita berusaha), dan output (hasil yang kita dapat).
+        </div>
+        <div class="function-concept">
+          <svg class="func-visual" width="120" height="70" viewBox="0 0 120 70">
+            <ellipse cx="25" cy="35" rx="20" ry="28" fill="none" stroke="#8B5CF6" stroke-width="2.5"/>
+            <ellipse cx="95" cy="35" rx="20" ry="28" fill="none" stroke="#10B981" stroke-width="2.5"/>
+            <circle cx="25" cy="20" r="3" fill="#8B5CF6"/>
+            <circle cx="25" cy="35" r="3" fill="#8B5CF6"/>
+            <circle cx="25" cy="50" r="3" fill="#8B5CF6"/>
+            <circle cx="95" cy="20" r="3" fill="#10B981"/>
+            <circle cx="95" cy="35" r="3" fill="#10B981"/>
+            <circle cx="95" cy="50" r="3" fill="#10B981"/>
+            <line x1="27" y1="20" x2="93" y2="20" stroke="#F4C430" stroke-width="2"/>
+            <line x1="27" y1="35" x2="93" y2="35" stroke="#F4C430" stroke-width="2"/>
+            <line x1="27" y1="50" x2="93" y2="50" stroke="#F4C430" stroke-width="2"/>
+            <text x="55" y="12" font-size="9" fill="#0B2E4E" font-weight="700" text-anchor="middle">PROSES</text>
+            <text x="25" y="68" font-size="9" fill="#8B5CF6" font-weight="700" text-anchor="middle">INPUT</text>
+            <text x="95" y="68" font-size="9" fill="#10B981" font-weight="700" text-anchor="middle">OUTPUT</text>
+          </svg>
+          <div class="func-text">
+            <strong>Analogi Fungsi → Diri</strong>
+            <span><strong>Input</strong> = Apa yang kita ada (kemahiran, sokongan, minat). <strong>Proses</strong> = Cara kita berusaha. <strong>Output</strong> = Hasil & pencapaian.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PALETTE -->
+      <div class="palette-section">
+        <div class="palette-title">
+          <i class="fas fa-th-large"></i> Node Palette — Klik untuk Tambah ke Canvas
+        </div>
+        <div class="palette-grid" id="paletteGrid">
+          <button class="palette-node strength" onclick="addNodeToCanvas('strength', 'Fokus')" data-type="strength" data-text="Fokus">
+            <i class="fas fa-bullseye"></i> Fokus
+          </button>
+          <button class="palette-node strength" onclick="addNodeToCanvas('strength', 'Rajin')" data-type="strength" data-text="Rajin">
+            <i class="fas fa-fire"></i> Rajin
+          </button>
+          <button class="palette-node strength" onclick="addNodeToCanvas('strength', 'Kreatif')" data-type="strength" data-text="Kreatif">
+            <i class="fas fa-lightbulb"></i> Kreatif
+          </button>
+          <button class="palette-node strength" onclick="addNodeToCanvas('strength', 'Sabar')" data-type="strength" data-text="Sabar">
+            <i class="fas fa-heart"></i> Sabar
+          </button>
+          <button class="palette-node weakness" onclick="addNodeToCanvas('weakness', 'Cepat putus asa')" data-type="weakness" data-text="Cepat putus asa">
+            <i class="fas fa-times"></i> Cepat putus asa
+          </button>
+          <button class="palette-node weakness" onclick="addNodeToCanvas('weakness', 'Suka tangguh')" data-type="weakness" data-text="Suka tangguh">
+            <i class="fas fa-clock"></i> Suka tangguh
+          </button>
+          <button class="palette-node weakness" onclick="addNodeToCanvas('weakness', 'Malu bertanya')" data-type="weakness" data-text="Malu bertanya">
+            <i class="fas fa-comment-slash"></i> Malu bertanya
+          </button>
+          <button class="palette-node weakness" onclick="addNodeToCanvas('weakness', 'Kurang yakin')" data-type="weakness" data-text="Kurang yakin">
+            <i class="fas fa-meh"></i> Kurang yakin
+          </button>
+          <button class="palette-node custom" onclick="addCustomNode()">
+            <i class="fas fa-plus-circle"></i> Tambah Sendiri
+          </button>
+        </div>
+      </div>
+
+      <!-- CANVAS INSTRUCTIONS -->
+      <div class="canvas-instructions">
+        <span><i class="fas fa-hand-pointer"></i> Klik node untuk tambah ke canvas</span>
+        <span><i class="fas fa-arrows-alt"></i> Drag node untuk susun</span>
+        <span><i class="fas fa-link"></i> Klik "Connect" untuk sambung</span>
+        <span><i class="fas fa-trash"></i> Klik kanan node untuk padam</span>
+      </div>
+
+      <!-- CANVAS -->
+      <div class="canvas-container">
+        <canvas class="mindmap-canvas" id="mindmapCanvas" width="800" height="520"></canvas>
+
+        <div class="canvas-toolbar">
+          <button class="tool-btn active" onclick="setTool('select', this)" id="toolSelect" title="Pilih / Gerak">
+            <i class="fas fa-mouse-pointer"></i>
+          </button>
+          <button class="tool-btn" onclick="setTool('connect', this)" id="toolConnect" title="Sambung Node">
+            <i class="fas fa-link"></i>
+          </button>
+          <button class="tool-btn" onclick="autoLayout()" title="Auto Susun">
+            <i class="fas fa-magic"></i>
+          </button>
+          <button class="tool-btn" onclick="undoLastNode()" title="Padam Node Terakhir">
+            <i class="fas fa-undo"></i>
+          </button>
+          <button class="tool-btn" onclick="clearAllNodes(this)" title="Padam Semua">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+
+        <div class="canvas-hint">
+          <i class="fas fa-info-circle"></i>
+          <span id="canvasHintText">Klik node dari palette untuk tambah ke canvas</span>
+        </div>
+      </div>
+
+      <!-- INFO PANEL -->
+      <div class="info-panel">
+        <div class="info-item">
+          <div class="info-icon green"><i class="fas fa-check"></i></div>
+          <div class="info-content">
+            <div class="info-label">Kekuatan</div>
+            <div class="info-value" id="infoStrength">0</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon red"><i class="fas fa-times"></i></div>
+          <div class="info-content">
+            <div class="info-label">Kelemahan</div>
+            <div class="info-value" id="infoWeakness">0</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-project-diagram"></i></div>
+          <div class="info-content">
+            <div class="info-label">Jumlah Node</div>
+            <div class="info-value" id="infoTotal">0</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon gold"><i class="fas fa-link"></i></div>
+          <div class="info-content">
+            <div class="info-label">Sambungan</div>
+            <div class="info-value" id="infoLinks">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetCanvas()">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveMindMap()" disabled>
+          <i class="fas fa-check"></i> Simpan & Teruskan
+        </button>
+      </div>
+
+    </div>
+
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Fahami konsep fungsi (input → proses → output)</li>
+          <li>Kenal pasti kekuatan & kelemahan diri</li>
+          <li>Bina peta minda visual tentang diri sendiri</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Tips Bina Peta
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-check-circle"></i>
+            <span><strong>Minimum 3 kekuatan</strong> + <strong>3 kelemahan</strong></span>
+          </li>
+          <li>
+            <i class="fas fa-balance-scale"></i>
+            <span><strong>Jujur</strong> — semua orang ada kekuatan & kelemahan</span>
+          </li>
+          <li>
+            <i class="fas fa-link"></i>
+            <span><strong>Sambung</strong> kekuatan → kelemahan untuk lihat hubungan</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Fungsi Diri
+        </div>
+        <div class="formula-box">
+          <strong>Analogi</strong>
+          Input → Proses → Output
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.6;">
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">Input</strong> = apa yang saya ada</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">Proses</strong> = cara saya berusaha</div>
+          <div><strong style="color: var(--navy);">Output</strong> = hasil yang saya dapat</div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Kekuatan</span>
+            <strong id="sideStrength" style="color: var(--success);">0 / 3</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Kelemahan</span>
+            <strong id="sideWeakness" style="color: var(--danger);">0 / 3</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Masa</span>
+            <strong id="sideTime" style="color: var(--navy);">0:00</strong>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda berjaya bina peta minda diri anda!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalStrength">0</div>
+        <div class="modal-stat-label">Kekuatan</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalWeakness">0</div>
+        <div class="modal-stat-label">Kelemahan</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Diri
+      </button>
+      <button class="btn btn-outline" onclick="closeModal()" style="flex: none;">
+        <i class="fas fa-times"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan & pemikiran tentang peta minda anda</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Apakah kekuatan utama yang anda sedar tentang diri sendiri?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Saya sedar saya kuat dalam fokus, tapi lemah dalam bertanya..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE + LOGIC
+     ═══════════════════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ═════════════════════════════════════════════════
+  // METADATA
+  // ═════════════════════════════════════════════════
+  const ACTIVITY_ID = '10';
+  const ACTIVITY_NUMBER = 10;
+  const ACTIVITY_TITLE = 'Peta Kekuatan & Kelemahan';
+  const ACTIVITY_KONSTRUK = 'Kesedaran Kendiri';
+  const NEXT_ACTIVITY_NUMBER = 11;
+  const NEXT_ACTIVITY_FILE = 'activity-11.html';
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // STATE
+  const canvas = document.getElementById('mindmapCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let nodes = [];
+  let links = [];
+  let draggedNode = null;
+  let dragOffset = { x: 0, y: 0 };
+  let currentTool = 'select';
+  let connectFrom = null;
+  let currentUser = null;
+  let selectedEmotion = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+  let nodeIdCounter = 0;
+
+  const MIN_STRENGTH = 3;
+  const MIN_WEAKNESS = 3;
+
+  // TIMER
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      const el = document.getElementById('statTime');
+      const el2 = document.getElementById('sideTime');
+      const timeStr = `${m}:${String(s).padStart(2, '0')}`;
+      if (el) el.textContent = timeStr;
+      if (el2) el2.textContent = timeStr;
+    }, 1000);
+  }
+
+  // ADD NODE
+  window.addNodeToCanvas = function(type, text) {
+    const centerX = 200 + Math.random() * 300;
+    const centerY = 100 + Math.random() * 300;
+
+    const node = {
+      id: ++nodeIdCounter,
+      type: type,
+      text: text,
+      x: centerX,
+      y: centerY,
+      width: 0,
+      height: 0
+    };
+
+    nodes.push(node);
+    drawCanvas();
+    updateInfo();
+
+    showFeedback('success', `✅ Node "${text}" ditambah!`);
+  };
+
+  window.addCustomNode = function() {
+    const text = prompt('Taip kekuatan atau kelemahan anda:');
+    if (!text || !text.trim()) return;
+
+    const type = confirm('Klik OK untuk KEKUATAN, Cancel untuk KELEMAHAN') ? 'strength' : 'weakness';
+    addNodeToCanvas(type, text.trim().slice(0, 20));
+  };
+
+  // DRAW CANVAS
+  function drawCanvas() {
+    const W = canvas.width;
+    const H = canvas.height;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#FDF9F0');
+    grad.addColorStop(1, '#F1F5F9');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = 'rgba(139, 92, 246, 0.06)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x <= W; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let y = 0; y <= H; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = 'rgba(11, 46, 78, 0.15)';
+    ctx.font = 'bold 24px "Playfair Display", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🧠 Fungsi Diri Saya', W / 2, 40);
+
+    links.forEach(link => {
+      const fromNode = nodes.find(n => n.id === link.from);
+      const toNode = nodes.find(n => n.id === link.to);
+      if (!fromNode || !toNode) return;
+
+      const dx = toNode.x - fromNode.x;
+      const dy = toNode.y - fromNode.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const ux = dx / dist;
+      const uy = dy / dist;
+
+      const startX = fromNode.x + ux * (fromNode.width / 2);
+      const startY = fromNode.y + uy * (fromNode.height / 2);
+      const endX = toNode.x - ux * (toNode.width / 2);
+      const endY = toNode.y - uy * (toNode.height / 2);
+
+      ctx.strokeStyle = 'rgba(139, 92, 246, 0.5)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const angle = Math.atan2(endY - startY, endX - startX);
+      const headLen = 10;
+      ctx.fillStyle = 'rgba(139, 92, 246, 0.5)';
+      ctx.beginPath();
+      ctx.moveTo(endX, endY);
+      ctx.lineTo(
+        endX - headLen * Math.cos(angle - Math.PI / 7),
+        endY - headLen * Math.sin(angle - Math.PI / 7)
+      );
+      ctx.lineTo(
+        endX - headLen * Math.cos(angle + Math.PI / 7),
+        endY - headLen * Math.sin(angle + Math.PI / 7)
+      );
+      ctx.closePath();
+      ctx.fill();
+    });
+
+    nodes.forEach(node => {
+      drawNode(node);
+    });
+
+    if (currentTool === 'connect' && connectFrom) {
+      const fromNode = nodes.find(n => n.id === connectFrom);
+      if (fromNode) {
+        ctx.strokeStyle = 'rgba(244, 196, 48, 0.6)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 4]);
+        ctx.beginPath();
+        ctx.moveTo(fromNode.x, fromNode.y);
+        ctx.lineTo(fromNode.x + 100, fromNode.y + 100);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    if (nodes.length === 0) {
+      ctx.fillStyle = 'rgba(11, 46, 78, 0.35)';
+      ctx.font = 'bold 18px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🧩 Klik node dari palette untuk mula bina peta', W / 2, H / 2 - 20);
+      ctx.font = '14px Inter, sans-serif';
+      ctx.fillText('Minimum 3 kekuatan + 3 kelemahan', W / 2, H / 2 + 10);
+    }
+  }
+
+  function drawNode(node) {
+    const padding = 14;
+    ctx.font = 'bold 14px Inter, sans-serif';
+    const textMetrics = ctx.measureText(node.text);
+    const textWidth = textMetrics.width;
+
+    const nodeW = textWidth + padding * 2 + 30;
+    const nodeH = 40;
+
+    node.width = nodeW;
+    node.height = nodeH;
+
+    const isStrength = node.type === 'strength';
+    const fillColor = isStrength ? '#10B981' : '#EF4444';
+    const shadowColor = isStrength ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)';
+
+    ctx.shadowColor = shadowColor;
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 4;
+
+    const x = node.x - nodeW / 2;
+    const y = node.y - nodeH / 2;
+    const radius = 20;
+
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + nodeW - radius, y);
+    ctx.quadraticCurveTo(x + nodeW, y, x + nodeW, y + radius);
+    ctx.lineTo(x + nodeW, y + nodeH - radius);
+    ctx.quadraticCurveTo(x + nodeW, y + nodeH, x + nodeW - radius, y + nodeH);
+    ctx.lineTo(x + radius, y + nodeH);
+    ctx.quadraticCurveTo(x, y + nodeH, x, y + nodeH - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px "Font Awesome 6 Free", Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    const icon = isStrength ? '✓' : '✗';
+    ctx.fillText(icon, x + padding, node.y);
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 13px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(node.text, x + padding + 22, node.y);
+
+    if (connectFrom === node.id) {
+      ctx.strokeStyle = '#F4C430';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + nodeW - radius, y);
+      ctx.quadraticCurveTo(x + nodeW, y, x + nodeW, y + radius);
+      ctx.lineTo(x + nodeW, y + nodeH - radius);
+      ctx.quadraticCurveTo(x + nodeW, y + nodeH, x + nodeW - radius, y + nodeH);
+      ctx.lineTo(x + radius, y + nodeH);
+      ctx.quadraticCurveTo(x, y + nodeH, x, y + nodeH - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.stroke();
+    }
+  }
+
+  // CANVAS EVENTS
+  function getCanvasCoords(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    let clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY
+    };
+  }
+
+  function findNodeAt(x, y) {
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const n = nodes[i];
+      const halfW = n.width / 2;
+      const halfH = n.height / 2;
+      if (x >= n.x - halfW && x <= n.x + halfW && y >= n.y - halfH && y <= n.y + halfH) {
+        return n;
+      }
+    }
+    return null;
+  }
+
+  function onCanvasDown(e) {
+    e.preventDefault();
+    const coords = getCanvasCoords(e);
+    const node = findNodeAt(coords.x, coords.y);
+
+    if (currentTool === 'connect') {
+      if (node) {
+        if (connectFrom === null) {
+          connectFrom = node.id;
+          showFeedback('info', `🔗 Sambung dari "${node.text}"... Klik node lain.`);
+          drawCanvas();
+        } else if (connectFrom === node.id) {
+          connectFrom = null;
+          drawCanvas();
+        } else {
+          const exists = links.some(l => 
+            (l.from === connectFrom && l.to === node.id) ||
+            (l.from === node.id && l.to === connectFrom)
+          );
+          if (!exists) {
+            links.push({ from: connectFrom, to: node.id });
+            showFeedback('success', `🔗 Sambungan berjaya!`);
+          } else {
+            showFeedback('info', 'ℹ️ Sambungan dah wujud.');
+          }
+          connectFrom = null;
+          drawCanvas();
+          updateInfo();
+        }
+      }
+      return;
+    }
+
+    if (node) {
+      draggedNode = node;
+      dragOffset.x = coords.x - node.x;
+      dragOffset.y = coords.y - node.y;
+      canvas.classList.add('dragging');
+      canvas.style.cursor = 'grabbing';
+    }
+  }
+
+  function onCanvasMove(e) {
+    if (!draggedNode) return;
+    e.preventDefault();
+    const coords = getCanvasCoords(e);
+    draggedNode.x = coords.x - dragOffset.x;
+    draggedNode.y = coords.y - dragOffset.y;
+
+    draggedNode.x = Math.max(draggedNode.width / 2 + 10, Math.min(canvas.width - draggedNode.width / 2 - 10, draggedNode.x));
+    draggedNode.y = Math.max(draggedNode.height / 2 + 50, Math.min(canvas.height - draggedNode.height / 2 - 10, draggedNode.y));
+
+    drawCanvas();
+  }
+
+  function onCanvasUp(e) {
+    if (draggedNode) {
+      draggedNode = null;
+      canvas.classList.remove('dragging');
+      canvas.style.cursor = currentTool === 'connect' ? 'crosshair' : 'grab';
+    }
+  }
+
+  // ✅ FIX: Right-click delete tanpa confirm popup (lebih reliable)
+  function onCanvasRightClick(e) {
+    e.preventDefault();
+    const coords = getCanvasCoords(e);
+    const node = findNodeAt(coords.x, coords.y);
+    if (node) {
+      const removedText = node.text;
+      nodes = nodes.filter(n => n.id !== node.id);
+      links = links.filter(l => l.from !== node.id && l.to !== node.id);
+      showFeedback('success', `🗑️ Node "${removedText}" dipadam.`);
+      drawCanvas();
+      updateInfo();
+    }
+  }
+
+  canvas.addEventListener('mousedown', onCanvasDown);
+  canvas.addEventListener('mousemove', onCanvasMove);
+  canvas.addEventListener('mouseup', onCanvasUp);
+  canvas.addEventListener('mouseleave', onCanvasUp);
+  canvas.addEventListener('contextmenu', onCanvasRightClick);
+
+  canvas.addEventListener('touchstart', onCanvasDown, { passive: false });
+  canvas.addEventListener('touchmove', onCanvasMove, { passive: false });
+  canvas.addEventListener('touchend', onCanvasUp);
+
+  // TOOLS
+  window.setTool = function(tool, btn) {
+    currentTool = tool;
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    connectFrom = null;
+
+    const hint = document.getElementById('canvasHintText');
+    if (tool === 'select') {
+      hint.textContent = 'Drag node untuk susun. Klik kanan untuk padam.';
+      canvas.style.cursor = 'grab';
+    } else {
+      hint.textContent = 'Klik node pertama, kemudian node kedua untuk sambung.';
+      canvas.style.cursor = 'crosshair';
+    }
+
+    drawCanvas();
+  };
+
+  window.undoLastNode = function() {
+    if (nodes.length === 0) {
+      showFeedback('info', 'ℹ️ Tiada node untuk dipadam.');
+      return;
+    }
+    const removed = nodes[nodes.length - 1];
+    nodes.pop();
+    links = links.filter(l => l.from !== removed.id && l.to !== removed.id);
+    showFeedback('success', `🗑️ Node "${removed.text}" dipadam.`);
+    drawCanvas();
+    updateInfo();
+  };
+
+  // ✅ FIX: Clear All dengan double-click confirm (tanpa native confirm())
+  window.clearAllNodes = function(btn) {
+    if (nodes.length === 0) {
+      showFeedback('info', 'ℹ️ Tiada node untuk dipadam.');
+      return;
+    }
+
+    // Get the button element (5th tool button)
+    const trashBtn = btn || document.querySelector('.canvas-toolbar .tool-btn:nth-child(5)');
+
+    if (!trashBtn.dataset.confirming) {
+      // First click — ask confirm
+      trashBtn.dataset.confirming = 'true';
+      trashBtn.style.background = 'rgba(239, 68, 68, 0.2)';
+      trashBtn.style.color = '#EF4444';
+      showFeedback('error', `⚠️ Klik sekali lagi untuk PADAM SEMUA ${nodes.length} node!`);
+      setTimeout(() => {
+        delete trashBtn.dataset.confirming;
+        trashBtn.style.background = '';
+        trashBtn.style.color = '';
+      }, 3000);
+      return;
+    }
+
+    // Second click — confirmed
+    delete trashBtn.dataset.confirming;
+    trashBtn.style.background = '';
+    trashBtn.style.color = '';
+
+    nodes = [];
+    links = [];
+    nodeIdCounter = 0;
+    showFeedback('success', '🗑️ Semua node dipadam!');
+    drawCanvas();
+    updateInfo();
+  };
+
+  window.autoLayout = function() {
+    if (nodes.length === 0) {
+      showFeedback('info', 'ℹ️ Tambah node dahulu.');
+      return;
+    }
+
+    const W = canvas.width;
+    const H = canvas.height;
+    const strengths = nodes.filter(n => n.type === 'strength');
+    const weaknesses = nodes.filter(n => n.type === 'weakness');
+
+    const leftX = W * 0.28;
+    const rightX = W * 0.72;
+    const startY = 120;
+    const spacing = 65;
+
+    strengths.forEach((n, i) => {
+      n.x = leftX;
+      n.y = startY + i * spacing;
+    });
+
+    weaknesses.forEach((n, i) => {
+      n.x = rightX;
+      n.y = startY + i * spacing;
+    });
+
+    drawCanvas();
+    showFeedback('success', '✨ Auto-susun selesai!');
+  };
+
+  window.resetCanvas = function() {
+    if (nodes.length === 0) {
+      showFeedback('info', 'ℹ️ Canvas dah kosong.');
+      return;
+    }
+
+    // Guna double-click approach untuk Reset juga
+    if (!window._resetConfirming) {
+      window._resetConfirming = true;
+      showFeedback('error', '⚠️ Klik "Reset" sekali lagi untuk padam semua.');
+      setTimeout(() => { window._resetConfirming = false; }, 3000);
+      return;
+    }
+    window._resetConfirming = false;
+
+    nodes = [];
+    links = [];
+    nodeIdCounter = 0;
+    drawCanvas();
+    updateInfo();
+    showFeedback('success', '🔄 Canvas direset.');
+  };
+
+  // INFO
+  function updateInfo() {
+    const strengths = nodes.filter(n => n.type === 'strength').length;
+    const weaknesses = nodes.filter(n => n.type === 'weakness').length;
+
+    document.getElementById('statNodes').textContent = nodes.length;
+    document.getElementById('infoStrength').textContent = strengths;
+    document.getElementById('infoWeakness').textContent = weaknesses;
+    document.getElementById('infoTotal').textContent = nodes.length;
+    document.getElementById('infoLinks').textContent = links.length;
+
+    document.getElementById('sideStrength').textContent = `${strengths} / ${MIN_STRENGTH}`;
+    document.getElementById('sideWeakness').textContent = `${weaknesses} / ${MIN_WEAKNESS}`;
+
+    document.getElementById('saveBtn').disabled = !(strengths >= MIN_STRENGTH && weaknesses >= MIN_WEAKNESS);
+  }
+
+  // SAVE
+  window.saveMindMap = function() {
+    const strengths = nodes.filter(n => n.type === 'strength').length;
+    const weaknesses = nodes.filter(n => n.type === 'weakness').length;
+
+    if (strengths < MIN_STRENGTH) {
+      showFeedback('error', `❌ Perlu sekurang-kurangnya ${MIN_STRENGTH} kekuatan.`);
+      return;
+    }
+    if (weaknesses < MIN_WEAKNESS) {
+      showFeedback('error', `❌ Perlu sekurang-kurangnya ${MIN_WEAKNESS} kelemahan.`);
+      return;
+    }
+
+    document.getElementById('stepBar2').classList.remove('active');
+    document.getElementById('stepBar2').classList.add('done');
+    document.getElementById('stepBar3').classList.add('active');
+
+    showResultModal();
+  };
+
+  // FEEDBACK
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 3500);
+  }
+
+  function hideFeedback() {
+    document.getElementById('feedbackMsg').classList.remove('active');
+  }
+
+  // RESULT MODAL
+  function showResultModal() {
+    const strengths = nodes.filter(n => n.type === 'strength').length;
+    const weaknesses = nodes.filter(n => n.type === 'weakness').length;
+
+    document.getElementById('modalStrength').textContent = strengths;
+    document.getElementById('modalWeakness').textContent = weaknesses;
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  // REFLECTION
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  // SUBMIT REFLECTION
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const strengths = nodes.filter(n => n.type === 'strength').length;
+    const weaknesses = nodes.filter(n => n.type === 'weakness').length;
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+    try {
+      if (currentUser) {
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+        await setDoc(progressRef, {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          refleksi: text,
+          emosi: selectedEmotion,
+          badge: { earned: true, type: 'activity_complete' },
+          strengthCount: strengths,
+          weaknessCount: weaknesses,
+          totalNodes: nodes.length,
+          linkCount: links.length,
+          nodeList: nodes.map(n => ({ type: n.type, text: n.text })),
+          timeSpent: elapsed,
+          activityTitle: ACTIVITY_TITLE,
+          konstruk: ACTIVITY_KONSTRUK
+        }, { merge: true });
+
+        if (NEXT_ACTIVITY_NUMBER) {
+          const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+          const nextDoc = await getDoc(nextRef);
+          if (!nextDoc.exists()) {
+            await setDoc(nextRef, {
+              status: 'in_progress',
+              startedAt: serverTimestamp()
+            }, { merge: true });
+          }
+        }
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan & Selesai';
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon good';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai! 🎉';
+    document.getElementById('modalSub').textContent = 'Refleksi anda telah disimpan. Teruskan ke aktiviti seterusnya!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="${NEXT_ACTIVITY_FILE}" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-arrow-right"></i> Aktiviti Seterusnya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // FALLBACK
+  setTimeout(() => { hideLoader(); }, 2000);
+
+  // AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        let nama = data.nama;
+        if (!nama || nama.trim() === '' || nama === 'Pengguna') {
+          nama = data.emel?.split('@')[0] || 'Murid';
+        }
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+
+        if (data.avatar) {
+          const navAvatar = document.getElementById('navAvatar');
+          navAvatar.innerHTML = `<img src="${data.avatar}" alt="${nama}">`;
+        }
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    drawCanvas();
+    updateInfo();
+    startTimer();
+    hideLoader();
+  });
+
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 10 · Peta Kekuatan & Kelemahan ', 'background:linear-gradient(135deg,#8B5CF6,#1A4A6E);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+  console.log('🧩 Mind-Map Builder · Fixed delete icon');
+</script>
+
+</body>
+</html>

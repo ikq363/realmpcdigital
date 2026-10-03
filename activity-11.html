@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aktiviti 11: Refleksi Strategi · REAL-MPC</title>
+<meta name="description" content="Aktiviti interaktif REAL-MPC — Nombor Indeks dengan Self-Index Calculator.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --maroon: #8B1E3F;
+    --maroon-dark: #5C1329;
+    --red: #C8102E;
+    --red-bright: #E63946;
+    --gold: #F4C430;
+    --gold-soft: #FACC15;
+    --navy: #0B2E4E;
+    --navy-mid: #1A4A6E;
+    --navy-light: #2B6A9E;
+    --cream: #FDF9F0;
+    --paper: #F8F4EA;
+    --ink: #1E293B;
+    --ink-soft: #475569;
+    --line: #E2E8F0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --purple: #8B5CF6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 249, 240, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(139, 30, 63, 0.08);
+    transition: box-shadow 0.3s;
+  }
+  .navbar.scrolled { box-shadow: 0 4px 20px rgba(11, 46, 78, 0.08); }
+  .nav-container {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: rgba(139, 30, 63, 0.06);
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .nav-back:hover { background: var(--maroon); color: #fff; transform: translateX(-3px); }
+  .nav-title { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-badge {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--navy-light), var(--navy-mid));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 6px 16px rgba(43, 106, 158, 0.3);
+    flex-shrink: 0;
+  }
+  .nav-badge-text strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  .nav-badge-text span {
+    font-size: 0.68rem;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+  .nav-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  }
+  .nav-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    color: var(--navy);
+    font-size: 1rem;
+    border: 2px solid rgba(255,255,255,0.6);
+    overflow: hidden;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  /* PAGE */
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* HEADER */
+  .activity-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px -10px rgba(11, 46, 78, 0.3);
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .activity-header::before {
+    content: "";
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle, rgba(139,92,246,0.3), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .activity-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .activity-info { flex: 1; min-width: 280px; }
+  .activity-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .activity-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .activity-badge-pill.konstruk {
+    background: rgba(244, 196, 48, 0.2);
+    border: 1px solid rgba(244, 196, 48, 0.4);
+    color: var(--gold);
+  }
+  .activity-badge-pill.topic {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .activity-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .activity-subtitle { color: rgba(255,255,255,0.85); font-size: 0.95rem; max-width: 540px; }
+  .activity-stats-box { display: flex; gap: 1rem; flex-wrap: wrap; position: relative; z-index: 1; }
+  .activity-stat {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    text-align: center;
+    min-width: 100px;
+  }
+  .activity-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    color: var(--gold);
+  }
+  .activity-stat-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* STEPS */
+  .steps-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+  .step-item.active {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+  }
+  .step-item.done { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+  .step-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .step-item.active .step-icon { background: rgba(255,255,255,0.25); }
+  .step-item.done .step-icon { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .step-connector { color: var(--line); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+  }
+  @media (max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+
+  .main-panel {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-panel { display: flex; flex-direction: column; gap: 1rem; }
+  .side-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 1.4rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(11, 46, 78, 0.05);
+  }
+  .side-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .side-card-title i { color: var(--purple); font-size: 0.9rem; }
+
+  /* INTRO */
+  .intro-panel {
+    background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(244,196,48,0.06));
+    border: 2px solid rgba(139,92,246,0.15);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .intro-icon {
+    width: 60px; height: 60px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 10px 24px rgba(139, 92, 246, 0.3);
+  }
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .intro-desc {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .concept-box {
+    background: #fff;
+    border: 2px dashed var(--purple);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .concept-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--navy);
+    text-align: center;
+    padding: 0.5rem;
+    background: rgba(139, 92, 246, 0.05);
+    border-radius: 8px;
+    margin-bottom: 0.7rem;
+  }
+  .concept-formula strong { color: var(--purple); }
+  .concept-text {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  /* COMPONENT ROWS */
+  .component-section { margin-bottom: 1.5rem; }
+  .component-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .component-title i { color: var(--purple); font-size: 0.95rem; }
+
+  .component-row {
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.8rem;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .component-row:hover {
+    border-color: rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+  }
+  .component-row.active {
+    border-color: var(--purple);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
+  }
+  .component-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .component-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex: 1;
+    min-width: 180px;
+  }
+  .component-emoji {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(244,196,48,0.1));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .component-info { flex: 1; }
+  .component-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .component-desc {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+
+  .component-delete {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.08);
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .component-delete:hover { background: var(--danger); color: #fff; }
+
+  .component-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    align-items: center;
+  }
+  @media (max-width: 500px) { .component-inputs { grid-template-columns: 1fr; } }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .input-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .input-field {
+    width: 100%;
+    padding: 0.6rem 2rem 0.6rem 0.8rem;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--navy);
+    background: #fff;
+    outline: none;
+    transition: all 0.2s;
+    text-align: right;
+  }
+  .input-field:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  }
+  .input-suffix {
+    position: absolute;
+    right: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--ink-soft);
+    font-weight: 700;
+    pointer-events: none;
+  }
+
+  /* WEIGHT SLIDER */
+  .weight-slider-wrap {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .weight-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--line);
+    border-radius: 50px;
+    outline: none;
+    cursor: pointer;
+  }
+  .weight-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 3px 10px rgba(139, 92, 246, 0.4);
+    border: 2px solid #fff;
+  }
+  .weight-slider::-moz-range-thumb {
+    width: 20px; height: 20px;
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 3px 10px rgba(139, 92, 246, 0.4);
+    border: 2px solid #fff;
+  }
+  .weight-display {
+    min-width: 55px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--purple);
+    background: rgba(139, 92, 246, 0.1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+  }
+
+  /* WEIGHT TOTAL */
+  .weight-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 2px solid var(--line);
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .weight-total-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .weight-total-label i { color: var(--purple); }
+  .weight-total-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 800;
+    padding: 0.4rem 0.9rem;
+    border-radius: 10px;
+    transition: all 0.3s;
+  }
+  .weight-total-value.valid {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+  }
+  .weight-total-value.invalid {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  /* ADD COMPONENT */
+  .add-component-section {
+    background: linear-gradient(135deg, rgba(139,92,246,0.04), rgba(244,196,48,0.04));
+    border: 2px dashed rgba(139, 92, 246, 0.3);
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .add-component-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .add-component-title i { color: var(--purple); }
+  .preset-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+  .preset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.9rem;
+    background: #fff;
+    border: 2px solid var(--line);
+    border-radius: 50px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .preset-btn:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+  }
+  .preset-btn.added {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .custom-add-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .custom-input {
+    flex: 1;
+    padding: 0.6rem 0.9rem;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .custom-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  }
+  .custom-add-btn {
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .custom-add-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3); }
+
+  /* RESULT PREVIEW */
+  .result-preview {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    border-radius: 16px;
+    padding: 1.5rem;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-preview::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(244,196,48,0.25), transparent 70%);
+    border-radius: 50%;
+  }
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .result-header i { color: var(--gold); font-size: 1.1rem; }
+  .result-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin: 0;
+  }
+  .result-main {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+  .result-score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    padding: 0.9rem 1.4rem;
+    backdrop-filter: blur(10px);
+    min-width: 110px;
+  }
+  .result-score-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .result-score-label {
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+  }
+  .result-desc {
+    flex: 1;
+    min-width: 200px;
+  }
+  .result-level {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .result-message {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.5;
+  }
+
+  /* BREAKDOWN */
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .breakdown-item {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .breakdown-emoji {
+    font-size: 1.4rem;
+  }
+  .breakdown-content { flex: 1; }
+  .breakdown-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.15rem;
+    line-height: 1.2;
+  }
+  .breakdown-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+  .breakdown-score strong { color: var(--purple); }
+
+  /* BUTTONS */
+  .btn-group { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    flex: 1;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(139, 92, 246, 0.5); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+  .btn-outline {
+    background: #fff;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .btn-outline:hover {
+    border-color: var(--purple);
+    color: var(--purple);
+    background: var(--paper);
+    transform: translateY(-2px);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    color: var(--navy);
+    box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+    flex: 1;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(244, 196, 48, 0.55); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    flex: 1;
+  }
+  .btn-success:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(16, 185, 129, 0.5); }
+
+  /* FEEDBACK */
+  .feedback-msg {
+    display: none;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+  }
+  .feedback-msg.active { display: flex; }
+  .feedback-msg i { font-size: 1.1rem; margin-top: 0.1rem; flex-shrink: 0; }
+  .feedback-msg.success { background: rgba(16, 185, 129, 0.1); color: #047857; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .feedback-msg.error { background: rgba(239, 68, 68, 0.1); color: #B91C1C; border: 1px solid rgba(239, 68, 68, 0.25); }
+  .feedback-msg.info { background: rgba(139, 92, 246, 0.1); color: #5B21B6; border: 1px solid rgba(139, 92, 246, 0.25); }
+
+  /* SIDE */
+  .obj-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .obj-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .obj-list li::before {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--success);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .tips-list li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    padding: 0.7rem 0.9rem;
+    background: var(--paper);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+  }
+  .tips-list li i { color: var(--gold); font-size: 0.85rem; flex-shrink: 0; margin-top: 0.15rem; }
+  .formula-box {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+  }
+  .formula-box strong {
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 46, 78, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: fadeIn 0.3s;
+  }
+  .modal-overlay.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalScale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalScale {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.2rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+    box-shadow: 0 16px 40px rgba(244, 196, 48, 0.5);
+    animation: bounceIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .modal-icon.good { background: linear-gradient(135deg, var(--success), #059669); box-shadow: 0 16px 40px rgba(16, 185, 129, 0.5); }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .modal-sub { color: var(--ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+  .modal-stat { background: var(--paper); border-radius: 14px; padding: 1rem; text-align: center; }
+  .modal-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .modal-stat-label {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+  }
+
+  /* REFLECTION */
+  .reflection-area {
+    background: linear-gradient(135deg, var(--paper), #fff);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  .emotion-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .emotion-scale { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.3rem; }
+  .emotion-btn {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 2px solid var(--line);
+    background: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .emotion-btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(244, 196, 48, 0.25);
+  }
+  .emotion-btn.selected {
+    background: linear-gradient(135deg, var(--purple), var(--navy-mid));
+    color: #fff;
+    border-color: var(--purple);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    transform: scale(1.08);
+  }
+  .reflection-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: #fff;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: all 0.25s;
+  }
+  .reflection-input:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.08);
+  }
+
+  /* LOADER */
+  .page-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 9999;
+    transition: opacity 0.5s, visibility 0.5s;
+  }
+  .page-loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-spinner {
+    width: 52px; height: 52px;
+    border: 4px solid var(--line);
+    border-top-color: var(--purple);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .page-wrap { padding: 1.5rem 1rem 3rem; }
+    .activity-header { padding: 1.8rem 1.4rem; }
+    .activity-header-content { flex-direction: column; }
+    .activity-stats-box { width: 100%; }
+    .activity-stat { flex: 1; }
+    .main-panel { padding: 1.4rem; }
+    .nav-badge-text span { display: none; }
+  }
+  @media (max-width: 480px) {
+    .activity-title { font-size: 1.35rem; }
+    .modal { padding: 2rem 1.4rem; }
+    .modal-stats { grid-template-columns: 1fr; }
+    .btn { padding: 0.75rem 1.2rem; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="dashboard-murid.html" class="nav-back">
+      <i class="fas fa-arrow-left"></i> Kembali
+    </a>
+
+    <div class="nav-title">
+      <div class="nav-badge"><i class="fas fa-percentage"></i></div>
+      <div class="nav-badge-text">
+        <strong>Aktiviti 11</strong>
+        <span>Refleksi Strategi</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <div class="nav-score">
+        <i class="fas fa-star"></i>
+        <span id="navScore">0</span>
+        <small style="opacity: 0.7;">/ 100</small>
+      </div>
+      <div class="nav-avatar" id="navAvatar" title="Murid">
+        <span id="avatarInitial">M</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <section class="activity-header">
+    <div class="activity-header-content">
+      <div class="activity-info">
+        <div class="activity-badge-row">
+          <span class="activity-badge-pill konstruk">
+            <i class="fas fa-eye"></i> Kesedaran Kendiri
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-flask"></i> Nombor Indeks
+          </span>
+          <span class="activity-badge-pill topic">
+            <i class="fas fa-clock"></i> 60 minit
+          </span>
+        </div>
+        <h1 class="activity-title">Refleksi Strategi ⚖️</h1>
+        <p class="activity-subtitle">
+          Bina <strong>Indeks Nilai Diri</strong> anda sendiri — pilih komponen penting, 
+          bagi pemberatan (%), skor diri (1-5), dan sistem akan kira indeks keseluruhan.
+        </p>
+      </div>
+
+      <div class="activity-stats-box">
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statComponents">0</div>
+          <div class="activity-stat-label">Komponen</div>
+        </div>
+        <div class="activity-stat">
+          <div class="activity-stat-value" id="statTime">0:00</div>
+          <div class="activity-stat-label">Masa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-bar">
+    <div class="step-item active" id="stepBar1">
+      <div class="step-icon">1</div>
+      <span>Fahami Konsep</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar2">
+      <div class="step-icon">2</div>
+      <span>Bina Indeks Diri</span>
+    </div>
+    <i class="fas fa-chevron-right step-connector"></i>
+    <div class="step-item" id="stepBar3">
+      <div class="step-icon">3</div>
+      <span>Refleksi</span>
+    </div>
+  </section>
+
+  <div class="content-grid">
+
+    <div class="main-panel">
+
+      <div class="feedback-msg" id="feedbackMsg">
+        <i class="fas fa-info-circle"></i>
+        <span id="feedbackText"></span>
+      </div>
+
+      <!-- INTRO -->
+      <div class="intro-panel">
+        <div class="intro-icon"><i class="fas fa-balance-scale"></i></div>
+        <div class="intro-title">Indeks Nilai Diri Pelajar</div>
+        <div class="intro-desc">
+          Macam indeks harga yang gabungkan beberapa barang jadi satu nilai, 
+          kita pun boleh gabungkan beberapa <strong>komponen nilai diri</strong> 
+          (usaha, disiplin, akhlak, kerjasama) jadi <strong>satu indeks</strong>. 
+          Setiap komponen ada <strong>pemberatan</strong> dan <strong>skor</strong>.
+        </div>
+        <div class="concept-box">
+          <div class="concept-formula">
+            <strong>Indeks = Σ (skor × pemberatan) / Σ pemberatan</strong>
+          </div>
+          <div class="concept-text">
+            Contoh: Kalau usaha (40%) skor 4, disiplin (30%) skor 3, akhlak (30%) skor 5 
+            → Indeks = (4×0.4 + 3×0.3 + 5×0.3) / 1.0 = 4.0
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPONENTS -->
+      <div class="component-section">
+        <div class="component-title">
+          <i class="fas fa-list-check"></i> Komponen Nilai Diri Anda
+        </div>
+
+        <div id="componentsList"></div>
+
+        <div class="weight-total" id="weightTotal">
+          <div class="weight-total-label">
+            <i class="fas fa-calculator"></i> Jumlah Pemberatan
+          </div>
+          <div class="weight-total-value invalid" id="weightTotalValue">0% / 100%</div>
+        </div>
+      </div>
+
+      <!-- ADD COMPONENT -->
+      <div class="add-component-section">
+        <div class="add-component-title">
+          <i class="fas fa-plus-circle"></i> Tambah Komponen
+        </div>
+
+        <div class="preset-grid" id="presetGrid"></div>
+
+        <div class="custom-add-row">
+          <input type="text" class="custom-input" id="customComponentInput" placeholder="Tambah komponen sendiri..." maxlength="25">
+          <button class="custom-add-btn" onclick="addCustomComponent()">
+            <i class="fas fa-plus"></i> Tambah
+          </button>
+        </div>
+      </div>
+
+      <!-- RESULT PREVIEW -->
+      <div class="result-preview">
+        <div class="result-header">
+          <i class="fas fa-chart-line"></i>
+          <h3>Indeks Nilai Diri Anda</h3>
+        </div>
+        <div class="result-main">
+          <div class="result-score-box">
+            <div class="result-score-value" id="indexValue">0.0</div>
+            <div class="result-score-label">Indeks (0-5)</div>
+          </div>
+          <div class="result-desc">
+            <div class="result-level" id="indexLevel">Belum lengkap</div>
+            <div class="result-message" id="indexMessage">Tambah komponen dan isi skor untuk lihat indeks anda.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BREAKDOWN -->
+      <div class="breakdown-grid" id="breakdownGrid"></div>
+
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="resetIndex(this)">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveIndex()" disabled>
+          <i class="fas fa-check"></i> Simpan & Teruskan
+        </button>
+      </div>
+
+    </div>
+
+    <aside class="side-panel">
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-bullseye"></i> Objektif Aktiviti
+        </div>
+        <ul class="obj-list">
+          <li>Fahami konsep nombor indeks & pemberatan</li>
+          <li>Bina "Indeks Nilai Diri" sendiri</li>
+          <li>Refleksi tentang nilai & keutamaan diri</li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-lightbulb"></i> Tips Indeks Diri
+        </div>
+        <ul class="tips-list">
+          <li>
+            <i class="fas fa-balance-scale"></i>
+            <span>Jumlah pemberatan <strong>mesti 100%</strong></span>
+          </li>
+          <li>
+            <i class="fas fa-star"></i>
+            <span>Skor diri <strong>1-5</strong> (jujur dengan diri)</span>
+          </li>
+          <li>
+            <i class="fas fa-list"></i>
+            <span>Minimum <strong>3 komponen</strong>, maksimum 6</span>
+          </li>
+          <li>
+            <i class="fas fa-heart"></i>
+            <span>Ini <strong>refleksi peribadi</strong> — bukan untuk banding dengan orang lain</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-square-root-alt"></i> Formula Indeks
+        </div>
+        <div class="formula-box">
+          <strong>Nombor Indeks</strong>
+          I = Σ(W×S) / ΣW
+        </div>
+        <div style="font-size: 0.78rem; color: var(--ink-soft); line-height: 1.6;">
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">W</strong> = pemberatan (%)</div>
+          <div style="margin-bottom: 0.4rem;"><strong style="color: var(--navy);">S</strong> = skor diri (1-5)</div>
+          <div><strong style="color: var(--navy);">ΣW</strong> = jumlah pemberatan</div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-card-title">
+          <i class="fas fa-chart-bar"></i> Progress
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Komponen</span>
+            <strong id="sideComponents" style="color: var(--purple);">0 / 3</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Jumlah Berat</span>
+            <strong id="sideWeight" style="color: var(--navy);">0%</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.78rem;">
+            <span style="font-weight: 600;">Masa</span>
+            <strong id="sideTime" style="color: var(--navy);">0:00</strong>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</div>
+
+<!-- RESULT MODAL -->
+<div class="modal-overlay" id="resultModal">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <i class="fas fa-trophy"></i>
+    </div>
+    <h2 class="modal-title" id="modalTitle">Tahniah!</h2>
+    <p class="modal-sub" id="modalSub">Anda berjaya bina Indeks Nilai Diri!</p>
+
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalIndex">0.0</div>
+        <div class="modal-stat-label">Indeks</div>
+      </div>
+      <div class="modal-stat">
+        <div class="modal-stat-value" id="modalComponents">0</div>
+        <div class="modal-stat-label">Komponen</div>
+      </div>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-gold" onclick="goToReflection()">
+        <i class="fas fa-edit"></i> Refleksi Diri
+      </button>
+      <button class="btn btn-outline" onclick="closeModal()" style="flex: none;">
+        <i class="fas fa-times"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- REFLECTION MODAL -->
+<div class="modal-overlay" id="reflectionModal">
+  <div class="modal">
+    <div class="modal-icon good">
+      <i class="fas fa-edit"></i>
+    </div>
+    <h2 class="modal-title">Refleksi Kendiri</h2>
+    <p class="modal-sub">Luahkan perasaan tentang Indeks Nilai Diri anda</p>
+
+    <div class="reflection-area">
+      <label class="emotion-label">Bagaimanakah perasaan anda selepas aktiviti ini?</label>
+      <div class="emotion-scale" id="emotionScale">
+        <button class="emotion-btn" onclick="selectEmotion(1, this)">1</button>
+        <button class="emotion-btn" onclick="selectEmotion(2, this)">2</button>
+        <button class="emotion-btn" onclick="selectEmotion(3, this)">3</button>
+        <button class="emotion-btn" onclick="selectEmotion(4, this)">4</button>
+        <button class="emotion-btn" onclick="selectEmotion(5, this)">5</button>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--ink-soft); text-align: center; margin-bottom: 1rem;">
+        1 = Sangat tidak puas · 5 = Sangat puas
+      </div>
+
+      <label class="emotion-label">Apakah komponen paling penting dalam nilai diri anda? Mengapa?</label>
+      <textarea class="reflection-input" id="reflectionText" placeholder="Contoh: Saya letak usaha 40% sebab usaha lebih penting dari bakat..."></textarea>
+    </div>
+
+    <div class="btn-group" style="flex-direction: column;">
+      <button class="btn btn-success" onclick="submitReflection()" style="width: 100%;">
+        <i class="fas fa-check"></i> Simpan & Selesai
+      </button>
+      <button class="btn btn-outline" onclick="closeReflectionModal()" style="width: 100%;">
+        <i class="fas fa-times"></i> Batal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div class="page-loader" id="pageLoader">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Memuatkan Aktiviti...</div>
+</div>
+
+<!-- FIREBASE + LOGIC -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
+    authDomain: "real-mpc-v2-digital.firebaseapp.com",
+    projectId: "real-mpc-v2-digital",
+    storageBucket: "real-mpc-v2-digital.firebasestorage.app",
+    messagingSenderId: "712934373931",
+    appId: "1:712934373931:web:b626ec1daa2dee3970886e",
+    measurementId: "G-8N37Q74H7S"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // METADATA
+  const ACTIVITY_ID = '11';
+  const ACTIVITY_NUMBER = 11;
+  const ACTIVITY_TITLE = 'Refleksi Strategi';
+  const ACTIVITY_KONSTRUK = 'Kesedaran Kendiri';
+  const NEXT_ACTIVITY_NUMBER = 12;
+  const NEXT_ACTIVITY_FILE = 'activity-12.html';
+
+  function hideLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader) loader.classList.add('hidden');
+  }
+
+  // PRESETS
+  const PRESETS = [
+    { id: 'usaha', name: 'Usaha', emoji: '💪', desc: 'Ketekunan & kerja keras' },
+    { id: 'disiplin', name: 'Disiplin', emoji: '⏰', desc: 'Pengurusan masa & rutin' },
+    { id: 'akhlak', name: 'Akhlak', emoji: '🤝', desc: 'Tingkah laku & adab' },
+    { id: 'kerjasama', name: 'Kerjasama', emoji: '👥', desc: 'Bekerja dengan orang lain' },
+    { id: 'hormat', name: 'Hormat', emoji: '🙏', desc: 'Menghormati orang lain' },
+    { id: 'tanggungjawab', name: 'Tanggungjawab', emoji: '🎯', desc: 'Amanah & komitmen' },
+    { id: 'kreativiti', name: 'Kreativiti', emoji: '🎨', desc: 'Idea baru & inovatif' },
+    { id: 'kesihatan', name: 'Kesihatan', emoji: '🏃', desc: 'Jaga badan & minda' },
+    { id: 'belajar', name: 'Semangat Belajar', emoji: '📚', desc: 'Rasa ingin tahu' },
+    { id: 'kesabaran', name: 'Kesabaran', emoji: '🧘', desc: 'Tenang hadapi cabaran' }
+  ];
+
+  // STATE
+  let components = [];
+  let currentUser = null;
+  let selectedEmotion = null;
+  let startTime = Date.now();
+  let timerInterval = null;
+  let currentIndex = 0;
+
+  const MIN_COMPONENTS = 3;
+  const MAX_COMPONENTS = 6;
+
+  // TIMER
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
+      const el = document.getElementById('statTime');
+      const el2 = document.getElementById('sideTime');
+      const timeStr = `${m}:${String(s).padStart(2, '0')}`;
+      if (el) el.textContent = timeStr;
+      if (el2) el2.textContent = timeStr;
+    }, 1000);
+  }
+
+  // RENDER PRESETS
+  function renderPresets() {
+    const grid = document.getElementById('presetGrid');
+    grid.innerHTML = PRESETS.map(p => {
+      const added = components.some(c => c.id === p.id);
+      return `
+        <button class="preset-btn ${added ? 'added' : ''}" onclick="addPresetComponent('${p.id}')">
+          <span>${p.emoji}</span> ${p.name}
+        </button>
+      `;
+    }).join('');
+  }
+
+  // ADD PRESET
+  window.addPresetComponent = function(presetId) {
+    if (components.length >= MAX_COMPONENTS) {
+      showFeedback('error', `⚠️ Maksimum ${MAX_COMPONENTS} komponen.`);
+      return;
+    }
+
+    const preset = PRESETS.find(p => p.id === presetId);
+    if (!preset) return;
+    if (components.some(c => c.id === presetId)) {
+      showFeedback('info', 'ℹ️ Komponen ini sudah ditambah.');
+      return;
+    }
+
+    components.push({
+      id: preset.id,
+      name: preset.name,
+      emoji: preset.emoji,
+      weight: 0,
+      score: 3
+    });
+
+    renderComponents();
+    renderPresets();
+    updateIndex();
+    showFeedback('success', `✅ ${preset.name} ditambah!`);
+  };
+
+  // ADD CUSTOM
+  window.addCustomComponent = function() {
+    const input = document.getElementById('customComponentInput');
+    const name = input.value.trim();
+    if (!name) {
+      showFeedback('error', '❌ Sila taip nama komponen.');
+      return;
+    }
+    if (components.length >= MAX_COMPONENTS) {
+      showFeedback('error', `⚠️ Maksimum ${MAX_COMPONENTS} komponen.`);
+      return;
+    }
+    if (components.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+      showFeedback('error', '❌ Komponen ini sudah wujud.');
+      return;
+    }
+
+    components.push({
+      id: 'custom_' + Date.now(),
+      name: name.slice(0, 25),
+      emoji: '✨',
+      weight: 0,
+      score: 3
+    });
+
+    input.value = '';
+    renderComponents();
+    renderPresets();
+    updateIndex();
+    showFeedback('success', `✅ ${name} ditambah!`);
+  };
+
+  // REMOVE
+  window.removeComponent = function(id) {
+    components = components.filter(c => c.id !== id);
+    renderComponents();
+    renderPresets();
+    updateIndex();
+    showFeedback('info', '🔄 Komponen dipadam.');
+  };
+
+  // UPDATE WEIGHT
+  window.updateWeight = function(id, value) {
+    const c = components.find(comp => comp.id === id);
+    if (!c) return;
+    c.weight = parseInt(value);
+    const display = document.getElementById(`weight_display_${id}`);
+    if (display) display.textContent = value + '%';
+    updateIndex();
+  };
+
+  // UPDATE SCORE
+  window.updateScore = function(id, value) {
+    const c = components.find(comp => comp.id === id);
+    if (!c) return;
+    c.score = parseInt(value);
+    updateIndex();
+  };
+
+  // RENDER COMPONENTS
+  function renderComponents() {
+    const list = document.getElementById('componentsList');
+
+    if (components.length === 0) {
+      list.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--ink-soft); background: var(--paper); border-radius: 12px; border: 2px dashed var(--line);">
+          <i class="fas fa-plus-circle" style="font-size: 2rem; color: var(--purple); opacity: 0.5; margin-bottom: 0.5rem; display: block;"></i>
+          <div style="font-size: 0.88rem; font-weight: 600;">Belum ada komponen.</div>
+          <div style="font-size: 0.78rem;">Klik preset atau tambah sendiri di bawah.</div>
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = components.map(c => `
+      <div class="component-row active">
+        <div class="component-header">
+          <div class="component-name-wrap">
+            <div class="component-emoji">${c.emoji}</div>
+            <div class="component-info">
+              <div class="component-name">${c.name}</div>
+              <div class="component-desc">Nilai & keutamaan anda</div>
+            </div>
+          </div>
+          <button class="component-delete" onclick="removeComponent('${c.id}')" title="Padam">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+
+        <div class="component-inputs">
+          <div class="input-group">
+            <div class="input-label">Pemberatan (W)</div>
+            <div class="weight-slider-wrap">
+              <input type="range" class="weight-slider" min="0" max="100" step="5" value="${c.weight}" oninput="updateWeight('${c.id}', this.value)">
+              <span class="weight-display" id="weight_display_${c.id}">${c.weight}%</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Skor Diri (S) 1-5</div>
+            <div class="input-wrapper">
+              <input type="number" class="input-field" min="1" max="5" step="1" value="${c.score}" oninput="updateScore('${c.id}', this.value)">
+              <span class="input-suffix">/ 5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // UPDATE INDEX
+  function updateIndex() {
+    const totalWeight = components.reduce((sum, c) => sum + c.weight, 0);
+
+    const totalEl = document.getElementById('weightTotalValue');
+    totalEl.textContent = `${totalWeight}% / 100%`;
+    totalEl.className = 'weight-total-value ' + (totalWeight === 100 ? 'valid' : 'invalid');
+
+    let index = 0;
+    if (totalWeight > 0) {
+      const weightedSum = components.reduce((sum, c) => sum + (c.score * c.weight), 0);
+      index = weightedSum / totalWeight;
+    }
+
+    document.getElementById('indexValue').textContent = index.toFixed(2);
+    document.getElementById('navScore').textContent = Math.round(index * 20);
+
+    const levelEl = document.getElementById('indexLevel');
+    const msgEl = document.getElementById('indexMessage');
+
+    if (components.length < MIN_COMPONENTS) {
+      levelEl.textContent = 'Belum lengkap';
+      msgEl.textContent = `Tambah ${MIN_COMPONENTS - components.length} komponen lagi.`;
+      levelEl.style.color = 'rgba(255,255,255,0.7)';
+    } else if (totalWeight !== 100) {
+      levelEl.textContent = 'Pemberatan perlu 100%';
+      msgEl.textContent = `Jumlah sekarang ${totalWeight}%. Laraskan slider untuk capai 100%.`;
+      levelEl.style.color = '#F59E0B';
+    } else {
+      if (index >= 4.5) {
+        levelEl.textContent = '🌟 Cemerlang!';
+        msgEl.textContent = 'Indeks nilai diri anda sangat tinggi. Kekalkan!';
+        levelEl.style.color = '#FACC15';
+      } else if (index >= 3.5) {
+        levelEl.textContent = '✅ Baik';
+        msgEl.textContent = 'Nilai diri anda baik. Teruskan tingkatkan.';
+        levelEl.style.color = '#10B981';
+      } else if (index >= 2.5) {
+        levelEl.textContent = '📈 Sederhana';
+        msgEl.textContent = 'Ada ruang untuk penambahbaikan. Fokus pada komponen skor rendah.';
+        levelEl.style.color = '#F59E0B';
+      } else {
+        levelEl.textContent = '💪 Perlu Usaha';
+        msgEl.textContent = 'Setiap orang boleh tingkatkan. Fokus pada satu komponen dahulu.';
+        levelEl.style.color = '#EF4444';
+      }
+    }
+
+    const breakdown = document.getElementById('breakdownGrid');
+    if (components.length === 0) {
+      breakdown.innerHTML = '';
+    } else {
+      breakdown.innerHTML = components.map(c => {
+        const contribution = totalWeight > 0 ? (c.score * c.weight) / totalWeight : 0;
+        return `
+          <div class="breakdown-item">
+            <div class="breakdown-emoji">${c.emoji}</div>
+            <div class="breakdown-content">
+              <div class="breakdown-name">${c.name}</div>
+              <div class="breakdown-score">Skor ${c.score} × ${c.weight}% = <strong>${contribution.toFixed(2)}</strong></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('statComponents').textContent = components.length;
+    document.getElementById('sideComponents').textContent = `${components.length} / ${MIN_COMPONENTS}`;
+    document.getElementById('sideWeight').textContent = `${totalWeight}%`;
+
+    const canSave = components.length >= MIN_COMPONENTS && totalWeight === 100 && components.every(c => c.score >= 1 && c.score <= 5);
+    document.getElementById('saveBtn').disabled = !canSave;
+
+    currentIndex = index;
+  }
+
+  // RESET (double-click confirm)
+  window.resetIndex = function(btn) {
+    if (components.length === 0) {
+      showFeedback('info', 'ℹ️ Tiada komponen untuk dipadam.');
+      return;
+    }
+
+    const resetBtn = btn || document.querySelector('.btn-outline[onclick*="resetIndex"]');
+
+    if (!resetBtn.dataset.confirming) {
+      resetBtn.dataset.confirming = 'true';
+      resetBtn.style.borderColor = 'var(--danger)';
+      resetBtn.style.color = 'var(--danger)';
+      showFeedback('error', `⚠️ Klik sekali lagi untuk PADAM SEMUA komponen!`);
+      setTimeout(() => {
+        delete resetBtn.dataset.confirming;
+        resetBtn.style.borderColor = '';
+        resetBtn.style.color = '';
+      }, 3000);
+      return;
+    }
+
+    delete resetBtn.dataset.confirming;
+    resetBtn.style.borderColor = '';
+    resetBtn.style.color = '';
+
+    components = [];
+    renderComponents();
+    renderPresets();
+    updateIndex();
+    showFeedback('success', '🔄 Semua komponen dipadam.');
+  };
+
+  // SAVE
+  window.saveIndex = function() {
+    const totalWeight = components.reduce((sum, c) => sum + c.weight, 0);
+
+    if (components.length < MIN_COMPONENTS) {
+      showFeedback('error', `❌ Perlu sekurang-kurangnya ${MIN_COMPONENTS} komponen.`);
+      return;
+    }
+    if (totalWeight !== 100) {
+      showFeedback('error', `❌ Jumlah pemberatan perlu 100% (sekarang ${totalWeight}%).`);
+      return;
+    }
+
+    document.getElementById('stepBar2').classList.remove('active');
+    document.getElementById('stepBar2').classList.add('done');
+    document.getElementById('stepBar3').classList.add('active');
+
+    showResultModal();
+  };
+
+  // FEEDBACK
+  function showFeedback(type, message) {
+    const box = document.getElementById('feedbackMsg');
+    const text = document.getElementById('feedbackText');
+    const icon = box.querySelector('i');
+
+    box.className = 'feedback-msg ' + type + ' active';
+    text.textContent = message;
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+                       type === 'error' ? 'fas fa-exclamation-circle' :
+                       'fas fa-info-circle';
+
+    clearTimeout(window._fbTimer);
+    window._fbTimer = setTimeout(hideFeedback, 3500);
+  }
+
+  function hideFeedback() {
+    document.getElementById('feedbackMsg').classList.remove('active');
+  }
+
+  // RESULT MODAL
+  function showResultModal() {
+    document.getElementById('modalIndex').textContent = currentIndex.toFixed(2);
+    document.getElementById('modalComponents').textContent = components.length;
+
+    const icon = document.getElementById('modalIcon');
+    const title = document.getElementById('modalTitle');
+    const sub = document.getElementById('modalSub');
+
+    if (currentIndex >= 4.5) {
+      icon.className = 'modal-icon';
+      icon.innerHTML = '<i class="fas fa-crown"></i>';
+      title.textContent = 'Cemerlang! 🌟';
+      sub.textContent = `Indeks Nilai Diri anda ${currentIndex.toFixed(2)} — sangat tinggi!`;
+    } else if (currentIndex >= 3.5) {
+      icon.className = 'modal-icon good';
+      icon.innerHTML = '<i class="fas fa-star"></i>';
+      title.textContent = 'Bagus! ⭐';
+      sub.textContent = `Indeks Nilai Diri anda ${currentIndex.toFixed(2)} — baik!`;
+    } else {
+      icon.className = 'modal-icon';
+      icon.innerHTML = '<i class="fas fa-heart"></i>';
+      title.textContent = 'Terus Tingkatkan! 💪';
+      sub.textContent = `Indeks Nilai Diri anda ${currentIndex.toFixed(2)}. Setiap hari boleh jadi lebih baik!`;
+    }
+
+    document.getElementById('resultModal').classList.add('active');
+  }
+
+  window.closeModal = function() {
+    document.getElementById('resultModal').classList.remove('active');
+  };
+
+  // REFLECTION
+  window.goToReflection = function() {
+    closeModal();
+    document.getElementById('reflectionModal').classList.add('active');
+  };
+
+  window.closeReflectionModal = function() {
+    document.getElementById('reflectionModal').classList.remove('active');
+  };
+
+  window.selectEmotion = function(value, btn) {
+    selectedEmotion = value;
+    document.querySelectorAll('#emotionScale .emotion-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  // SUBMIT REFLECTION — Integrated
+  window.submitReflection = async function() {
+    const text = document.getElementById('reflectionText').value.trim();
+    if (!selectedEmotion) {
+      alert('Sila pilih tahap perasaan anda dahulu.');
+      return;
+    }
+
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const totalWeight = components.reduce((sum, c) => sum + c.weight, 0);
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+    try {
+      if (currentUser) {
+        // Save ke progress/{uid}/activities/11
+        const progressRef = doc(db, 'progress', currentUser.uid, 'activities', ACTIVITY_ID);
+        await setDoc(progressRef, {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          refleksi: text,
+          emosi: selectedEmotion,
+          badge: { earned: true, type: 'activity_complete' },
+          indexValue: parseFloat(currentIndex.toFixed(2)),
+          componentCount: components.length,
+          totalWeight: totalWeight,
+          components: components.map(c => ({
+            name: c.name,
+            weight: c.weight,
+            score: c.score
+          })),
+          timeSpent: elapsed,
+          activityTitle: ACTIVITY_TITLE,
+          konstruk: ACTIVITY_KONSTRUK
+        }, { merge: true });
+
+        // Auto-unlock activity 12
+        const nextRef = doc(db, 'progress', currentUser.uid, 'activities', String(NEXT_ACTIVITY_NUMBER));
+        const nextDoc = await getDoc(nextRef);
+        if (!nextDoc.exists()) {
+          await setDoc(nextRef, {
+            status: 'in_progress',
+            startedAt: serverTimestamp()
+          }, { merge: true });
+        }
+      }
+    } catch (e) {
+      console.error('❌ Save error:', e);
+      alert('Gagal simpan. Sila cuba lagi.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan & Selesai';
+      return;
+    }
+
+    closeReflectionModal();
+
+    const modal = document.getElementById('resultModal');
+    document.getElementById('modalIcon').className = 'modal-icon good';
+    document.getElementById('modalIcon').innerHTML = '<i class="fas fa-check"></i>';
+    document.getElementById('modalTitle').textContent = 'Selesai! 🎉';
+    document.getElementById('modalSub').textContent = 'Refleksi anda telah disimpan. Teruskan ke aktiviti seterusnya!';
+
+    const btnGroup = modal.querySelector('.btn-group');
+    btnGroup.innerHTML = `
+      <a href="${NEXT_ACTIVITY_FILE}" class="btn btn-gold" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-arrow-right"></i> Aktiviti Seterusnya
+      </a>
+      <a href="dashboard-murid.html" class="btn btn-outline" style="text-decoration: none; text-align: center; flex: 1;">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+    `;
+
+    modal.classList.add('active');
+  };
+
+  // FALLBACK
+  setTimeout(() => { hideLoader(); }, 2000);
+
+  // AUTH STATE
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        let nama = data.nama;
+        if (!nama || nama.trim() === '' || nama === 'Pengguna') {
+          nama = data.emel?.split('@')[0] || 'Murid';
+        }
+        document.getElementById('avatarInitial').textContent = nama.charAt(0).toUpperCase();
+
+        if (data.avatar) {
+          const navAvatar = document.getElementById('navAvatar');
+          navAvatar.innerHTML = `<img src="${data.avatar}" alt="${nama}">`;
+        }
+      }
+    } catch (e) {
+      console.warn('User load error:', e);
+    }
+
+    renderPresets();
+    renderComponents();
+    updateIndex();
+    startTimer();
+    hideLoader();
+  });
+
+  window.addEventListener('scroll', () => {
+    const nb = document.getElementById('navbar');
+    if (nb) nb.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  console.log('%c Aktiviti 11 · Refleksi Strategi ', 'background:linear-gradient(135deg,#8B5CF6,#1A4A6E);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
+  console.log('⚖️ Self-Index Calculator · Integrated dengan Firestore');
+</script>
+
+</body>
+</html>
