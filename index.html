@@ -214,10 +214,160 @@ body {
   50% { transform: translateY(-30px) rotate(8deg); }
 }
 
+/* ═══════════════════════════════════════════════════════
+   ANNOUNCEMENT BOARD — PAPAN IKLAN BERGERAK
+   ═══════════════════════════════════════════════════════ */
+.announcement-bar {
+  position: sticky;
+  top: 0;
+  z-index: 101;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+  color: #fff;
+  overflow: hidden;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 4px 20px rgba(11, 46, 78, 0.3);
+}
+
+.announcement-label {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  padding: 0 1.2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  padding-right: 1.8rem;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.2);
+}
+
+.announcement-label i {
+  font-size: 0.85rem;
+  animation: bellShake 2s ease-in-out infinite;
+}
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(-12deg); }
+  20%, 40% { transform: rotate(12deg); }
+  50% { transform: rotate(0); }
+}
+
+.announcement-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
+}
+
+.announcement-marquee {
+  display: flex;
+  gap: 4rem;
+  animation: marqueeScroll 40s linear infinite;
+  white-space: nowrap;
+  padding-left: 2rem;
+  will-change: transform;
+}
+
+.announcement-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.announcement-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+  transition: color 0.25s;
+  text-decoration: none;
+}
+
+.announcement-item:hover {
+  color: var(--gold);
+}
+
+.announcement-item i {
+  color: var(--gold);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.announcement-item .announcement-badge {
+  background: rgba(244, 196, 48, 0.2);
+  border: 1px solid rgba(244, 196, 48, 0.4);
+  color: var(--gold);
+  padding: 0.15rem 0.55rem;
+  border-radius: 50px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.announcement-item .announcement-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+}
+
+.announcement-divider {
+  color: var(--gold);
+  opacity: 0.5;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+/* Announcement empty state */
+.announcement-empty {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  font-style: italic;
+  padding-left: 1rem;
+}
+
+/* Loading skeleton */
+.announcement-loading {
+  display: inline-block;
+  width: 300px;
+  height: 16px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* NAVBAR */
 .navbar {
   position: sticky;
-  top: 0;
+  top: 44px;
   z-index: 100;
   background: rgba(253, 249, 240, 0.75);
   backdrop-filter: blur(24px) saturate(180%);
@@ -1322,6 +1472,9 @@ body {
   .cta-box { padding: 3.5rem 1.8rem; border-radius: 26px; }
   .footer { padding: 3rem 1.8rem 2rem; border-radius: 26px 26px 0 0; }
   .section { margin-top: 4rem; }
+  .announcement-label { padding: 0 0.8rem; padding-right: 1.4rem; font-size: 0.65rem; }
+  .announcement-item { font-size: 0.82rem; }
+  .navbar { top: 44px; }
 }
 @media (max-width: 500px) {
   .nav-brand-text span { display: none; }
@@ -1333,6 +1486,8 @@ body {
   .hero-actions .btn { width: 100%; }
   .cta-actions { flex-direction: column; }
   .cta-actions .btn { width: 100%; }
+  .announcement-label span { display: none; }
+  .announcement-label { padding: 0 0.7rem; padding-right: 1.2rem; }
 }
 </style>
 </head>
@@ -1363,6 +1518,23 @@ body {
 <div class="floating-formula ff-5">θ</div>
 <div class="floating-formula ff-6">Δ</div>
 
+<!-- ═══════════════════════════════════════════════════════
+     ANNOUNCEMENT BOARD — PAPAN IKLAN BERGERAK
+     ═══════════════════════════════════════════════════════ -->
+<div class="announcement-bar">
+  <div class="announcement-label">
+    <i class="fas fa-bullhorn"></i>
+    <span>Pengumuman</span>
+  </div>
+  <div class="announcement-track">
+    <div class="announcement-marquee" id="announcementMarquee">
+      <span class="announcement-loading"></span>
+      <span class="announcement-loading"></span>
+      <span class="announcement-loading"></span>
+    </div>
+  </div>
+</div>
+
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <div class="nav-container">
@@ -1381,7 +1553,6 @@ body {
       <a href="#kajian" class="nav-link"><i class="fas fa-flask"></i> Kajian</a>
     </div>
 
-    <!-- Dynamic CTA button (JS akan update) -->
     <div class="nav-cta">
       <a href="login.html" class="btn btn-primary" id="navCtaBtn">
         <i class="fas fa-sign-in-alt"></i> Log Masuk
@@ -1755,7 +1926,7 @@ body {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, where, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
   const firebaseConfig = {
@@ -1933,7 +2104,7 @@ body {
       const target = document.querySelector(link.getAttribute('href'));
       if (target) {
         e.preventDefault();
-        const offset = 90;
+        const offset = 110;
         const top = target.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: 'smooth' });
       }
@@ -1963,13 +2134,123 @@ body {
   };
 
   // ═════════════════════════════════════════════════
+  // ✅ PAPAN IKLAN BERGERAK — LOAD DARI FIRESTORE
+  // Collection: "announcements"
+  // Fields: text, icon, badge, imageUrl, linkUrl, active, createdAt
+  // ═════════════════════════════════════════════════
+  async function loadAnnouncements() {
+    const marquee = document.getElementById('announcementMarquee');
+    if (!marquee) return;
+
+    try {
+      // Query iklan yang aktif sahaja, diisih mengikut tarikh terbaru
+      const q = query(
+        collection(db, 'announcements'),
+        where('active', '==', true),
+        orderBy('createdAt', 'desc'),
+        limit(20)
+      );
+
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        marquee.innerHTML = `
+          <span class="announcement-empty">
+            <i class="fas fa-info-circle" style="color: var(--gold);"></i>
+            Belum ada pengumuman buat masa ini. Nantikan berita terkini!
+          </span>
+        `;
+        return;
+      }
+
+      // Bina item iklan
+      const items = [];
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const text = data.text || '';
+        const icon = data.icon || 'fa-bullhorn';
+        const badge = data.badge || '';
+        const imageUrl = data.imageUrl || '';
+        const linkUrl = data.linkUrl || '';
+
+        let itemHTML = '';
+        if (linkUrl) {
+          itemHTML = `<a class="announcement-item" href="${linkUrl}" target="_blank" rel="noopener">`;
+        } else {
+          itemHTML = `<span class="announcement-item">`;
+        }
+
+        // Gambar (jika ada)
+        if (imageUrl) {
+          itemHTML += `<img src="${imageUrl}" alt="Iklan" class="announcement-img">`;
+        } else {
+          itemHTML += `<i class="fas ${icon}"></i>`;
+        }
+
+        // Badge (jika ada)
+        if (badge) {
+          itemHTML += `<span class="announcement-badge">${badge}</span>`;
+        }
+
+        // Teks iklan
+        itemHTML += `<span>${text}</span>`;
+
+        // Tutup tag
+        itemHTML += linkUrl ? `</a>` : `</span>`;
+
+        items.push(itemHTML);
+      });
+
+      // Gabungkan item + pemisah + ulang sekali lagi untuk loop yang lancar
+      const separator = `<span class="announcement-divider">✦</span>`;
+      const content = items.join(separator);
+      
+      // Untuk marquee yang seamless, kita perlu duplikat content
+      marquee.innerHTML = `
+        ${content}
+        ${separator}
+        ${content}
+        ${separator}
+      `;
+
+      // Adjust animation duration based on content length
+      const totalLength = marquee.scrollWidth;
+      const duration = Math.max(30, totalLength / 50); // minimum 30s
+      marquee.style.animationDuration = duration + 's';
+
+      console.log(`✅ ${snap.size} pengumuman dimuatkan`);
+
+    } catch (err) {
+      console.warn('⚠️ Gagal memuat pengumuman:', err);
+      // Fallback: tunjuk mesej lalai
+      marquee.innerHTML = `
+        <span class="announcement-item">
+          <i class="fas fa-bullhorn"></i>
+          <span>Selamat datang ke REAL-MPC Digital — Platform Pembelajaran Interaktif!</span>
+        </span>
+        <span class="announcement-divider">✦</span>
+        <span class="announcement-item">
+          <i class="fas fa-star"></i>
+          <span>12 aktiviti interaktif merentas 3 submodul psikologi menanti anda.</span>
+        </span>
+        <span class="announcement-divider">✦</span>
+      `;
+    }
+  }
+
+  // Muat pengumuman sebaik sahaja halaman sedia
+  loadAnnouncements();
+
+  // Refresh pengumuman setiap 5 minit (300000 ms)
+  setInterval(loadAnnouncements, 300000);
+
+  // ═════════════════════════════════════════════════
   // ✅ AUTH STATE — Update button (TIDAK auto-redirect)
   // ═════════════════════════════════════════════════
   onAuthStateChanged(auth, async (user) => {
     const navCtaBtn = document.getElementById('navCtaBtn');
 
     if (user) {
-      // User dah login — tukar button jadi "Dashboard"
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const role = userDoc.exists() ? userDoc.data().role : 'murid';
@@ -1984,7 +2265,6 @@ body {
         console.warn('Role check error:', e);
       }
     } else {
-      // Belum login — pastikan button "Log Masuk"
       if (navCtaBtn) {
         navCtaBtn.href = 'login.html';
         navCtaBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Log Masuk';
@@ -1995,6 +2275,7 @@ body {
   // INIT
   console.log('%c REAL-MPC Digital ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
   console.log('🚀 Landing page loaded');
+  console.log('📢 Papan iklan bergerak aktif — baca dari Firestore: announcements');
   console.log('✨ Button navbar dynamic — tak auto-redirect');
 </script>
 
