@@ -216,6 +216,7 @@ body {
 
 /* ═══════════════════════════════════════════════════════
    ANNOUNCEMENT BOARD — PAPAN IKLAN BERGERAK
+   Support: TEXT MARQUEE + IMAGE/VIDEO SLIDESHOW
    ═══════════════════════════════════════════════════════ */
 .announcement-bar {
   position: sticky;
@@ -362,6 +363,222 @@ body {
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MEDIA BANNER — IMAGE/VIDEO SLIDESHOW
+   Muncul apabila ada media iklan (image/video)
+   ═══════════════════════════════════════════════════════ */
+.media-banner {
+  position: relative;
+  z-index: 100;
+  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
+  overflow: hidden;
+  height: 0;
+  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 8px 24px rgba(11, 46, 78, 0.25);
+}
+
+.media-banner.active {
+  height: 220px;
+}
+
+@media (max-width: 900px) {
+  .media-banner.active { height: 180px; }
+}
+@media (max-width: 600px) {
+  .media-banner.active { height: 140px; }
+}
+
+.media-banner-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.media-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease-in-out, transform 0.9s ease-in-out;
+  transform: scale(1.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0B2E4E;
+}
+
+.media-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.media-slide img,
+.media-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Overlay gradient pada media */
+.media-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(11, 46, 78, 0.75) 0%,
+    rgba(11, 46, 78, 0.3) 40%,
+    rgba(11, 46, 78, 0.3) 60%,
+    rgba(11, 46, 78, 0.75) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Caption di atas media */
+.media-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  z-index: 3;
+  text-align: center;
+  color: #fff;
+  max-width: 90%;
+  padding: 0.7rem 1.6rem;
+  background: rgba(11, 46, 78, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(244, 196, 48, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: captionSlide 0.6s ease-out;
+}
+@keyframes captionSlide {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.media-caption .media-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  padding: 0.15rem 0.65rem;
+  border-radius: 50px;
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.media-caption .media-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  vertical-align: middle;
+}
+
+.media-caption .media-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.85);
+  margin-top: 0.2rem;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .media-caption {
+    bottom: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 14px;
+  }
+  .media-caption .media-title { font-size: 0.85rem; }
+  .media-caption .media-sub { font-size: 0.65rem; }
+}
+
+/* Dots indicator */
+.media-dots {
+  position: absolute;
+  bottom: 0.8rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 4;
+}
+@media (max-width: 600px) {
+  .media-dots { bottom: 0.4rem; right: 0.8rem; }
+}
+
+.media-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+.media-dot.active {
+  background: var(--gold);
+  width: 24px;
+  border-radius: 4px;
+  box-shadow: 0 0 12px var(--gold);
+}
+.media-dot:hover {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Nav arrows */
+.media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(11, 46, 78, 0.65);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(244, 196, 48, 0.4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 4;
+  font-size: 0.85rem;
+}
+.media-nav:hover {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-color: var(--gold);
+  transform: translateY(-50%) scale(1.1);
+}
+.media-nav.prev { left: 1rem; }
+.media-nav.next { right: 1rem; }
+@media (max-width: 600px) {
+  .media-nav { width: 32px; height: 32px; font-size: 0.75rem; }
+  .media-nav.prev { left: 0.5rem; }
+  .media-nav.next { right: 0.5rem; }
+}
+
+/* Progress bar untuk auto-slide */
+.media-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--red));
+  z-index: 5;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px var(--gold);
 }
 
 /* NAVBAR */
@@ -1519,7 +1736,7 @@ body {
 <div class="floating-formula ff-6">Δ</div>
 
 <!-- ═══════════════════════════════════════════════════════
-     ANNOUNCEMENT BOARD — PAPAN IKLAN BERGERAK
+     ANNOUNCEMENT BOARD — TEKS BERJALAN
      ═══════════════════════════════════════════════════════ -->
 <div class="announcement-bar">
   <div class="announcement-label">
@@ -1533,6 +1750,26 @@ body {
       <span class="announcement-loading"></span>
     </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MEDIA BANNER — SLIDESHOW GAMBAR/VIDEO
+     Muncul automatik jika ada iklan media
+     ═══════════════════════════════════════════════════════ -->
+<div class="media-banner" id="mediaBanner">
+  <div class="media-banner-inner" id="mediaBannerInner">
+    <!-- Slides akan dijana oleh JS -->
+  </div>
+
+  <button class="media-nav prev" id="mediaPrev" aria-label="Sebelum">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  <button class="media-nav next" id="mediaNext" aria-label="Seterusnya">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+
+  <div class="media-dots" id="mediaDots"></div>
+  <div class="media-progress" id="mediaProgress"></div>
 </div>
 
 <!-- NAVBAR -->
@@ -2134,16 +2371,14 @@ body {
   };
 
   // ═════════════════════════════════════════════════
-  // ✅ PAPAN IKLAN BERGERAK — LOAD DARI FIRESTORE
+  // 📢 PAPAN IKLAN TEKS BERJALAN — LOAD DARI FIRESTORE
   // Collection: "announcements"
-  // Fields: text, icon, badge, imageUrl, linkUrl, active, createdAt
   // ═════════════════════════════════════════════════
   async function loadAnnouncements() {
     const marquee = document.getElementById('announcementMarquee');
     if (!marquee) return;
 
     try {
-      // Query iklan yang aktif sahaja, diisih mengikut tarikh terbaru
       const q = query(
         collection(db, 'announcements'),
         where('active', '==', true),
@@ -2163,49 +2398,44 @@ body {
         return;
       }
 
-      // Bina item iklan
-      const items = [];
+      // Ambil hanya iklan teks sahaja (bukan media) untuk marquee
+      const textItems = [];
       snap.forEach(docSnap => {
         const data = docSnap.data();
         const text = data.text || '';
         const icon = data.icon || 'fa-bullhorn';
         const badge = data.badge || '';
-        const imageUrl = data.imageUrl || '';
-        const linkUrl = data.linkUrl || '';
+        const mediaUrl = data.mediaUrl || data.imageUrl || '';
+        const mediaType = data.mediaType || (data.imageUrl ? 'image' : '');
 
-        let itemHTML = '';
-        if (linkUrl) {
-          itemHTML = `<a class="announcement-item" href="${linkUrl}" target="_blank" rel="noopener">`;
-        } else {
-          itemHTML = `<span class="announcement-item">`;
-        }
+        // Skip jika ada media (kerana sudah dipaparkan dalam slideshow)
+        if (mediaUrl && mediaType) return;
+        if (!text) return;
 
-        // Gambar (jika ada)
-        if (imageUrl) {
-          itemHTML += `<img src="${imageUrl}" alt="Iklan" class="announcement-img">`;
-        } else {
-          itemHTML += `<i class="fas ${icon}"></i>`;
-        }
-
-        // Badge (jika ada)
+        let itemHTML = `<span class="announcement-item">`;
+        itemHTML += `<i class="fas ${icon}"></i>`;
         if (badge) {
           itemHTML += `<span class="announcement-badge">${badge}</span>`;
         }
-
-        // Teks iklan
         itemHTML += `<span>${text}</span>`;
+        itemHTML += `</span>`;
 
-        // Tutup tag
-        itemHTML += linkUrl ? `</a>` : `</span>`;
-
-        items.push(itemHTML);
+        textItems.push(itemHTML);
       });
 
-      // Gabungkan item + pemisah + ulang sekali lagi untuk loop yang lancar
+      if (textItems.length === 0) {
+        marquee.innerHTML = `
+          <span class="announcement-empty">
+            <i class="fas fa-info-circle" style="color: var(--gold);"></i>
+            Belum ada pengumuman teks. Nantikan berita terkini!
+          </span>
+        `;
+        return;
+      }
+
       const separator = `<span class="announcement-divider">✦</span>`;
-      const content = items.join(separator);
-      
-      // Untuk marquee yang seamless, kita perlu duplikat content
+      const content = textItems.join(separator);
+
       marquee.innerHTML = `
         ${content}
         ${separator}
@@ -2213,16 +2443,14 @@ body {
         ${separator}
       `;
 
-      // Adjust animation duration based on content length
       const totalLength = marquee.scrollWidth;
-      const duration = Math.max(30, totalLength / 50); // minimum 30s
+      const duration = Math.max(30, totalLength / 50);
       marquee.style.animationDuration = duration + 's';
 
-      console.log(`✅ ${snap.size} pengumuman dimuatkan`);
+      console.log(`✅ ${textItems.length} pengumuman teks dimuatkan`);
 
     } catch (err) {
-      console.warn('⚠️ Gagal memuat pengumuman:', err);
-      // Fallback: tunjuk mesej lalai
+      console.warn('⚠️ Gagal memuat pengumuman teks:', err);
       marquee.innerHTML = `
         <span class="announcement-item">
           <i class="fas fa-bullhorn"></i>
@@ -2238,14 +2466,263 @@ body {
     }
   }
 
-  // Muat pengumuman sebaik sahaja halaman sedia
-  loadAnnouncements();
+  // ═════════════════════════════════════════════════
+  // 🎬 MEDIA BANNER — SLIDESHOW GAMBAR/VIDEO
+  // ═════════════════════════════════════════════════
 
-  // Refresh pengumuman setiap 5 minit (300000 ms)
-  setInterval(loadAnnouncements, 300000);
+  // State slideshow
+  let mediaSlides = [];
+  let currentSlide = 0;
+  let slideTimer = null;
+  let progressTimer = null;
+  let progressStart = 0;
+  const SLIDE_DURATION = 5000; // 5 saat setiap slide
+
+  async function loadMediaAnnouncements() {
+    const banner = document.getElementById('mediaBanner');
+    const inner = document.getElementById('mediaBannerInner');
+    const dots = document.getElementById('mediaDots');
+    if (!banner || !inner) return;
+
+    try {
+      const q = query(
+        collection(db, 'announcements'),
+        where('active', '==', true),
+        orderBy('createdAt', 'desc'),
+        limit(10)
+      );
+
+      const snap = await getDocs(q);
+
+      // Filter: hanya yang ada mediaUrl
+      mediaSlides = [];
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const mediaUrl = data.mediaUrl || data.imageUrl || '';
+        const mediaType = data.mediaType || (data.imageUrl ? 'image' : '');
+        const text = data.text || '';
+
+        if (mediaUrl && mediaType) {
+          mediaSlides.push({
+            url: mediaUrl,
+            type: mediaType,
+            caption: text,
+            badge: data.badge || '',
+            linkUrl: data.linkUrl || ''
+          });
+        }
+      });
+
+      if (mediaSlides.length === 0) {
+        // Tiada media — sembunyikan banner
+        banner.classList.remove('active');
+        console.log('ℹ️ Tiada media iklan');
+        return;
+      }
+
+      // Ada media — tunjuk banner
+      banner.classList.add('active');
+
+      // Render slides
+      inner.innerHTML = '';
+      mediaSlides.forEach((slide, idx) => {
+        const slideEl = document.createElement('div');
+        slideEl.className = 'media-slide' + (idx === 0 ? ' active' : '');
+        slideEl.dataset.index = idx;
+
+        let mediaHTML = '';
+        if (slide.type === 'video') {
+          mediaHTML = `
+            <video 
+              src="${slide.url}" 
+              muted 
+              loop 
+              playsinline
+              preload="metadata"
+              ${idx === 0 ? 'autoplay' : ''}
+            ></video>
+          `;
+        } else {
+          mediaHTML = `<img src="${slide.url}" alt="${slide.caption || 'Iklan'}" loading="${idx === 0 ? 'eager' : 'lazy'}">`;
+        }
+
+        // Caption
+        let captionHTML = '';
+        if (slide.caption || slide.badge) {
+          captionHTML = `
+            <div class="media-caption">
+              ${slide.badge ? `<span class="media-badge">${slide.badge}</span>` : ''}
+              ${slide.caption ? `<span class="media-title">${slide.caption}</span>` : ''}
+            </div>
+          `;
+        }
+
+        // Wrap with link if linkUrl exists
+        if (slide.linkUrl) {
+          slideEl.innerHTML = `
+            <a href="${slide.linkUrl}" target="_blank" rel="noopener" style="display:block; width:100%; height:100%; text-decoration:none; color:inherit;">
+              ${mediaHTML}
+              ${captionHTML}
+            </a>
+          `;
+        } else {
+          slideEl.innerHTML = mediaHTML + captionHTML;
+        }
+
+        inner.appendChild(slideEl);
+      });
+
+      // Render dots
+      if (dots) {
+        dots.innerHTML = '';
+        if (mediaSlides.length > 1) {
+          mediaSlides.forEach((_, idx) => {
+            const dot = document.createElement('button');
+            dot.className = 'media-dot' + (idx === 0 ? ' active' : '');
+            dot.dataset.index = idx;
+            dot.setAttribute('aria-label', `Slide ${idx + 1}`);
+            dot.addEventListener('click', () => goToSlide(idx));
+            dots.appendChild(dot);
+          });
+        }
+      }
+
+      // Sembunyikan nav arrows jika hanya 1 slide
+      const prevBtn = document.getElementById('mediaPrev');
+      const nextBtn = document.getElementById('mediaNext');
+      if (mediaSlides.length <= 1) {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (dots) dots.style.display = 'none';
+      } else {
+        if (prevBtn) prevBtn.style.display = '';
+        if (nextBtn) nextBtn.style.display = '';
+        if (dots) dots.style.display = '';
+      }
+
+      // Start slideshow jika lebih dari 1
+      currentSlide = 0;
+      if (mediaSlides.length > 1) {
+        startSlideshow();
+      }
+
+      console.log(`✅ ${mediaSlides.length} media iklan dimuatkan`);
+
+    } catch (err) {
+      console.warn('⚠️ Gagal memuat media iklan:', err);
+      banner.classList.remove('active');
+    }
+  }
+
+  function goToSlide(index) {
+    const slides = document.querySelectorAll('.media-slide');
+    const dots = document.querySelectorAll('.media-dot');
+    if (slides.length === 0) return;
+
+    // Wrap around
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+      // Play/pause video
+      const video = s.querySelector('video');
+      if (video) {
+        if (i === index) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+          video.currentTime = 0;
+        }
+      }
+    });
+
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i === index);
+    });
+
+    currentSlide = index;
+
+    // Reset progress
+    resetProgress();
+  }
+
+  function nextSlide() {
+    goToSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    goToSlide(currentSlide - 1);
+  }
+
+  function startSlideshow() {
+    stopSlideshow();
+    slideTimer = setInterval(() => {
+      nextSlide();
+    }, SLIDE_DURATION);
+    resetProgress();
+  }
+
+  function stopSlideshow() {
+    if (slideTimer) clearInterval(slideTimer);
+    if (progressTimer) cancelAnimationFrame(progressTimer);
+    slideTimer = null;
+    progressTimer = null;
+  }
+
+  function resetProgress() {
+    const progress = document.getElementById('mediaProgress');
+    if (!progress) return;
+
+    if (progressTimer) cancelAnimationFrame(progressTimer);
+
+    progressStart = performance.now();
+    progress.style.width = '0%';
+
+    function animateProgress(now) {
+      const elapsed = now - progressStart;
+      const pct = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      progress.style.width = pct + '%';
+
+      if (pct < 100) {
+        progressTimer = requestAnimationFrame(animateProgress);
+      }
+    }
+    progressTimer = requestAnimationFrame(animateProgress);
+  }
+
+  // Wire up nav buttons
+  document.getElementById('mediaPrev')?.addEventListener('click', () => {
+    prevSlide();
+    startSlideshow(); // restart timer
+  });
+  document.getElementById('mediaNext')?.addEventListener('click', () => {
+    nextSlide();
+    startSlideshow(); // restart timer
+  });
+
+  // Pause on hover
+  document.getElementById('mediaBanner')?.addEventListener('mouseenter', () => {
+    stopSlideshow();
+  });
+  document.getElementById('mediaBanner')?.addEventListener('mouseleave', () => {
+    if (mediaSlides.length > 1) startSlideshow();
+  });
 
   // ═════════════════════════════════════════════════
-  // ✅ AUTH STATE — Update button (TIDAK auto-redirect)
+  // LOAD SEMUA
+  // ═════════════════════════════════════════════════
+  loadAnnouncements();
+  loadMediaAnnouncements();
+
+  // Refresh setiap 5 minit
+  setInterval(() => {
+    loadAnnouncements();
+    loadMediaAnnouncements();
+  }, 300000);
+
+  // ═════════════════════════════════════════════════
+  // AUTH STATE — Update button (TIDAK auto-redirect)
   // ═════════════════════════════════════════════════
   onAuthStateChanged(auth, async (user) => {
     const navCtaBtn = document.getElementById('navCtaBtn');
@@ -2275,7 +2752,7 @@ body {
   // INIT
   console.log('%c REAL-MPC Digital ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
   console.log('🚀 Landing page loaded');
-  console.log('📢 Papan iklan bergerak aktif — baca dari Firestore: announcements');
+  console.log('📢 Papan iklan teks + media slideshow aktif');
   console.log('✨ Button navbar dynamic — tak auto-redirect');
 </script>
 
