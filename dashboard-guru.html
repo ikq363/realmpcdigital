@@ -501,6 +501,15 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 14px 32px rgba(244, 196, 48, 0.55);
 }
+.btn-danger {
+  background: #fff;
+  color: var(--danger);
+  border: 2px solid rgba(239,68,68,0.2);
+}
+.btn-danger:hover {
+  background: rgba(239,68,68,0.08);
+  border-color: var(--danger);
+}
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* WELCOME CARD */
@@ -1045,7 +1054,9 @@ body {
 }
 .form-block-label i { color: var(--red); font-size: 0.85rem; }
 
-.form-input {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
   padding: 0.9rem 1rem;
   border: 2px solid var(--line);
@@ -1057,11 +1068,19 @@ body {
   transition: all 0.25s;
   outline: none;
 }
-.form-input:focus {
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
   border-color: var(--red);
   box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.08);
 }
-.form-input::placeholder { color: #94A3B8; }
+.form-input::placeholder,
+.form-textarea::placeholder { color: #94A3B8; }
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
 
 .modal-footer {
   display: flex;
@@ -1178,6 +1197,420 @@ body {
   margin-bottom: 1rem;
 }
 
+/* ═══════════════════════════════════════════════════════
+   PENGURUSAN IKLAN — SECTION
+   ═══════════════════════════════════════════════════════ */
+
+/* Tab switcher */
+.iklan-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  padding: 0.4rem;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  width: fit-content;
+  flex-wrap: wrap;
+}
+.iklan-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s;
+}
+.iklan-tab:hover {
+  color: var(--maroon);
+  background: rgba(139,30,63,0.05);
+}
+.iklan-tab.active {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(200,16,46,0.3);
+}
+
+/* Upload area */
+.upload-zone {
+  background: #fff;
+  border-radius: 22px;
+  padding: 2rem;
+  border: 2px dashed var(--line);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.upload-zone:hover {
+  border-color: var(--red);
+  background: linear-gradient(135deg, rgba(200,16,46,0.03), rgba(244,196,48,0.04));
+  transform: translateY(-3px);
+}
+.upload-zone.dragover {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, rgba(244,196,48,0.1), rgba(200,16,46,0.05));
+  transform: scale(1.01);
+}
+.upload-zone-icon {
+  width: 72px; height: 72px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(200,16,46,0.1), rgba(244,196,48,0.15));
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 1rem;
+  transition: all 0.3s;
+}
+.upload-zone:hover .upload-zone-icon {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  transform: scale(1.1) rotate(-8deg);
+}
+.upload-zone h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.4rem;
+}
+.upload-zone p {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 1rem;
+}
+.upload-zone-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  padding: 0.4rem 0.9rem;
+  background: var(--paper);
+  border-radius: 50px;
+}
+.upload-zone-hint i { color: var(--gold); }
+
+/* Upload preview */
+.upload-preview {
+  display: none;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-top: 1rem;
+  background: var(--paper);
+  border: 2px solid var(--line);
+}
+.upload-preview.active { display: block; }
+.upload-preview img,
+.upload-preview video {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  display: block;
+  background: #000;
+}
+.upload-preview-info {
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: #fff;
+}
+.upload-preview-info strong {
+  font-size: 0.82rem;
+  color: var(--navy);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.upload-preview-info span {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  font-family: 'JetBrains Mono', monospace;
+}
+.upload-remove {
+  background: rgba(239,68,68,0.1);
+  color: var(--danger);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.upload-remove:hover {
+  background: var(--danger);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Info box */
+.info-box {
+  background: linear-gradient(135deg, rgba(244,196,48,0.12), rgba(200,16,46,0.06));
+  border: 1px solid rgba(244,196,48,0.35);
+  border-radius: 18px;
+  padding: 1.2rem 1.4rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+.info-box-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.info-box-content h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 0.3rem;
+}
+.info-box-content p {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+/* List of iklan */
+.iklan-list {
+  display: grid;
+  gap: 0.8rem;
+}
+.iklan-item {
+  background: #fff;
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(11, 46, 78, 0.04);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.iklan-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--red), var(--gold));
+}
+.iklan-item.inactive {
+  opacity: 0.55;
+}
+.iklan-item.inactive::before {
+  background: var(--line);
+}
+.iklan-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(11, 46, 78, 0.1);
+  border-color: rgba(200,16,46,0.15);
+}
+.iklan-item-thumb {
+  width: 80px;
+  height: 60px;
+  border-radius: 12px;
+  background: var(--paper);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid var(--line);
+}
+.iklan-item-thumb img,
+.iklan-item-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.iklan-item-thumb .thumb-icon {
+  font-size: 1.5rem;
+  color: var(--maroon);
+}
+.iklan-item-thumb .media-type-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(11, 46, 78, 0.85);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+}
+.iklan-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.iklan-item-info h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.iklan-item-info p {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 0.3rem;
+}
+.iklan-item-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.iklan-item-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+}
+.badge-type-media {
+  background: rgba(43,106,158,0.1);
+  color: var(--navy-mid);
+}
+.badge-type-text {
+  background: rgba(16,185,129,0.1);
+  color: var(--success);
+}
+.badge-active {
+  background: rgba(16,185,129,0.15);
+  color: var(--success);
+}
+.badge-inactive {
+  background: rgba(239,68,68,0.1);
+  color: var(--danger);
+}
+.iklan-item-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.iklan-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.25s;
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+.iklan-action-btn:hover {
+  background: var(--maroon);
+  color: #fff;
+  transform: translateY(-2px);
+}
+.iklan-action-btn.toggle:hover {
+  background: var(--success);
+}
+.iklan-action-btn.delete:hover {
+  background: var(--danger);
+}
+
+/* Preview iklan bergerak */
+.iklan-preview-bar {
+  background: linear-gradient(90deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--gold);
+}
+.iklan-preview-label {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  padding: 0.35rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.iklan-preview-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.iklan-preview-marquee {
+  display: flex;
+  gap: 2rem;
+  white-space: nowrap;
+  animation: previewMarquee 15s linear infinite;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+@keyframes previewMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.iklan-preview-marquee span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #fff;
+}
+.iklan-preview-marquee i {
+  color: var(--gold);
+}
+
 /* TOAST */
 .toast-container {
   position: fixed; bottom: 1.5rem; right: 1.5rem;
@@ -1272,6 +1705,8 @@ body {
   .modal-footer { padding: 0 1.3rem 1.3rem; }
   .modal-title { font-size: 1.2rem; }
   .code-display { font-size: 1.5rem; letter-spacing: 0.2em; }
+  .iklan-item-thumb { width: 60px; height: 46px; }
+  .iklan-item-actions { flex-direction: column; }
 }
 </style>
 </head>
@@ -1322,6 +1757,13 @@ body {
       </button>
       <button class="sidebar-item" data-page="analytics" onclick="switchPage('analytics')">
         <i class="fas fa-chart-bar"></i> Analitik
+      </button>
+
+      <div class="sidebar-section-label" style="padding: 1rem 0.75rem 0.5rem;">Pengurusan</div>
+
+      <button class="sidebar-item" data-page="iklan" onclick="switchPage('iklan')">
+        <i class="fas fa-bullhorn"></i> Iklan & Pengumuman
+        <span class="badge-count" id="iklanBadge">0</span>
       </button>
     </nav>
 
@@ -1513,6 +1955,164 @@ body {
       </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════
+         PAGE: IKLAN & PENGUMUMAN
+         ═══════════════════════════════════════════════════════ -->
+    <div class="page" id="page-iklan">
+
+      <!-- Tab switcher -->
+      <div class="iklan-tabs">
+        <button class="iklan-tab active" data-tab="media" onclick="switchIklanTab('media')">
+          <i class="fas fa-image"></i> Iklan Gambar/Video
+        </button>
+        <button class="iklan-tab" data-tab="text" onclick="switchIklanTab('text')">
+          <i class="fas fa-comment-dots"></i> Iklan Teks Berjalan
+        </button>
+        <button class="iklan-tab" data-tab="list" onclick="switchIklanTab('list')">
+          <i class="fas fa-list"></i> Senarai Iklan
+          <span class="badge-count" id="iklanListBadge" style="margin-left: 0.4rem; background: var(--red); color: #fff; font-size: 0.65rem; padding: 0.1rem 0.4rem; border-radius: 50px;">0</span>
+        </button>
+      </div>
+
+      <!-- TAB: MEDIA -->
+      <div class="iklan-tab-content" id="iklanContentMedia">
+        <div class="info-box">
+          <div class="info-box-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="info-box-content">
+            <h4>Iklan Gambar atau Video</h4>
+            <p>Iklan ini akan dipaparkan di <strong>kotak iklan khas</strong> pada halaman utama (index.html). Sesuai untuk poster, video promosi atau pengumuman bergambar. Boleh upload lebih dari 1 — akan auto-slide.</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="upload-zone" id="mediaUploadZone" onclick="document.getElementById('mediaInput').click()">
+            <input type="file" id="mediaInput" accept="image/*,video/*" style="display: none;" onchange="handleMediaUpload(event)">
+            <div class="upload-zone-icon">
+              <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Klik atau Drop Fail Di Sini</h3>
+            <p>Upload gambar (JPG, PNG) atau video (MP4, WebM) untuk dipaparkan sebagai iklan</p>
+            <div class="upload-zone-hint">
+              <i class="fas fa-star"></i> Maksimum 50MB · Gambar & Video
+            </div>
+
+            <div class="upload-preview" id="mediaPreview">
+              <div id="mediaPreviewContent"></div>
+              <div class="upload-preview-info">
+                <strong id="mediaPreviewName">—</strong>
+                <span id="mediaPreviewSize">—</span>
+                <button class="upload-remove" onclick="event.stopPropagation(); clearMediaPreview();">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form fields for media -->
+          <div id="mediaFormFields" style="display: none; margin-top: 1.5rem;">
+            <div class="form-block">
+              <label class="form-block-label"><i class="fas fa-heading"></i> Tajuk Iklan</label>
+              <input type="text" id="mediaTitle" class="form-input" placeholder="Contoh: Program Motivasi Add Math 2026" maxlength="80">
+            </div>
+            <div class="form-block">
+              <label class="form-block-label"><i class="fas fa-align-left"></i> Subtajuk / Keterangan (optional)</label>
+              <textarea id="mediaSubtitle" class="form-textarea" placeholder="Contoh: Sertai program motivasi khas untuk pelajar cemerlang!" maxlength="200"></textarea>
+            </div>
+            <div class="form-block">
+              <label class="form-block-label"><i class="fas fa-tag"></i> Badge (optional)</label>
+              <input type="text" id="mediaBadge" class="form-input" placeholder="Contoh: BARU, PENTING" maxlength="20">
+            </div>
+            <div class="form-block">
+              <label class="form-block-label"><i class="fas fa-link"></i> Link (optional)</label>
+              <input type="url" id="mediaLink" class="form-input" placeholder="https://contoh.com/daftar">
+            </div>
+            <button class="btn btn-primary" style="width: 100%; padding: 1rem;" onclick="uploadMediaIklan()">
+              <i class="fas fa-check"></i> Terbitkan Iklan Media
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: TEXT -->
+      <div class="iklan-tab-content" id="iklanContentText" style="display: none;">
+        <div class="info-box">
+          <div class="info-box-icon">
+            <i class="fas fa-comment-dots"></i>
+          </div>
+          <div class="info-box-content">
+            <h4>Iklan Teks Berjalan</h4>
+            <p>Iklan ini akan dipaparkan pada <strong>papan iklan berjalan</strong> di bahagian paling atas halaman utama. Sesuai untuk pengumuman ringkas, berita terkini atau peringatan.</p>
+          </div>
+        </div>
+
+        <!-- Live preview -->
+        <div class="iklan-preview-bar">
+          <div class="iklan-preview-label">
+            <i class="fas fa-bullhorn"></i> Preview
+          </div>
+          <div class="iklan-preview-track">
+            <div class="iklan-preview-marquee" id="textPreviewMarquee">
+              <span><i class="fas fa-star"></i> Preview iklan teks anda akan muncul di sini...</span>
+              <span><i class="fas fa-star"></i> Preview iklan teks anda akan muncul di sini...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="form-block">
+            <label class="form-block-label"><i class="fas fa-comment"></i> Teks Pengumuman</label>
+            <textarea id="textContent" class="form-textarea" placeholder="Contoh: Selamat datang ke REAL-MPC Digital — platform pembelajaran interaktif!" maxlength="200" oninput="updateTextPreview()"></textarea>
+          </div>
+          <div class="form-block">
+            <label class="form-block-label"><i class="fas fa-icons"></i> Ikon</label>
+            <select id="textIcon" class="form-select">
+              <option value="fa-bullhorn">📢 Bullhorn (Pengumuman)</option>
+              <option value="fa-star">⭐ Bintang (Berita)</option>
+              <option value="fa-info-circle">ℹ️ Info</option>
+              <option value="fa-exclamation-triangle">⚠️ Peringatan</option>
+              <option value="fa-bell">🔔 Notifikasi</option>
+              <option value="fa-gift">🎁 Hadiah</option>
+              <option value="fa-trophy">🏆 Pencapaian</option>
+              <option value="fa-book">📚 Pembelajaran</option>
+              <option value="fa-fire">🔥 Trending</option>
+              <option value="fa-rocket">🚀 Pelancaran</option>
+            </select>
+          </div>
+          <div class="form-block">
+            <label class="form-block-label"><i class="fas fa-tag"></i> Badge (optional)</label>
+            <input type="text" id="textBadge" class="form-input" placeholder="Contoh: BARU, PENTING, HOT" maxlength="20">
+          </div>
+          <button class="btn btn-primary" style="width: 100%; padding: 1rem;" onclick="uploadTextIklan()">
+            <i class="fas fa-check"></i> Terbitkan Iklan Teks
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB: LIST -->
+      <div class="iklan-tab-content" id="iklanContentList" style="display: none;">
+        <div class="section">
+          <div class="section-head">
+            <div class="section-head-left">
+              <h2>Senarai Iklan Aktif</h2>
+              <p>Urus iklan anda — aktif/nyahaktif atau padam</p>
+            </div>
+            <button class="btn btn-outline" onclick="loadAllIklan()">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+          <div class="iklan-list" id="iklanList">
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fas fa-spinner fa-spin"></i></div>
+              <h3>Memuatkan...</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 </div>
 
@@ -1646,7 +2246,7 @@ body {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where,
+    getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, query, where,
     serverTimestamp, addDoc, orderBy, limit
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -1689,6 +2289,12 @@ body {
   let allStudents = [];
   let clockInterval = null;
   let currentClassCode = '';
+
+  // Iklan
+  let mediaFile = null;
+  let mediaFileType = null;
+  let currentIklanTab = 'media';
+  let allIklan = [];
 
   // LIVE DATE TIME
   const HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
@@ -1798,7 +2404,8 @@ body {
       dashboard: ['Dashboard', 'Selamat datang ke REAL-MPC'],
       students: ['Pelajar', 'Semua pelajar dalam kelas anda'],
       classes: ['Kelas', 'Kelola kelas anda'],
-      analytics: ['Analitik', 'Analisis perkembangan pelajar']
+      analytics: ['Analitik', 'Analisis perkembangan pelajar'],
+      iklan: ['Iklan & Pengumuman', 'Urus iklan untuk dipaparkan di halaman utama']
     };
     document.getElementById('topbarTitle').textContent = titles[page][0];
     document.getElementById('topbarSubtitle').textContent = titles[page][1];
@@ -1808,6 +2415,7 @@ body {
     if (page === 'students') renderAllStudents();
     if (page === 'classes') renderAllClasses();
     if (page === 'analytics') renderAnalytics();
+    if (page === 'iklan') loadAllIklan();
   };
 
   // HELPER: Nama paparan
@@ -1831,8 +2439,8 @@ body {
           return;
         }
 
-        // Load classes
         await loadClasses();
+        await loadAllIklan();
       }
     } catch (e) {
       console.error('loadTeacherData error:', e);
@@ -1840,7 +2448,7 @@ body {
     }
   }
 
-  // GENERATE CLASS CODE (6 aksara unik — untuk kod KELAS, bukan guru)
+  // GENERATE CLASS CODE
   function generateClassCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
@@ -1860,7 +2468,7 @@ body {
         if (snap.empty) return code;
       } catch (e) {
         console.warn('Code check error:', e);
-        return code; // fallback
+        return code;
       }
       attempts++;
     }
@@ -1877,7 +2485,6 @@ body {
         const data = docSnap.data();
         const muridIds = data.muridIds || [];
 
-        // Load student details
         const students = [];
         for (const uid of muridIds) {
           try {
@@ -1896,7 +2503,6 @@ body {
         });
       }
 
-      // Load all students into a flat list
       allStudents = [];
       teacherClasses.forEach(c => {
         c.students.forEach(s => {
@@ -1906,7 +2512,6 @@ body {
         });
       });
 
-      // Load progress for each student
       for (const student of allStudents) {
         try {
           const progressSnap = await getDocs(collection(db, 'progress', student.uid, 'activities'));
@@ -1941,13 +2546,11 @@ body {
 
     updateUserUI();
 
-    // Stats
     document.getElementById('statTotalStudents').textContent = allStudents.length;
     document.getElementById('statTotalClasses').textContent = teacherClasses.length;
     document.getElementById('studentsBadge').textContent = allStudents.length;
     document.getElementById('classesBadge').textContent = teacherClasses.length;
 
-    // Avg progress
     let totalCompleted = 0;
     let totalPossible = allStudents.length * 12;
     let totalBadges = 0;
@@ -1962,13 +2565,8 @@ body {
     document.getElementById('statAvgProgress').textContent = avgProgress + '%';
     document.getElementById('statTotalBadges').textContent = totalBadges;
 
-    // Ring averages (from student data)
     computeConstructAverages();
-
-    // Render classes
     renderClassesGrid('classesGrid');
-
-    // Recent activity
     renderRecentActivity();
   }
 
@@ -2271,7 +2869,7 @@ body {
     }
   }
 
-  // CREATE CLASS — dengan kod kelas auto-generate
+  // CREATE CLASS
   window.openCreateClassModal = function() {
     document.getElementById('className').value = '';
     document.getElementById('classSubject').value = 'Matematik Tambahan';
@@ -2294,7 +2892,6 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencipta...';
 
     try {
-      // Generate kod KELAS yang unik
       const newCode = await generateUniqueClassCode();
       const classRef = await addDoc(collection(db, 'classes'), {
         nama: nama,
@@ -2309,7 +2906,6 @@ body {
       closeModal('createClassModal');
       showToast('Berjaya! 🎉', `Kelas "${nama}" dicipta dengan kod ${newCode}`, 'success');
 
-      // Reload classes
       await loadClasses();
       renderDashboard();
 
@@ -2377,7 +2973,7 @@ body {
     });
   };
 
-  // ✅ STUDENT DETAIL — Redirect ke halaman baharu
+  // STUDENT DETAIL — Redirect
   window.openStudentDetail = function(uid) {
     window.location.href = `student-detail.html?uid=${uid}`;
   };
@@ -2425,6 +3021,339 @@ body {
     }
   };
 
+  // ═══════════════════════════════════════════════════════
+  // PENGURUSAN IKLAN
+  // ═══════════════════════════════════════════════════════
+
+  // Tab switching
+  window.switchIklanTab = function(tab) {
+    currentIklanTab = tab;
+    document.querySelectorAll('.iklan-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tab);
+    });
+    document.getElementById('iklanContentMedia').style.display = tab === 'media' ? 'block' : 'none';
+    document.getElementById('iklanContentText').style.display = tab === 'text' ? 'block' : 'none';
+    document.getElementById('iklanContentList').style.display = tab === 'list' ? 'block' : 'none';
+
+    if (tab === 'list') loadAllIklan();
+  };
+
+  // Media upload — drag & drop
+  const mediaZone = document.getElementById('mediaUploadZone');
+  if (mediaZone) {
+    ['dragenter', 'dragover'].forEach(ev => {
+      mediaZone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        mediaZone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(ev => {
+      mediaZone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        mediaZone.classList.remove('dragover');
+      });
+    });
+    mediaZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleMediaFile(files[0]);
+      }
+    });
+  }
+
+  window.handleMediaUpload = function(e) {
+    const file = e.target.files[0];
+    if (file) handleMediaFile(file);
+  };
+
+  function handleMediaFile(file) {
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+
+    if (!isImage && !isVideo) {
+      showToast('Format Tidak Sah', 'Sila pilih gambar atau video sahaja', 'error');
+      return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+      showToast('Fail Terlalu Besar', 'Maksimum 50MB', 'error');
+      return;
+    }
+
+    mediaFile = file;
+    mediaFileType = isImage ? 'image' : 'video';
+
+    // Preview
+    const preview = document.getElementById('mediaPreview');
+    const previewContent = document.getElementById('mediaPreviewContent');
+    const previewName = document.getElementById('mediaPreviewName');
+    const previewSize = document.getElementById('mediaPreviewSize');
+    const formFields = document.getElementById('mediaFormFields');
+
+    const url = URL.createObjectURL(file);
+    if (isImage) {
+      previewContent.innerHTML = `<img src="${url}" alt="Preview">`;
+    } else {
+      previewContent.innerHTML = `<video src="${url}" controls muted></video>`;
+    }
+
+    previewName.textContent = file.name;
+    previewSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+    preview.classList.add('active');
+    formFields.style.display = 'block';
+  }
+
+  window.clearMediaPreview = function() {
+    mediaFile = null;
+    mediaFileType = null;
+    document.getElementById('mediaPreview').classList.remove('active');
+    document.getElementById('mediaPreviewContent').innerHTML = '';
+    document.getElementById('mediaFormFields').style.display = 'none';
+    document.getElementById('mediaInput').value = '';
+    document.getElementById('mediaTitle').value = '';
+    document.getElementById('mediaSubtitle').value = '';
+    document.getElementById('mediaBadge').value = '';
+    document.getElementById('mediaLink').value = '';
+  };
+
+  // Upload media iklan
+  window.uploadMediaIklan = async function() {
+    if (!mediaFile) {
+      showToast('Tiada Fail', 'Sila pilih gambar atau video', 'error');
+      return;
+    }
+
+    const title = document.getElementById('mediaTitle').value.trim();
+    const subtitle = document.getElementById('mediaSubtitle').value.trim();
+    const badge = document.getElementById('mediaBadge').value.trim();
+    const linkUrl = document.getElementById('mediaLink').value.trim();
+
+    if (!title) {
+      showToast('Tajuk Kosong', 'Sila isi tajuk iklan', 'error');
+      return;
+    }
+
+    showToast('Memuat Naik...', 'Sila tunggu sebentar', 'info');
+
+    try {
+      // Upload ke Cloudinary
+      const formData = new FormData();
+      formData.append('file', mediaFile);
+      formData.append('upload_preset', CLOUDINARY_PRESET);
+      formData.append('folder', 'iklan');
+
+      const endpoint = mediaFileType === 'video'
+        ? `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/video/upload`
+        : `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`;
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!data.secure_url) throw new Error('Cloudinary upload failed');
+
+      // Simpan ke Firestore
+      await addDoc(collection(db, 'announcements'), {
+        text: title,
+        subtitle: subtitle,
+        badge: badge,
+        mediaUrl: data.secure_url,
+        mediaType: mediaFileType,
+        linkUrl: linkUrl,
+        active: true,
+        createdAt: serverTimestamp(),
+        guruId: currentUser.uid,
+        guruNama: currentUserData.nama
+      });
+
+      clearMediaPreview();
+      showToast('Berjaya! 🎉', 'Iklan media telah diterbitkan', 'success');
+      await loadAllIklan();
+
+    } catch (err) {
+      console.error('uploadMediaIklan error:', err);
+      showToast('Ralat', 'Gagal memuat naik iklan', 'error');
+    }
+  };
+
+  // Text preview update
+  window.updateTextPreview = function() {
+    const text = document.getElementById('textContent').value.trim();
+    const icon = document.getElementById('textIcon').value;
+    const badge = document.getElementById('textBadge').value.trim();
+
+    const marquee = document.getElementById('textPreviewMarquee');
+    if (!marquee) return;
+
+    if (!text) {
+      marquee.innerHTML = `
+        <span><i class="fas fa-star"></i> Preview iklan teks anda akan muncul di sini...</span>
+        <span><i class="fas fa-star"></i> Preview iklan teks anda akan muncul di sini...</span>
+      `;
+      return;
+    }
+
+    const badgeHtml = badge ? `<span style="background: rgba(244,196,48,0.2); border: 1px solid rgba(244,196,48,0.4); color: #F4C430; padding: 0.1rem 0.5rem; border-radius: 50px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-right: 0.4rem;">${badge}</span>` : '';
+    const item = `<span><i class="fas ${icon}"></i> ${badgeHtml}${text}</span>`;
+    
+    marquee.innerHTML = item + '<span style="opacity: 0.4; margin: 0 1rem;">✦</span>' + item;
+  };
+
+  // Upload text iklan
+  window.uploadTextIklan = async function() {
+    const text = document.getElementById('textContent').value.trim();
+    const icon = document.getElementById('textIcon').value;
+    const badge = document.getElementById('textBadge').value.trim();
+
+    if (!text || text.length < 3) {
+      showToast('Teks Kosong', 'Sila isi teks pengumuman (min 3 aksara)', 'error');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'announcements'), {
+        text: text,
+        icon: icon,
+        badge: badge,
+        active: true,
+        createdAt: serverTimestamp(),
+        guruId: currentUser.uid,
+        guruNama: currentUserData.nama
+      });
+
+      document.getElementById('textContent').value = '';
+      document.getElementById('textBadge').value = '';
+      updateTextPreview();
+
+      showToast('Berjaya! 🎉', 'Iklan teks telah diterbitkan', 'success');
+      await loadAllIklan();
+
+    } catch (err) {
+      console.error('uploadTextIklan error:', err);
+      showToast('Ralat', 'Gagal menerbitkan iklan teks', 'error');
+    }
+  };
+
+  // Load all iklan
+  async function loadAllIklan() {
+    const container = document.getElementById('iklanList');
+    const badge = document.getElementById('iklanListBadge');
+    const sidebarBadge = document.getElementById('iklanBadge');
+    if (!container) return;
+
+    try {
+      const q = query(
+        collection(db, 'announcements'),
+        orderBy('createdAt', 'desc'),
+        limit(50)
+      );
+
+      const snap = await getDocs(q);
+      allIklan = [];
+      snap.forEach(docSnap => {
+        allIklan.push({ id: docSnap.id, ...docSnap.data() });
+      });
+
+      // Update badges
+      const activeCount = allIklan.filter(i => i.active).length;
+      if (badge) badge.textContent = allIklan.length;
+      if (sidebarBadge) sidebarBadge.textContent = activeCount;
+
+      if (allIklan.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-bullhorn"></i></div>
+            <h3>Belum Ada Iklan</h3>
+            <p>Mulakan dengan upload iklan media atau tulis iklan teks.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allIklan.map(iklan => {
+        const isMedia = iklan.mediaUrl && iklan.mediaType;
+        const thumbHTML = isMedia
+          ? (iklan.mediaType === 'video'
+              ? `<video src="${iklan.mediaUrl}" muted preload="metadata"></video><div class="media-type-badge"><i class="fas fa-video"></i></div>`
+              : `<img src="${iklan.mediaUrl}" alt="Iklan"><div class="media-type-badge"><i class="fas fa-image"></i></div>`)
+          : `<div class="thumb-icon"><i class="fas fa-comment-dots"></i></div>`;
+
+        const typeBadge = isMedia
+          ? `<span class="iklan-item-badge badge-type-media"><i class="fas fa-image"></i> ${iklan.mediaType === 'video' ? 'Video' : 'Gambar'}</span>`
+          : `<span class="iklan-item-badge badge-type-text"><i class="fas fa-comment"></i> Teks</span>`;
+
+        const statusBadge = iklan.active
+          ? `<span class="iklan-item-badge badge-active"><i class="fas fa-eye"></i> Aktif</span>`
+          : `<span class="iklan-item-badge badge-inactive"><i class="fas fa-eye-slash"></i> Nyahaktif</span>`;
+
+        const date = iklan.createdAt?.toDate ? iklan.createdAt.toDate() : (iklan.createdAt ? new Date(iklan.createdAt) : null);
+        const dateStr = date ? date.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+
+        return `
+          <div class="iklan-item ${iklan.active ? '' : 'inactive'}">
+            <div class="iklan-item-thumb">${thumbHTML}</div>
+            <div class="iklan-item-info">
+              <h4>${iklan.text || iklan.title || '(tiada teks)'}</h4>
+              <p>${iklan.subtitle || iklan.badge || 'Iklan dari ' + (iklan.guruNama || 'Guru')}</p>
+              <div class="iklan-item-meta">
+                ${typeBadge}
+                ${statusBadge}
+                <span style="font-size: 0.68rem; color: var(--ink-soft);">${dateStr}</span>
+              </div>
+            </div>
+            <div class="iklan-item-actions">
+              <button class="iklan-action-btn toggle" onclick="toggleIklanStatus('${iklan.id}', ${iklan.active})" title="${iklan.active ? 'Nyahaktif' : 'Aktifkan'}">
+                <i class="fas ${iklan.active ? 'fa-eye-slash' : 'fa-eye'}"></i>
+              </button>
+              <button class="iklan-action-btn delete" onclick="deleteIklan('${iklan.id}')" title="Padam">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    } catch (err) {
+      console.error('loadAllIklan error:', err);
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+          <h3>Gagal Memuat</h3>
+          <p>Sila semak sambungan internet atau Firestore Rules.</p>
+        </div>
+      `;
+    }
+  }
+
+  // Toggle iklan status
+  window.toggleIklanStatus = async function(id, currentStatus) {
+    try {
+      await updateDoc(doc(db, 'announcements', id), {
+        active: !currentStatus
+      });
+      showToast('Berjaya', `Iklan telah ${!currentStatus ? 'diaktifkan' : 'dinyahaktifkan'}`, 'success');
+      await loadAllIklan();
+    } catch (err) {
+      console.error('toggleIklanStatus error:', err);
+      showToast('Ralat', 'Gagal mengemas kini status', 'error');
+    }
+  };
+
+  // Delete iklan
+  window.deleteIklan = async function(id) {
+    if (!confirm('Padam iklan ini? Tindakan ini tidak boleh dibatalkan.')) return;
+    try {
+      await deleteDoc(doc(db, 'announcements', id));
+      showToast('Dipadam', 'Iklan telah dipadam', 'success');
+      await loadAllIklan();
+    } catch (err) {
+      console.error('deleteIklan error:', err);
+      showToast('Ralat', 'Gagal memadam iklan', 'error');
+    }
+  };
+
   // LOGOUT
   window.handleLogout = async function() {
     try {
@@ -2450,7 +3379,7 @@ body {
   });
 
   console.log('%c REAL-MPC · Guru Dashboard ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
-  console.log('🎯 Klik pelajar → redirect ke student-detail.html');
+  console.log('🎯 Menu Iklan & Pengumuman ditambah');
 </script>
 </body>
 </html>
