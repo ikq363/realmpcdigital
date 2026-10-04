@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 
 <style>
 :root {
@@ -504,11 +505,13 @@ body {
 .btn-danger {
   background: #fff;
   color: var(--danger);
-  border: 2px solid rgba(239,68,68,0.2);
+  border: 2px solid rgba(239,68,68,0.3);
 }
 .btn-danger:hover {
-  background: rgba(239,68,68,0.08);
+  background: var(--danger);
+  color: #fff;
   border-color: var(--danger);
+  transform: translateY(-2px);
 }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -1140,8 +1143,64 @@ body {
   transition: all 0.25s;
   box-shadow: 0 4px 12px rgba(200,16,46,0.4);
   cursor: pointer;
+  z-index: 2;
 }
 .avatar-upload-btn:hover { transform: scale(1.15) rotate(-8deg); }
+
+.avatar-delete-btn {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--danger), #B91C1C);
+  color: #fff;
+  border: 3px solid #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  transition: all 0.25s;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+  cursor: pointer;
+  z-index: 2;
+}
+.avatar-delete-btn.show { display: flex; }
+.avatar-delete-btn:hover { transform: scale(1.15) rotate(8deg); }
+
+/* Profile tabs */
+.profile-tabs {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--paper);
+  padding: 0.35rem;
+  border-radius: 14px;
+  margin-bottom: 1.2rem;
+}
+.profile-tab {
+  flex: 1;
+  padding: 0.65rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.profile-tab:hover { color: var(--maroon); }
+.profile-tab.active {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(200,16,46,0.25);
+}
+.profile-tab-content { display: none; animation: fadeInPage 0.35s ease; }
+.profile-tab-content.active { display: block; }
 
 .profile-info-row {
   display: flex;
@@ -1197,17 +1256,13 @@ body {
   margin-bottom: 1rem;
 }
 
-/* ═══════════════════════════════════════════════════════
-   STUDENT ACTIVITY DETAIL — modal baharu
-   ═══════════════════════════════════════════════════════ */
-
+/* STUDENT ACTIVITY DETAIL */
 .activity-detail-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.8rem;
   margin-bottom: 1.3rem;
 }
-
 .activity-time-box {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, var(--navy) 0%, var(--maroon) 100%);
@@ -1218,7 +1273,6 @@ body {
   overflow: hidden;
   box-shadow: 0 12px 32px rgba(11, 46, 78, 0.3);
 }
-
 .activity-time-box::before {
   content: "";
   position: absolute;
@@ -1228,7 +1282,6 @@ body {
   border-radius: 50%;
   animation: pulseDeco 5s ease-in-out infinite;
 }
-
 .activity-time-label {
   font-size: 0.72rem;
   font-weight: 800;
@@ -1242,7 +1295,6 @@ body {
   position: relative;
   z-index: 1;
 }
-
 .activity-time-display {
   font-family: 'JetBrains Mono', monospace;
   font-size: 2.2rem;
@@ -1257,13 +1309,11 @@ body {
   gap: 0.3rem;
   flex-wrap: wrap;
 }
-
 .activity-time-display .time-part {
   display: flex;
   align-items: baseline;
   gap: 0.15rem;
 }
-
 .activity-time-display .time-part small {
   font-size: 0.75rem;
   font-weight: 600;
@@ -1272,13 +1322,11 @@ body {
   letter-spacing: 0;
   margin-left: 0.15rem;
 }
-
 .activity-time-display .time-sep {
   color: var(--gold);
   font-size: 1.8rem;
   opacity: 0.7;
 }
-
 .activity-time-raw {
   font-size: 0.75rem;
   color: rgba(255,255,255,0.7);
@@ -1289,7 +1337,6 @@ body {
   color: var(--gold);
   font-weight: 700;
 }
-
 .activity-mini-stat {
   display: flex;
   align-items: center;
@@ -1323,7 +1370,6 @@ body {
   font-weight: 800;
   color: var(--navy);
 }
-
 .activity-reflection-box {
   background: var(--paper);
   border-radius: 14px;
@@ -1358,10 +1404,7 @@ body {
   font-style: normal;
 }
 
-/* ═══════════════════════════════════════════════════════
-   PENGURUSAN IKLAN — SECTION
-   ═══════════════════════════════════════════════════════ */
-
+/* PENGURUSAN IKLAN */
 .iklan-tabs {
   display: flex;
   gap: 0.5rem;
@@ -1864,6 +1907,166 @@ body {
   .iklan-item-actions { flex-direction: column; }
   .activity-time-display { font-size: 1.6rem; }
 }
+
+/* ═══ CROP MODAL ═══ */
+.crop-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(11, 46, 78, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.crop-modal-overlay.show { opacity: 1; visibility: visible; }
+
+.crop-modal {
+  background: #fff;
+  border-radius: 24px;
+  max-width: 620px;
+  width: 100%;
+  max-height: 92vh;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+}
+.crop-modal-overlay.show .crop-modal { transform: scale(1); }
+
+.crop-modal-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.2rem 1.5rem;
+  position: relative;
+}
+.crop-modal-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.crop-modal-header h3 i { color: var(--gold); }
+.crop-modal-header p {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.75);
+  margin-top: 0.2rem;
+}
+
+.crop-modal-body {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  background: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.crop-image-container {
+  max-width: 100%;
+  max-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crop-image-container img {
+  max-width: 100%;
+  max-height: 500px;
+  display: block;
+}
+
+.crop-controls {
+  padding: 1rem 1.5rem;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.crop-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s;
+}
+.crop-control-btn:hover {
+  border-color: var(--maroon);
+  color: var(--maroon);
+  background: rgba(139,30,63,0.05);
+  transform: translateY(-2px);
+}
+.crop-control-btn.active {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  border-color: var(--maroon);
+}
+.crop-control-btn i { font-size: 0.8rem; }
+
+.crop-modal-footer {
+  padding: 1rem 1.5rem 1.3rem;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 0.7rem;
+}
+
+.crop-aspect-selector {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 1.5rem 0.8rem;
+  background: var(--paper);
+}
+
+.cropper-view-box,
+.cropper-face {
+  border-radius: 50% !important;
+}
+
+.cropper-view-box {
+  outline: 2px solid var(--gold) !important;
+  outline-color: var(--gold) !important;
+}
+
+.cropper-line {
+  background-color: var(--gold) !important;
+}
+
+.cropper-point {
+  background-color: var(--gold) !important;
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.cropper-modal {
+  background-color: rgba(11, 46, 78, 0.7) !important;
+}
+
+.cropper-dashed {
+  border-color: rgba(255,255,255,0.5) !important;
+}
 </style>
 </head>
 <body>
@@ -2306,7 +2509,7 @@ body {
   </div>
 </div>
 
-<!-- MODAL: CLASS DETAIL (LIST STUDENTS) -->
+<!-- MODAL: CLASS DETAIL -->
 <div class="modal-overlay" id="classDetailModal">
   <div class="modal" style="max-width: 560px;">
     <div class="modal-header">
@@ -2370,9 +2573,11 @@ body {
   </div>
 </div>
 
-<!-- MODAL: PROFILE -->
+<!-- ═══════════════════════════════════════════════════
+     MODAL: PROFILE — DENGAN EDIT NAMA & PASSWORD
+     ═══════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="profileModal">
-  <div class="modal" style="max-width: 440px;">
+  <div class="modal" style="max-width: 480px;">
     <div class="modal-header" style="padding: 1.8rem 1.5rem;">
       <button class="modal-close" onclick="closeModal('profileModal')">
         <i class="fas fa-times"></i>
@@ -2381,10 +2586,13 @@ body {
         <div class="profile-avatar-wrap">
           <img id="profileAvatar" class="profile-avatar" style="display: none;" src="" alt="">
           <div id="profileAvatarFallback" class="profile-avatar-fallback">?</div>
-          <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
+          <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()" title="Tukar gambar">
             <i class="fas fa-camera"></i>
           </button>
-          <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+          <button class="avatar-delete-btn" id="avatarDeleteBtn" onclick="handleDeleteAvatar()" title="Padam gambar">
+            <i class="fas fa-trash"></i>
+          </button>
+          <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarSelected(event)">
         </div>
         <div style="text-align: center;">
           <h2 class="modal-title" id="profileModalName" style="font-size: 1.3rem;">—</h2>
@@ -2392,22 +2600,114 @@ body {
         </div>
       </div>
     </div>
+
     <div class="modal-body">
-      <div class="profile-info-row">
-        <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
-        <div class="profile-info-content">
-          <small>Peranan</small>
-          <strong>Guru</strong>
+
+      <!-- Tab switcher -->
+      <div class="profile-tabs">
+        <button class="profile-tab active" data-ptab="info" onclick="switchProfileTab('info')">
+          <i class="fas fa-info-circle"></i> Maklumat
+        </button>
+        <button class="profile-tab" data-ptab="name" onclick="switchProfileTab('name')">
+          <i class="fas fa-user-edit"></i> Nama
+        </button>
+        <button class="profile-tab" data-ptab="password" onclick="switchProfileTab('password')">
+          <i class="fas fa-lock"></i> Kata Laluan
+        </button>
+      </div>
+
+      <!-- TAB: INFO -->
+      <div class="profile-tab-content active" id="ptab-info">
+        <div class="profile-info-row">
+          <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
+          <div class="profile-info-content">
+            <small>Peranan</small>
+            <strong id="profileRole">Guru</strong>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-icon"><i class="fas fa-chalkboard"></i></div>
+          <div class="profile-info-content">
+            <small>Jumlah Kelas</small>
+            <strong id="profileClassCount">0</strong>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="profile-info-content">
+            <small>Tarikh Sertai</small>
+            <strong id="profileCreated">—</strong>
+          </div>
         </div>
       </div>
-      <div class="profile-info-row">
-        <div class="profile-info-icon"><i class="fas fa-calendar-alt"></i></div>
-        <div class="profile-info-content">
-          <small>Tarikh Sertai</small>
-          <strong id="profileCreated">—</strong>
+
+      <!-- TAB: NAME -->
+      <div class="profile-tab-content" id="ptab-name">
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-user"></i> Nama Penuh</label>
+          <input
+            type="text"
+            id="inputProfileName"
+            class="form-input"
+            placeholder="Masukkan nama penuh anda"
+            maxlength="60"
+            autocomplete="off"
+          >
+          <div style="font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.4rem; display: flex; align-items: center; gap: 0.3rem;">
+            <i class="fas fa-info-circle"></i> Nama ini akan dipaparkan kepada pelajar anda.
+          </div>
         </div>
+        <button class="btn btn-primary" style="width: 100%; padding: 0.9rem;" onclick="handleUpdateName()" id="btnUpdateName">
+          <i class="fas fa-check"></i> Simpan Nama
+        </button>
       </div>
+
+      <!-- TAB: PASSWORD -->
+      <div class="profile-tab-content" id="ptab-password">
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-lock"></i> Kata Laluan Semasa</label>
+          <input
+            type="password"
+            id="inputCurrentPassword"
+            class="form-input"
+            placeholder="Masukkan kata laluan semasa"
+            autocomplete="current-password"
+          >
+        </div>
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-key"></i> Kata Laluan Baru</label>
+          <input
+            type="password"
+            id="inputNewPassword"
+            class="form-input"
+            placeholder="Min 6 aksara"
+            autocomplete="new-password"
+          >
+          <div class="strength-meter" style="display: flex; gap: 4px; margin-top: 0.5rem;">
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+          </div>
+          <div id="strengthText" style="font-size: 0.72rem; color: var(--ink-soft); font-weight: 600; margin-top: 0.3rem;"></div>
+        </div>
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-check-circle"></i> Sahkan Kata Laluan Baru</label>
+          <input
+            type="password"
+            id="inputConfirmPassword"
+            class="form-input"
+            placeholder="Taip semula kata laluan baru"
+            autocomplete="new-password"
+          >
+        </div>
+        <button class="btn btn-primary" style="width: 100%; padding: 0.9rem;" onclick="handleUpdatePassword()" id="btnUpdatePassword">
+          <i class="fas fa-shield-alt"></i> Tukar Kata Laluan
+        </button>
+      </div>
+
     </div>
+
     <div class="modal-footer">
       <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('profileModal')">
         Tutup
@@ -2419,13 +2719,73 @@ body {
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     MODAL: CROP IMAGE
+     ═══════════════════════════════════════════════════ -->
+<div class="crop-modal-overlay" id="cropModalOverlay">
+  <div class="crop-modal">
+    <div class="crop-modal-header">
+      <h3><i class="fas fa-crop-alt"></i> Sesuaikan Gambar Profil</h3>
+      <p>Besarkan, gerakkan atau putar gambar untuk hasil yang terbaik</p>
+    </div>
+
+    <div class="crop-modal-body">
+      <div class="crop-image-container">
+        <img id="cropImage" src="" alt="Crop preview">
+      </div>
+    </div>
+
+    <div class="crop-aspect-selector">
+      <button class="crop-control-btn active" onclick="setCropAspect(1, this)" data-aspect="1">
+        <i class="fas fa-square"></i> 1:1
+      </button>
+      <button class="crop-control-btn" onclick="setCropAspect(NaN, this)" data-aspect="free">
+        <i class="fas fa-crop"></i> Bebas
+      </button>
+    </div>
+
+    <div class="crop-controls">
+      <button class="crop-control-btn" onclick="cropRotateLeft()" type="button">
+        <i class="fas fa-undo"></i> Kiri
+      </button>
+      <button class="crop-control-btn" onclick="cropRotateRight()" type="button">
+        <i class="fas fa-redo"></i> Kanan
+      </button>
+      <button class="crop-control-btn" onclick="cropZoomIn()" type="button">
+        <i class="fas fa-search-plus"></i> Zoom
+      </button>
+      <button class="crop-control-btn" onclick="cropZoomOut()" type="button">
+        <i class="fas fa-search-minus"></i> Kecil
+      </button>
+      <button class="crop-control-btn" onclick="cropReset()" type="button">
+        <i class="fas fa-sync-alt"></i> Reset
+      </button>
+    </div>
+
+    <div class="crop-modal-footer">
+      <button class="btn btn-outline" style="flex: 1;" onclick="cancelCrop()" type="button">
+        <i class="fas fa-times"></i> Batal
+      </button>
+      <button class="btn btn-primary" style="flex: 1;" onclick="confirmCropAndUpload()" id="btnCropUpload" type="button">
+        <i class="fas fa-check"></i> Upload Gambar
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- FIREBASE + LOGIC -->
+<!-- Cropper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getAuth, onAuthStateChanged, signOut,
+    updateProfile, updatePassword,
+    EmailAuthProvider, reauthenticateWithCredential
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, query, where,
     serverTimestamp, addDoc, orderBy, limit
@@ -2475,6 +2835,10 @@ body {
   let mediaFileType = null;
   let currentIklanTab = 'media';
   let allIklan = [];
+
+  // Crop state
+  let cropper = null;
+  let originalFile = null;
 
   // LIVE DATE TIME
   const HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
@@ -2539,10 +2903,7 @@ body {
     }, 3500);
   };
 
-  // ═══════════════════════════════════════════════════════
   // FORMAT TIME SPENT
-  // Tukar saat kepada format jam/minit/saat
-  // ═══════════════════════════════════════════════════════
   function formatTimeSpent(seconds) {
     if (!seconds || seconds < 0 || isNaN(seconds)) {
       return {
@@ -2560,7 +2921,6 @@ body {
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
 
-    // Format Melayu
     const parts = [];
     if (h > 0) parts.push(`${h} jam`);
     if (m > 0) parts.push(`${m} minit`);
@@ -2925,9 +3285,7 @@ body {
     }).join('');
   }
 
-  // ═══════════════════════════════════════════════════════
-  // BUKA DETAIL AKTIVITI — papar timeSpent dalam format jam/minit/saat
-  // ═══════════════════════════════════════════════════════
+  // BUKA DETAIL AKTIVITI
   window.openActivityDetail = async function(studentUid, activityId) {
     const student = allStudents.find(s => s.uid === studentUid);
     if (!student) {
@@ -2942,7 +3300,6 @@ body {
 
     let progressData = student.progress[activityId];
 
-    // Jika belum load, cuba load on-demand
     if (!progressData) {
       try {
         const progressDoc = await getDoc(doc(db, 'progress', studentUid, 'activities', String(activityId)));
@@ -2960,14 +3317,12 @@ body {
       return;
     }
 
-    // Header
     document.getElementById('activityDetailLabel').innerHTML = `
       <i class="fas fa-book"></i> ${activity.konstruk}
     `;
     document.getElementById('activityDetailTitle').textContent = `${activity.icon} ${activity.tajuk}`;
     document.getElementById('activityDetailSub').textContent = `${student.nama || 'Murid'} · ${student.emel || ''}`;
 
-    // Baca timeSpent — cuba pelbagai nama field
     const rawTimeSpent = progressData.timeSpent 
       || progressData.time_spent 
       || progressData.timeSpentSeconds 
@@ -2980,7 +3335,6 @@ body {
     const emosiRaw = progressData.emosi || 3;
     const emosiEmoji = ['😢','😕','😐','🙂','😄'][emosiRaw - 1];
 
-    // Papar stat box — dengan format H:M:S
     document.getElementById('activityDetailStats').innerHTML = `
       <div class="activity-time-box">
         <div class="activity-time-label">
@@ -3019,7 +3373,6 @@ body {
       </div>
     `;
 
-    // Refleksi
     const reflectionText = progressData.refleksi 
       || progressData.reflection 
       || progressData.refleksiText 
@@ -3194,6 +3547,7 @@ body {
 
     document.getElementById('profileModalName').textContent = name;
     document.getElementById('profileModalEmail').textContent = email;
+    document.getElementById('profileClassCount').textContent = teacherClasses.length;
 
     if (currentUserData.createdAt) {
       const d = currentUserData.createdAt.toDate ? currentUserData.createdAt.toDate() : new Date(currentUserData.createdAt);
@@ -3202,15 +3556,22 @@ body {
 
     const profileAvatar = document.getElementById('profileAvatar');
     const profileFallback = document.getElementById('profileAvatarFallback');
+    const deleteBtn = document.getElementById('avatarDeleteBtn');
+
     if (avatar) {
       profileAvatar.src = avatar;
       profileAvatar.style.display = 'block';
       profileFallback.style.display = 'none';
+      if (deleteBtn) deleteBtn.classList.add('show');
     } else {
       profileAvatar.style.display = 'none';
       profileFallback.style.display = 'flex';
       profileFallback.textContent = initial;
+      if (deleteBtn) deleteBtn.classList.remove('show');
     }
+
+    const nameInput = document.getElementById('inputProfileName');
+    if (nameInput) nameInput.value = currentUserData.nama || '';
   }
 
   window.openCreateClassModal = function() {
@@ -3318,26 +3679,319 @@ body {
     window.location.href = `student-detail.html?uid=${uid}`;
   };
 
+  // ═══════════════════════════════════════════════════════
+  // PROFILE MODAL — EDIT NAMA, PASSWORD, CROP, DELETE
+  // ═══════════════════════════════════════════════════════
+
   window.openProfileModal = function() {
+    if (!currentUserData) return;
+    updateUserUI();
+    switchProfileTab('info');
     openModal('profileModal');
   };
 
-  window.handleAvatarUpload = async function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  window.switchProfileTab = function(tab) {
+    document.querySelectorAll('.profile-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.ptab === tab);
+    });
+    document.querySelectorAll('.profile-tab-content').forEach(c => {
+      c.classList.remove('active');
+    });
+    document.getElementById('ptab-' + tab).classList.add('active');
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Fail Terlalu Besar', 'Maksimum 5MB', 'error');
+    if (tab === 'name') {
+      const inp = document.getElementById('inputProfileName');
+      if (inp) inp.value = currentUserData?.nama || '';
+    }
+
+    if (tab === 'password') {
+      document.getElementById('inputCurrentPassword').value = '';
+      document.getElementById('inputNewPassword').value = '';
+      document.getElementById('inputConfirmPassword').value = '';
+      updateStrengthMeter('');
+    }
+  };
+
+  // EDIT NAMA
+  window.handleUpdateName = async function() {
+    const nameInput = document.getElementById('inputProfileName');
+    const btn = document.getElementById('btnUpdateName');
+    const newName = nameInput.value.trim();
+
+    if (newName.length < 3) {
+      showToast('Nama Tidak Sah', 'Nama mesti sekurang-kurangnya 3 aksara', 'error');
       return;
     }
 
-    showToast('Memuat Naik...', 'Sila tunggu sebentar', 'info');
+    if (newName === currentUserData.nama) {
+      showToast('Tiada Perubahan', 'Nama sama dengan nama sekarang', 'info');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
 
     try {
+      await updateDoc(doc(db, 'users', currentUser.uid), { nama: newName });
+      await updateProfile(currentUser, { displayName: newName });
+
+      currentUserData.nama = newName;
+
+      updateUserUI();
+      renderDashboard();
+
+      showToast('Berjaya! ✨', 'Nama anda telah dikemas kini', 'success');
+
+    } catch (err) {
+      console.error('Update name error:', err);
+      showToast('Ralat', 'Gagal mengemas kini nama', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan Nama';
+    }
+  };
+
+  // TUKAR PASSWORD
+  window.handleUpdatePassword = async function() {
+    const currPwd = document.getElementById('inputCurrentPassword').value;
+    const newPwd = document.getElementById('inputNewPassword').value;
+    const confirmPwd = document.getElementById('inputConfirmPassword').value;
+    const btn = document.getElementById('btnUpdatePassword');
+
+    if (!currPwd) {
+      showToast('Kata Laluan Semasa', 'Sila masukkan kata laluan semasa anda', 'error');
+      return;
+    }
+
+    if (newPwd.length < 6) {
+      showToast('Kata Laluan Lemah', 'Min 6 aksara diperlukan', 'error');
+      return;
+    }
+
+    if (newPwd !== confirmPwd) {
+      showToast('Tidak Padan', 'Kata laluan baru tidak padan', 'error');
+      return;
+    }
+
+    if (newPwd === currPwd) {
+      showToast('Sama', 'Kata laluan baru sama dengan yang lama', 'info');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menukar...';
+
+    try {
+      const credential = EmailAuthProvider.credential(currentUser.email, currPwd);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPwd);
+
+      document.getElementById('inputCurrentPassword').value = '';
+      document.getElementById('inputNewPassword').value = '';
+      document.getElementById('inputConfirmPassword').value = '';
+      updateStrengthMeter('');
+
+      showToast('Berjaya! 🔐', 'Kata laluan telah ditukar', 'success');
+
+    } catch (err) {
+      console.error('Update password error:', err);
+
+      let msg = 'Gagal menukar kata laluan';
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        msg = 'Kata laluan semasa salah';
+      } else if (err.code === 'auth/weak-password') {
+        msg = 'Kata laluan baru terlalu lemah';
+      } else if (err.code === 'auth/requires-recent-login') {
+        msg = 'Sesi tamat. Sila log keluar dan log masuk semula.';
+      }
+
+      showToast('Ralat', msg, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-shield-alt"></i> Tukar Kata Laluan';
+    }
+  };
+
+  // Password strength meter
+  window.updateStrengthMeter = function(pwd) {
+    const bars = document.querySelectorAll('#ptab-password .strength-bar');
+    const text = document.getElementById('strengthText');
+    if (!bars.length || !text) return;
+
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10) score++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    bars.forEach(b => {
+      b.style.background = 'var(--line)';
+    });
+
+    if (!pwd) {
+      text.textContent = '';
+      return;
+    }
+
+    if (score <= 1) {
+      bars[0].style.background = '#EF4444';
+      text.textContent = 'Lemah';
+      text.style.color = '#EF4444';
+    } else if (score === 2) {
+      bars[0].style.background = '#EF4444';
+      bars[1].style.background = '#F59E0B';
+      text.textContent = 'Sederhana';
+      text.style.color = '#F59E0B';
+    } else if (score === 3) {
+      bars[0].style.background = '#F59E0B';
+      bars[1].style.background = '#F59E0B';
+      bars[2].style.background = '#F59E0B';
+      text.textContent = 'Baik';
+      text.style.color = '#F59E0B';
+    } else {
+      bars[0].style.background = '#10B981';
+      bars[1].style.background = '#10B981';
+      bars[2].style.background = '#10B981';
+      bars[3].style.background = '#10B981';
+      text.textContent = 'Sangat Kuat';
+      text.style.color = '#10B981';
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const pwdInput = document.getElementById('inputNewPassword');
+    if (pwdInput) {
+      pwdInput.addEventListener('input', (e) => updateStrengthMeter(e.target.value));
+    }
+  });
+
+  // UPLOAD AVATAR DENGAN CROP
+  window.handleAvatarSelected = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Format Tidak Sah', 'Sila pilih fail gambar sahaja', 'error');
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Fail Terlalu Besar', 'Maksimum 5MB sahaja', 'error');
+      e.target.value = '';
+      return;
+    }
+
+    originalFile = file;
+
+    const url = URL.createObjectURL(file);
+    const cropImg = document.getElementById('cropImage');
+    cropImg.src = url;
+
+    setTimeout(() => {
+      document.getElementById('cropModalOverlay').classList.add('show');
+
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+
+      cropper = new Cropper(cropImg, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.9,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: false
+      });
+    }, 100);
+  };
+
+  window.setCropAspect = function(ratio, btn) {
+    if (!cropper) return;
+
+    if (isNaN(ratio)) {
+      cropper.setAspectRatio(NaN);
+    } else {
+      cropper.setAspectRatio(ratio);
+    }
+
+    document.querySelectorAll('.crop-aspect-selector .crop-control-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+
+  window.cropRotateLeft = function() {
+    if (cropper) cropper.rotate(-90);
+  };
+
+  window.cropRotateRight = function() {
+    if (cropper) cropper.rotate(90);
+  };
+
+  window.cropZoomIn = function() {
+    if (cropper) cropper.zoom(0.1);
+  };
+
+  window.cropZoomOut = function() {
+    if (cropper) cropper.zoom(-0.1);
+  };
+
+  window.cropReset = function() {
+    if (cropper) {
+      cropper.reset();
+      cropper.setAspectRatio(1);
+      document.querySelectorAll('.crop-aspect-selector .crop-control-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.crop-aspect-selector .crop-control-btn[data-aspect="1"]')?.classList.add('active');
+    }
+  };
+
+  window.cancelCrop = function() {
+    document.getElementById('cropModalOverlay').classList.remove('show');
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    originalFile = null;
+    document.getElementById('avatarInput').value = '';
+  };
+
+  window.confirmCropAndUpload = async function() {
+    if (!cropper || !originalFile) {
+      showToast('Ralat', 'Sila pilih gambar dahulu', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('btnCropUpload');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+    try {
+      const canvas = cropper.getCroppedCanvas({
+        width: 400,
+        height: 400,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+      });
+
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+
+      document.getElementById('cropModalOverlay').classList.remove('show');
+      cropper.destroy();
+      cropper = null;
+
+      showToast('Memuat Naik...', 'Sedang upload gambar anda', 'info');
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', blob, 'avatar.jpg');
       formData.append('upload_preset', CLOUDINARY_PRESET);
-      formData.append('folder', 'avatars');
+      formData.append('folder', `real-mpc/avatars/${currentUser.uid}`);
 
       const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, {
         method: 'POST',
@@ -3345,17 +3999,57 @@ body {
       });
 
       const data = await res.json();
-      if (data.secure_url) {
-        await updateDoc(doc(db, 'users', currentUser.uid), { avatar: data.secure_url });
-        currentUserData.avatar = data.secure_url;
-        updateUserUI();
-        showToast('Berjaya! 🎉', 'Avatar dikemas kini', 'success');
-      } else {
-        throw new Error('Upload failed');
-      }
+      if (!res.ok) throw new Error(data.error?.message || 'Upload gagal');
+
+      const avatarUrl = data.secure_url;
+
+      await updateDoc(doc(db, 'users', currentUser.uid), { avatar: avatarUrl });
+      currentUserData.avatar = avatarUrl;
+
+      updateUserUI();
+
+      showToast('Berjaya! 📸', 'Gambar profil telah dikemas kini', 'success');
+
     } catch (err) {
-      console.error('Avatar upload error:', err);
-      showToast('Gagal', 'Tidak dapat memuat naik avatar', 'error');
+      console.error('Upload error:', err);
+      showToast('Upload Gagal', err.message || 'Cuba lagi', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Upload Gambar';
+      originalFile = null;
+      document.getElementById('avatarInput').value = '';
+    }
+  };
+
+  // PADAM AVATAR
+  window.handleDeleteAvatar = async function() {
+    if (!currentUserData.avatar) {
+      showToast('Tiada Gambar', 'Anda belum upload gambar profil', 'info');
+      return;
+    }
+
+    if (!confirm('Padam gambar profil anda? Anda boleh upload semula bila-bila masa.')) {
+      return;
+    }
+
+    const btn = document.getElementById('avatarDeleteBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    try {
+      await updateDoc(doc(db, 'users', currentUser.uid), { avatar: '' });
+      currentUserData.avatar = '';
+
+      updateUserUI();
+
+      showToast('Berjaya! 🗑️', 'Gambar profil telah dipadam', 'success');
+
+    } catch (err) {
+      console.error('Delete avatar error:', err);
+      showToast('Ralat', 'Gagal memadam gambar profil', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-trash"></i>';
     }
   };
 
@@ -3700,7 +4394,7 @@ body {
   });
 
   console.log('%c REAL-MPC · Guru Dashboard ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
-  console.log('⏱️ Time Spent format aktif');
+  console.log('✨ Profile modal: Edit nama, tukar password, crop & padam gambar');
 </script>
 </body>
 </html>
