@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 
 <style>
 :root {
@@ -438,7 +439,6 @@ body {
 }
 .mobile-menu-btn:hover { background: var(--paper); }
 
-/* CLASS BADGE (guru info dalam topbar) */
 .teacher-chip {
   display: inline-flex;
   align-items: center;
@@ -524,9 +524,34 @@ body {
   background: rgba(139, 30, 63, 0.03);
   transform: translateY(-2px);
 }
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  box-shadow: 0 8px 20px rgba(244, 196, 48, 0.4);
+  font-weight: 800;
+}
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(244, 196, 48, 0.55);
+}
+.btn-danger {
+  background: #fff;
+  color: var(--danger);
+  border: 2px solid rgba(239,68,68,0.3);
+}
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+  transform: translateY(-2px);
+}
+.btn-sm {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.78rem;
+  border-radius: 10px;
+}
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* WELCOME CARD */
 .welcome-card {
   background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
   background-size: 200% 200%;
@@ -653,7 +678,6 @@ body {
   font-weight: 500;
 }
 
-/* JOIN CLASS PROMPT */
 .join-class-prompt {
   background: linear-gradient(135deg, rgba(244,196,48,0.15), rgba(200,16,46,0.08));
   border: 2px dashed var(--gold);
@@ -703,7 +727,6 @@ body {
   z-index: 1;
 }
 
-/* TEACHER INFO CARD (dalam dashboard bila dah join kelas) */
 .teacher-info-card {
   background: #fff;
   border-radius: 24px;
@@ -785,7 +808,6 @@ body {
 }
 .teacher-info-meta .meta-chip i { color: var(--red); font-size: 0.7rem; }
 
-/* SECTION */
 .section {
   margin-bottom: 2.2rem;
 }
@@ -1168,7 +1190,6 @@ body {
 .activity-status.status-locked { color: var(--ink-soft); }
 .activity-status i { font-size: 0.8rem; }
 
-/* MODAL */
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(11, 46, 78, 0.7);
@@ -1302,7 +1323,6 @@ body {
   padding: 0 1.8rem 1.8rem;
 }
 
-/* PREVIEW KELAS (dalam modal join) */
 .class-preview {
   background: linear-gradient(135deg, rgba(244,196,48,0.1), rgba(200,16,46,0.05));
   border: 2px solid rgba(244,196,48,0.4);
@@ -1404,7 +1424,6 @@ body {
 }
 .class-preview-tag i { color: var(--gold); font-size: 0.65rem; }
 
-/* CLASS CODE INPUT (semasa preview) */
 .class-code-display {
   text-align: center;
   padding: 0.8rem;
@@ -1418,7 +1437,9 @@ body {
   letter-spacing: 0.25em;
 }
 
-/* PROFILE MODAL */
+/* ═══════════════════════════════════════════════════
+   PROFILE MODAL — BAHARU (dengan edit & crop)
+   ═══════════════════════════════════════════════════ */
 .profile-hero {
   display: flex;
   flex-direction: column;
@@ -1470,8 +1491,64 @@ body {
   transition: all 0.25s;
   box-shadow: 0 4px 12px rgba(200,16,46,0.4);
   cursor: pointer;
+  z-index: 2;
 }
 .avatar-upload-btn:hover { transform: scale(1.15) rotate(-8deg); }
+
+.avatar-delete-btn {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--danger), #B91C1C);
+  color: #fff;
+  border: 3px solid #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  transition: all 0.25s;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+  cursor: pointer;
+  z-index: 2;
+}
+.avatar-delete-btn.show { display: flex; }
+.avatar-delete-btn:hover { transform: scale(1.15) rotate(8deg); }
+
+/* Profile tabs */
+.profile-tabs {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--paper);
+  padding: 0.35rem;
+  border-radius: 14px;
+  margin-bottom: 1.2rem;
+}
+.profile-tab {
+  flex: 1;
+  padding: 0.65rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.profile-tab:hover { color: var(--maroon); }
+.profile-tab.active {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(200,16,46,0.25);
+}
+.profile-tab-content { display: none; animation: fadeInPage 0.35s ease; }
+.profile-tab-content.active { display: block; }
 
 .profile-info-row {
   display: flex;
@@ -1512,7 +1589,6 @@ body {
   text-overflow: ellipsis;
 }
 
-/* CODE INPUT */
 .code-input {
   font-family: 'JetBrains Mono', monospace;
   font-size: 1.4rem;
@@ -1528,7 +1604,6 @@ body {
   letter-spacing: 0.3em;
 }
 
-/* LOADING SPINNER */
 .loading-spinner-wrap {
   text-align: center;
   padding: 2rem;
@@ -1549,7 +1624,6 @@ body {
   font-weight: 600;
 }
 
-/* ERROR STATE */
 .error-state {
   text-align: center;
   padding: 1.5rem 1rem;
@@ -1576,7 +1650,6 @@ body {
   margin: 0;
 }
 
-/* PLACEHOLDER */
 .placeholder-card {
   background: #fff;
   border-radius: 24px;
@@ -1704,6 +1777,169 @@ body {
   .teacher-info-card { flex-direction: column; text-align: center; }
   .teacher-info-meta { justify-content: center; }
 }
+
+/* ═══ CROP MODAL ═══ */
+.crop-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(11, 46, 78, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.crop-modal-overlay.show { opacity: 1; visibility: visible; }
+
+.crop-modal {
+  background: #fff;
+  border-radius: 24px;
+  max-width: 620px;
+  width: 100%;
+  max-height: 92vh;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+}
+.crop-modal-overlay.show .crop-modal { transform: scale(1); }
+
+.crop-modal-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon-dark) 100%);
+  color: #fff;
+  padding: 1.2rem 1.5rem;
+  position: relative;
+}
+.crop-modal-header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.crop-modal-header h3 i { color: var(--gold); }
+.crop-modal-header p {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.75);
+  margin-top: 0.2rem;
+}
+
+.crop-modal-body {
+  padding: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  background: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+}
+
+.crop-image-container {
+  max-width: 100%;
+  max-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crop-image-container img {
+  max-width: 100%;
+  max-height: 500px;
+  display: block;
+}
+
+/* Custom crop controls */
+.crop-controls {
+  padding: 1rem 1.5rem;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.crop-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.9rem;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s;
+}
+.crop-control-btn:hover {
+  border-color: var(--maroon);
+  color: var(--maroon);
+  background: rgba(139,30,63,0.05);
+  transform: translateY(-2px);
+}
+.crop-control-btn.active {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  border-color: var(--maroon);
+}
+.crop-control-btn i { font-size: 0.8rem; }
+
+.crop-modal-footer {
+  padding: 1rem 1.5rem 1.3rem;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 0.7rem;
+}
+
+/* Aspect ratio selector */
+.crop-aspect-selector {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 1.5rem 0.8rem;
+  background: var(--paper);
+}
+
+/* Override Cropper.js theme */
+.cropper-view-box,
+.cropper-face {
+  border-radius: 50% !important;
+}
+
+.cropper-view-box {
+  outline: 2px solid var(--gold) !important;
+  outline-color: var(--gold) !important;
+}
+
+.cropper-line {
+  background-color: var(--gold) !important;
+}
+
+.cropper-point {
+  background-color: var(--gold) !important;
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.cropper-modal {
+  background-color: rgba(11, 46, 78, 0.7) !important;
+}
+
+.cropper-dashed {
+  border-color: rgba(255,255,255,0.5) !important;
+}
 </style>
 </head>
 <body>
@@ -1796,7 +2032,6 @@ body {
           </div>
         </div>
 
-        <!-- TEACHER CHIP (tunjuk guru + kelas) -->
         <div class="teacher-chip" id="teacherChip" style="display: none;">
           <span id="teacherChipAvatarWrap"></span>
           <div class="teacher-chip-text">
@@ -1861,7 +2096,6 @@ body {
 
       <div id="dashboardContent" style="display: none;">
 
-        <!-- TEACHER INFO CARD (dalam dashboard) -->
         <div id="teacherInfoCardWrap"></div>
 
         <div class="section">
@@ -2016,7 +2250,7 @@ body {
   </main>
 </div>
 
-<!-- MODAL: JOIN CLASS (dengan 3 state: input, loading, preview) -->
+<!-- MODAL: JOIN CLASS -->
 <div class="modal-overlay" id="joinClassModal">
   <div class="modal" style="max-width: 480px;">
     <div class="modal-header">
@@ -2034,7 +2268,6 @@ body {
     </div>
 
     <div class="modal-body" id="joinModalBody">
-      <!-- State 1: Input kod -->
       <div id="joinStateInput">
         <div class="form-block">
           <label class="form-block-label"><i class="fas fa-keyboard"></i> Kod Kelas</label>
@@ -2051,7 +2284,6 @@ body {
         </div>
       </div>
 
-      <!-- State 2: Loading preview -->
       <div id="joinStateLoading" style="display: none;">
         <div class="loading-spinner-wrap">
           <div class="loading-spinner"></div>
@@ -2059,10 +2291,7 @@ body {
         </div>
       </div>
 
-      <!-- State 3: Preview kelas -->
       <div id="joinStatePreview" style="display: none;"></div>
-
-      <!-- State 4: Error -->
       <div id="joinStateError" style="display: none;"></div>
     </div>
 
@@ -2077,9 +2306,11 @@ body {
   </div>
 </div>
 
-<!-- MODAL: PROFILE -->
+<!-- ═══════════════════════════════════════════════════
+     MODAL: PROFILE — DENGAN EDIT NAMA & PASSWORD
+     ═══════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="profileModal">
-  <div class="modal" style="max-width: 440px;">
+  <div class="modal" style="max-width: 480px;">
     <div class="modal-header" style="padding: 1.8rem 1.5rem;">
       <button class="modal-close" onclick="closeModal('profileModal')">
         <i class="fas fa-times"></i>
@@ -2088,10 +2319,13 @@ body {
         <div class="profile-avatar-wrap">
           <img id="profileAvatar" class="profile-avatar" style="display: none;" src="" alt="">
           <div id="profileAvatarFallback" class="profile-avatar-fallback">?</div>
-          <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
+          <button class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()" title="Tukar gambar">
             <i class="fas fa-camera"></i>
           </button>
-          <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+          <button class="avatar-delete-btn" id="avatarDeleteBtn" onclick="handleDeleteAvatar()" title="Padam gambar">
+            <i class="fas fa-trash"></i>
+          </button>
+          <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarSelected(event)">
         </div>
         <div style="text-align: center;">
           <h2 class="modal-title" id="profileModalName" style="font-size: 1.3rem;">—</h2>
@@ -2099,29 +2333,114 @@ body {
         </div>
       </div>
     </div>
+
     <div class="modal-body">
-      <div class="profile-info-row">
-        <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
-        <div class="profile-info-content">
-          <small>Peranan</small>
-          <strong id="profileRole">Murid</strong>
+
+      <!-- Tab switcher -->
+      <div class="profile-tabs">
+        <button class="profile-tab active" data-ptab="info" onclick="switchProfileTab('info')">
+          <i class="fas fa-info-circle"></i> Maklumat
+        </button>
+        <button class="profile-tab" data-ptab="name" onclick="switchProfileTab('name')">
+          <i class="fas fa-user-edit"></i> Nama
+        </button>
+        <button class="profile-tab" data-ptab="password" onclick="switchProfileTab('password')">
+          <i class="fas fa-lock"></i> Kata Laluan
+        </button>
+      </div>
+
+      <!-- TAB: INFO -->
+      <div class="profile-tab-content active" id="ptab-info">
+        <div class="profile-info-row">
+          <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
+          <div class="profile-info-content">
+            <small>Peranan</small>
+            <strong id="profileRole">Murid</strong>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-icon"><i class="fas fa-users"></i></div>
+          <div class="profile-info-content">
+            <small>Kelas</small>
+            <strong id="profileClass">Belum Sertai</strong>
+          </div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="profile-info-content">
+            <small>Tarikh Sertai</small>
+            <strong id="profileCreated">—</strong>
+          </div>
         </div>
       </div>
-      <div class="profile-info-row">
-        <div class="profile-info-icon"><i class="fas fa-users"></i></div>
-        <div class="profile-info-content">
-          <small>Kelas</small>
-          <strong id="profileClass">Belum Sertai</strong>
+
+      <!-- TAB: NAME -->
+      <div class="profile-tab-content" id="ptab-name">
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-user"></i> Nama Penuh</label>
+          <input
+            type="text"
+            id="inputProfileName"
+            class="form-input"
+            placeholder="Masukkan nama penuh anda"
+            maxlength="60"
+            autocomplete="off"
+          >
+          <div style="font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.4rem; display: flex; align-items: center; gap: 0.3rem;">
+            <i class="fas fa-info-circle"></i> Nama ini akan dipaparkan pada dashboard dan portfolio anda.
+          </div>
         </div>
+        <button class="btn btn-primary" style="width: 100%; padding: 0.9rem;" onclick="handleUpdateName()" id="btnUpdateName">
+          <i class="fas fa-check"></i> Simpan Nama
+        </button>
       </div>
-      <div class="profile-info-row">
-        <div class="profile-info-icon"><i class="fas fa-calendar-alt"></i></div>
-        <div class="profile-info-content">
-          <small>Tarikh Sertai</small>
-          <strong id="profileCreated">—</strong>
+
+      <!-- TAB: PASSWORD -->
+      <div class="profile-tab-content" id="ptab-password">
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-lock"></i> Kata Laluan Semasa</label>
+          <input
+            type="password"
+            id="inputCurrentPassword"
+            class="form-input"
+            placeholder="Masukkan kata laluan semasa"
+            autocomplete="current-password"
+          >
         </div>
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-key"></i> Kata Laluan Baru</label>
+          <input
+            type="password"
+            id="inputNewPassword"
+            class="form-input"
+            placeholder="Min 6 aksara"
+            autocomplete="new-password"
+          >
+          <div class="strength-meter" style="display: flex; gap: 4px; margin-top: 0.5rem;">
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+            <div class="strength-bar" style="flex:1;height:4px;background:var(--line);border-radius:4px;transition:background 0.3s;"></div>
+          </div>
+          <div id="strengthText" style="font-size: 0.72rem; color: var(--ink-soft); font-weight: 600; margin-top: 0.3rem;"></div>
+        </div>
+        <div class="form-block">
+          <label class="form-block-label"><i class="fas fa-check-circle"></i> Sahkan Kata Laluan Baru</label>
+          <input
+            type="password"
+            id="inputConfirmPassword"
+            class="form-input"
+            placeholder="Taip semula kata laluan baru"
+            autocomplete="new-password"
+          >
+        </div>
+        <button class="btn btn-primary" style="width: 100%; padding: 0.9rem;" onclick="handleUpdatePassword()" id="btnUpdatePassword">
+          <i class="fas fa-shield-alt"></i> Tukar Kata Laluan
+        </button>
       </div>
+
     </div>
+
     <div class="modal-footer">
       <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('profileModal')">
         Tutup
@@ -2133,11 +2452,72 @@ body {
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     MODAL: CROP IMAGE (sebelum upload)
+     ═══════════════════════════════════════════════════ -->
+<div class="crop-modal-overlay" id="cropModalOverlay">
+  <div class="crop-modal">
+    <div class="crop-modal-header">
+      <h3><i class="fas fa-crop-alt"></i> Sesuaikan Gambar Profil</h3>
+      <p>Besarkan, gerakkan atau putar gambar untuk hasil yang terbaik</p>
+    </div>
+
+    <div class="crop-modal-body">
+      <div class="crop-image-container">
+        <img id="cropImage" src="" alt="Crop preview">
+      </div>
+    </div>
+
+    <div class="crop-aspect-selector">
+      <button class="crop-control-btn active" onclick="setCropAspect(1, this)" data-aspect="1">
+        <i class="fas fa-square"></i> 1:1
+      </button>
+      <button class="crop-control-btn" onclick="setCropAspect(NaN, this)" data-aspect="free">
+        <i class="fas fa-crop"></i> Bebas
+      </button>
+    </div>
+
+    <div class="crop-controls">
+      <button class="crop-control-btn" onclick="cropRotateLeft()" type="button">
+        <i class="fas fa-undo"></i> Kiri
+      </button>
+      <button class="crop-control-btn" onclick="cropRotateRight()" type="button">
+        <i class="fas fa-redo"></i> Kanan
+      </button>
+      <button class="crop-control-btn" onclick="cropZoomIn()" type="button">
+        <i class="fas fa-search-plus"></i> Zoom
+      </button>
+      <button class="crop-control-btn" onclick="cropZoomOut()" type="button">
+        <i class="fas fa-search-minus"></i> Kecil
+      </button>
+      <button class="crop-control-btn" onclick="cropReset()" type="button">
+        <i class="fas fa-sync-alt"></i> Reset
+      </button>
+    </div>
+
+    <div class="crop-modal-footer">
+      <button class="btn btn-outline" style="flex: 1;" onclick="cancelCrop()" type="button">
+        <i class="fas fa-times"></i> Batal
+      </button>
+      <button class="btn btn-primary" style="flex: 1;" onclick="confirmCropAndUpload()" id="btnCropUpload" type="button">
+        <i class="fas fa-check"></i> Upload Gambar
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- Cropper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getAuth, onAuthStateChanged, signOut,
+    updateProfile, updatePassword,
+    EmailAuthProvider, reauthenticateWithCredential
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where,
     serverTimestamp, arrayUnion
@@ -2182,8 +2562,11 @@ body {
   let userProgress = {};
   let clockInterval = null;
 
-  // State preview kelas
-  let previewClassDoc = null; // { id, data, teacherData }
+  let previewClassDoc = null;
+
+  // Crop state
+  let cropper = null;
+  let originalFile = null;
 
   const HARI = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
   const BULAN = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun', 'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
@@ -2242,15 +2625,11 @@ body {
     }, 3500);
   };
 
-  // MODAL HELPERS
   window.closeModal = function(id) {
     document.getElementById(id).classList.remove('show');
     document.body.style.overflow = '';
     if (id === 'joinClassModal') {
-      // Reset state
-      setTimeout(() => {
-        resetJoinModal();
-      }, 300);
+      setTimeout(() => resetJoinModal(), 300);
     }
   };
 
@@ -2271,7 +2650,6 @@ body {
     }
   });
 
-  // SIDEBAR
   window.toggleSidebar = function() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebarOverlay').classList.toggle('show');
@@ -2311,10 +2689,6 @@ body {
     return name;
   }
 
-  // ============================
-  // LOAD USER
-  // ============================
-
   async function loadUserData() {
     try {
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
@@ -2326,14 +2700,12 @@ body {
           return;
         }
 
-        // Load kelas (jika murid dah join kelas)
         if (currentUserData.classId) {
           try {
             const classDoc = await getDoc(doc(db, 'classes', currentUserData.classId));
             if (classDoc.exists()) {
               currentClassData = { id: currentUserData.classId, ...classDoc.data() };
 
-              // Load data guru
               if (currentClassData.guruId) {
                 try {
                   const teacherDoc = await getDoc(doc(db, 'users', currentClassData.guruId));
@@ -2381,10 +2753,6 @@ body {
     }
   }
 
-  // ============================
-  // RENDER DASHBOARD
-  // ============================
-
   function renderDashboard() {
     const name = getDisplayName();
     document.getElementById('welcomeTitle').textContent = `Hai, ${name}! 👋`;
@@ -2431,7 +2799,6 @@ body {
     renderActivitiesGrid('activitiesGridFull');
   }
 
-  // ═══ TEACHER CHIP (dalam topbar) ═══
   function updateTeacherChip() {
     const chip = document.getElementById('teacherChip');
     const avatarWrap = document.getElementById('teacherChipAvatarWrap');
@@ -2458,7 +2825,6 @@ body {
     chip.style.display = 'inline-flex';
   }
 
-  // ═══ TEACHER INFO CARD (dalam dashboard) ═══
   function renderTeacherInfoCard() {
     const wrap = document.getElementById('teacherInfoCardWrap');
 
@@ -2473,10 +2839,6 @@ body {
     const avatarHTML = currentTeacherData.avatar
       ? `<img src="${currentTeacherData.avatar}" class="teacher-info-avatar" alt="${tName}">`
       : `<div class="teacher-info-avatar-fallback">${initial}</div>`;
-
-    const tarikhJoin = currentClassData.createdAt?.toDate 
-      ? currentClassData.createdAt.toDate().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
-      : (currentClassData.createdAt ? new Date(currentClassData.createdAt).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' }) : '—');
 
     wrap.innerHTML = `
       <div class="teacher-info-card">
@@ -2528,15 +2890,23 @@ body {
 
     const profileAvatar = document.getElementById('profileAvatar');
     const profileFallback = document.getElementById('profileAvatarFallback');
+    const deleteBtn = document.getElementById('avatarDeleteBtn');
+
     if (avatar) {
       profileAvatar.src = avatar;
       profileAvatar.style.display = 'block';
       profileFallback.style.display = 'none';
+      if (deleteBtn) deleteBtn.classList.add('show');
     } else {
       profileAvatar.style.display = 'none';
       profileFallback.style.display = 'flex';
       profileFallback.textContent = initial;
+      if (deleteBtn) deleteBtn.classList.remove('show');
     }
+
+    // Fill name input
+    const nameInput = document.getElementById('inputProfileName');
+    if (nameInput) nameInput.value = currentUserData.nama || '';
   }
 
   function updateRing(name, activityIds) {
@@ -2650,7 +3020,7 @@ body {
   };
 
   // ═══════════════════════════════════════════
-  // JOIN CLASS — DENGAN PREVIEW
+  // JOIN CLASS
   // ═══════════════════════════════════════════
 
   window.openJoinClassModal = function() {
@@ -2678,7 +3048,6 @@ body {
     btn.innerHTML = '<i class="fas fa-search"></i> Cari Kelas';
     btn.onclick = handleFindClass;
 
-    // Reset footer batal btn
     const cancelBtn = document.querySelector('#joinClassModal .modal-footer .btn-outline');
     cancelBtn.innerHTML = 'Batal';
     cancelBtn.onclick = () => closeModal('joinClassModal');
@@ -2686,14 +3055,8 @@ body {
 
   window.onJoinCodeInput = function(e) {
     e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    // Auto-cari bila 6 aksara
-    if (e.target.value.length === 6) {
-      // Boleh auto-trigger cari (optional)
-      // handleFindClass();
-    }
   };
 
-  // STEP 1: CARI KELAS
   window.handleFindClass = async function() {
     const code = document.getElementById('joinClassCode').value.trim().toUpperCase();
     const btn = document.getElementById('joinClassBtn');
@@ -2703,7 +3066,6 @@ body {
       return;
     }
 
-    // Papar state loading
     document.getElementById('joinStateInput').style.display = 'none';
     document.getElementById('joinStateLoading').style.display = 'block';
     document.getElementById('joinStatePreview').style.display = 'none';
@@ -2713,7 +3075,6 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari...';
 
     try {
-      // Baca semua kelas
       let allClassesSnap;
       try {
         allClassesSnap = await getDocs(collection(db, 'classes'));
@@ -2723,7 +3084,6 @@ body {
         return;
       }
 
-      // Cari kod yang padan
       const classDocSnap = allClassesSnap.docs.find(d => {
         const k = d.data().kod;
         return k && k.toString().toUpperCase().trim() === code;
@@ -2737,9 +3097,6 @@ body {
       const classId = classDocSnap.id;
       const classData = classDocSnap.data();
 
-      console.log('✅ Kelas dijumpai:', classId, classData);
-
-      // Load data guru
       let teacherData = null;
       if (classData.guruId) {
         try {
@@ -2752,23 +3109,19 @@ body {
         }
       }
 
-      // Semak jika murid sudah join kelas ini
       const muridIds = classData.muridIds || [];
       if (muridIds.includes(currentUser.uid)) {
         showJoinError('Sudah Sertai', `Anda sudah berada dalam kelas ${classData.nama}.`);
         return;
       }
 
-      // Kalau murid dah ada kelas lain, tolak
       if (currentUserData.classId && currentUserData.classId !== classId) {
         showJoinError('Sudah Ada Kelas', 'Anda sudah menyertai kelas lain. Hubungi guru untuk tukar kelas.');
         return;
       }
 
-      // Simpan preview data
       previewClassDoc = { id: classId, data: classData, teacherData };
 
-      // Papar preview
       showJoinPreview();
 
     } catch (err) {
@@ -2777,27 +3130,23 @@ body {
     }
   };
 
-  // STEP 2: PAPAR PREVIEW
   function showJoinPreview() {
     const { id: classId, data: classData, teacherData } = previewClassDoc;
 
     document.getElementById('joinStateLoading').style.display = 'none';
     document.getElementById('joinStatePreview').style.display = 'block';
 
-    // Update modal header
     document.getElementById('joinModalLabel').textContent = 'Kelas Dijumpai';
     document.getElementById('joinModalTitle').textContent = classData.nama;
     document.getElementById('joinModalSub').textContent = 'Sahkan untuk menyertai kelas ini';
     document.querySelector('#joinClassModal .join-class-icon i').className = 'fas fa-check';
 
-    // Avatar guru
     const tName = teacherData?.nama || teacherData?.emel?.split('@')[0] || 'Guru';
     const tInitial = tName.charAt(0).toUpperCase();
     const avatarHTML = teacherData?.avatar
       ? `<img src="${teacherData.avatar}" class="class-preview-avatar" alt="${tName}">`
       : `<div class="class-preview-avatar-fallback">${tInitial}</div>`;
 
-    // Jumlah murid semasa
     const muridCount = (classData.muridIds || []).length;
 
     document.getElementById('joinStatePreview').innerHTML = `
@@ -2827,13 +3176,11 @@ body {
       </div>
     `;
 
-    // Update butang
     const btn = document.getElementById('joinClassBtn');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-link"></i> Sertai Kelas';
     btn.onclick = handleConfirmJoin;
 
-    // Update butang batal
     const cancelBtn = document.querySelector('#joinClassModal .modal-footer .btn-outline');
     cancelBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Tukar Kod';
     cancelBtn.onclick = () => {
@@ -2841,7 +3188,6 @@ body {
     };
   }
 
-  // STEP 3: ERROR
   function showJoinError(title, message) {
     document.getElementById('joinStateLoading').style.display = 'none';
     document.getElementById('joinStateError').style.display = 'block';
@@ -2868,7 +3214,6 @@ body {
     cancelBtn.onclick = () => closeModal('joinClassModal');
   }
 
-  // STEP 4: CONFIRM JOIN
   window.handleConfirmJoin = async function() {
     if (!previewClassDoc) return;
 
@@ -2879,12 +3224,10 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyertai...';
 
     try {
-      // Tambah murid ke senarai muridIds dalam kelas
       await updateDoc(doc(db, 'classes', classId), {
         muridIds: arrayUnion(currentUser.uid)
       });
 
-      // Update user classId
       await updateDoc(doc(db, 'users', currentUser.uid), { classId: classId });
       currentUserData.classId = classId;
       currentClassData = { id: classId, ...classData, muridIds: [...(classData.muridIds || []), currentUser.uid] };
@@ -2904,27 +3247,346 @@ body {
     }
   };
 
-  // PROFILE
+  // ═══════════════════════════════════════════════════════
+  // PROFILE MODAL — DENGAN EDIT NAMA, PASSWORD, CROP, DELETE
+  // ═══════════════════════════════════════════════════════
+
   window.openProfileModal = function() {
     if (!currentUserData) return;
     updateUserUI();
+    switchProfileTab('info');
     openModal('profileModal');
   };
 
-  window.handleAvatarUpload = async function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  // Tab switching dalam profile
+  window.switchProfileTab = function(tab) {
+    document.querySelectorAll('.profile-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.ptab === tab);
+    });
+    document.querySelectorAll('.profile-tab-content').forEach(c => {
+      c.classList.remove('active');
+    });
+    document.getElementById('ptab-' + tab).classList.add('active');
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Fail Terlalu Besar', 'Maksimum 5MB sahaja', 'error');
+    // Fill name input bila buka tab name
+    if (tab === 'name') {
+      const inp = document.getElementById('inputProfileName');
+      if (inp) inp.value = currentUserData?.nama || '';
+    }
+
+    // Clear password fields bila buka tab password
+    if (tab === 'password') {
+      document.getElementById('inputCurrentPassword').value = '';
+      document.getElementById('inputNewPassword').value = '';
+      document.getElementById('inputConfirmPassword').value = '';
+      updateStrengthMeter('');
+    }
+  };
+
+  // ═══════════════════════════════════════════
+  // 1. EDIT NAMA
+  // ═══════════════════════════════════════════
+  window.handleUpdateName = async function() {
+    const nameInput = document.getElementById('inputProfileName');
+    const btn = document.getElementById('btnUpdateName');
+    const newName = nameInput.value.trim();
+
+    if (newName.length < 3) {
+      showToast('Nama Tidak Sah', 'Nama mesti sekurang-kurangnya 3 aksara', 'error');
       return;
     }
 
-    showToast('Memuat Naik...', 'Sedang upload gambar anda', 'info');
+    if (newName === currentUserData.nama) {
+      showToast('Tiada Perubahan', 'Nama sama dengan nama sekarang', 'info');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
 
     try {
+      // Update Firestore
+      await updateDoc(doc(db, 'users', currentUser.uid), { nama: newName });
+
+      // Update Auth displayName
+      await updateProfile(currentUser, { displayName: newName });
+
+      // Update local state
+      currentUserData.nama = newName;
+
+      updateUserUI();
+      renderDashboard();
+
+      showToast('Berjaya! ✨', 'Nama anda telah dikemas kini', 'success');
+
+    } catch (err) {
+      console.error('Update name error:', err);
+      showToast('Ralat', 'Gagal mengemas kini nama', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Simpan Nama';
+    }
+  };
+
+  // ═══════════════════════════════════════════
+  // 2. TUKAR PASSWORD
+  // ═══════════════════════════════════════════
+  window.handleUpdatePassword = async function() {
+    const currPwd = document.getElementById('inputCurrentPassword').value;
+    const newPwd = document.getElementById('inputNewPassword').value;
+    const confirmPwd = document.getElementById('inputConfirmPassword').value;
+    const btn = document.getElementById('btnUpdatePassword');
+
+    if (!currPwd) {
+      showToast('Kata Laluan Semasa', 'Sila masukkan kata laluan semasa anda', 'error');
+      return;
+    }
+
+    if (newPwd.length < 6) {
+      showToast('Kata Laluan Lemah', 'Min 6 aksara diperlukan', 'error');
+      return;
+    }
+
+    if (newPwd !== confirmPwd) {
+      showToast('Tidak Padan', 'Kata laluan baru tidak padan', 'error');
+      return;
+    }
+
+    if (newPwd === currPwd) {
+      showToast('Sama', 'Kata laluan baru sama dengan yang lama', 'info');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menukar...';
+
+    try {
+      // Reauthenticate dulu (perlu untuk operasi sensitif)
+      const credential = EmailAuthProvider.credential(currentUser.email, currPwd);
+      await reauthenticateWithCredential(currentUser, credential);
+
+      // Update password
+      await updatePassword(currentUser, newPwd);
+
+      // Clear fields
+      document.getElementById('inputCurrentPassword').value = '';
+      document.getElementById('inputNewPassword').value = '';
+      document.getElementById('inputConfirmPassword').value = '';
+      updateStrengthMeter('');
+
+      showToast('Berjaya! 🔐', 'Kata laluan telah ditukar', 'success');
+
+    } catch (err) {
+      console.error('Update password error:', err);
+
+      let msg = 'Gagal menukar kata laluan';
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        msg = 'Kata laluan semasa salah';
+      } else if (err.code === 'auth/weak-password') {
+        msg = 'Kata laluan baru terlalu lemah';
+      } else if (err.code === 'auth/requires-recent-login') {
+        msg = 'Sesi tamat. Sila log keluar dan log masuk semula.';
+      }
+
+      showToast('Ralat', msg, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-shield-alt"></i> Tukar Kata Laluan';
+    }
+  };
+
+  // Password strength meter
+  window.updateStrengthMeter = function(pwd) {
+    const bars = document.querySelectorAll('#ptab-password .strength-bar');
+    const text = document.getElementById('strengthText');
+    if (!bars.length || !text) return;
+
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 10) score++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    bars.forEach(b => {
+      b.style.background = 'var(--line)';
+    });
+
+    if (!pwd) {
+      text.textContent = '';
+      return;
+    }
+
+    if (score <= 1) {
+      bars[0].style.background = '#EF4444';
+      text.textContent = 'Lemah';
+      text.style.color = '#EF4444';
+    } else if (score === 2) {
+      bars[0].style.background = '#EF4444';
+      bars[1].style.background = '#F59E0B';
+      text.textContent = 'Sederhana';
+      text.style.color = '#F59E0B';
+    } else if (score === 3) {
+      bars[0].style.background = '#F59E0B';
+      bars[1].style.background = '#F59E0B';
+      bars[2].style.background = '#F59E0B';
+      text.textContent = 'Baik';
+      text.style.color = '#F59E0B';
+    } else {
+      bars[0].style.background = '#10B981';
+      bars[1].style.background = '#10B981';
+      bars[2].style.background = '#10B981';
+      bars[3].style.background = '#10B981';
+      text.textContent = 'Sangat Kuat';
+      text.style.color = '#10B981';
+    }
+  };
+
+  // Bind password input
+  document.addEventListener('DOMContentLoaded', () => {
+    const pwdInput = document.getElementById('inputNewPassword');
+    if (pwdInput) {
+      pwdInput.addEventListener('input', (e) => updateStrengthMeter(e.target.value));
+    }
+  });
+
+  // ═══════════════════════════════════════════
+  // 3. UPLOAD AVATAR DENGAN CROP
+  // ═══════════════════════════════════════════
+
+  window.handleAvatarSelected = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate
+    if (!file.type.startsWith('image/')) {
+      showToast('Format Tidak Sah', 'Sila pilih fail gambar sahaja', 'error');
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Fail Terlalu Besar', 'Maksimum 5MB sahaja', 'error');
+      e.target.value = '';
+      return;
+    }
+
+    originalFile = file;
+
+    // Show crop modal
+    const url = URL.createObjectURL(file);
+    const cropImg = document.getElementById('cropImage');
+    cropImg.src = url;
+
+    // Show overlay
+    setTimeout(() => {
+      document.getElementById('cropModalOverlay').classList.add('show');
+
+      // Destroy old cropper
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+
+      // Init Cropper
+      cropper = new Cropper(cropImg, {
+        aspectRatio: 1,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.9,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: false
+      });
+    }, 100);
+  };
+
+  window.setCropAspect = function(ratio, btn) {
+    if (!cropper) return;
+
+    if (isNaN(ratio)) {
+      cropper.setAspectRatio(NaN);
+    } else {
+      cropper.setAspectRatio(ratio);
+    }
+
+    document.querySelectorAll('.crop-aspect-selector .crop-control-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+
+  window.cropRotateLeft = function() {
+    if (cropper) cropper.rotate(-90);
+  };
+
+  window.cropRotateRight = function() {
+    if (cropper) cropper.rotate(90);
+  };
+
+  window.cropZoomIn = function() {
+    if (cropper) cropper.zoom(0.1);
+  };
+
+  window.cropZoomOut = function() {
+    if (cropper) cropper.zoom(-0.1);
+  };
+
+  window.cropReset = function() {
+    if (cropper) {
+      cropper.reset();
+      cropper.setAspectRatio(1);
+      document.querySelectorAll('.crop-aspect-selector .crop-control-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.crop-aspect-selector .crop-control-btn[data-aspect="1"]')?.classList.add('active');
+    }
+  };
+
+  window.cancelCrop = function() {
+    document.getElementById('cropModalOverlay').classList.remove('show');
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    originalFile = null;
+    document.getElementById('avatarInput').value = '';
+  };
+
+  window.confirmCropAndUpload = async function() {
+    if (!cropper || !originalFile) {
+      showToast('Ralat', 'Sila pilih gambar dahulu', 'error');
+      return;
+    }
+
+    const btn = document.getElementById('btnCropUpload');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+    try {
+      // Get cropped canvas
+      const canvas = cropper.getCroppedCanvas({
+        width: 400,
+        height: 400,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+      });
+
+      // Convert to blob
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+
+      // Close crop modal
+      document.getElementById('cropModalOverlay').classList.remove('show');
+      cropper.destroy();
+      cropper = null;
+
+      // Show uploading toast
+      showToast('Memuat Naik...', 'Sedang upload gambar anda', 'info');
+
+      // Upload to Cloudinary
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', blob, 'avatar.jpg');
       formData.append('upload_preset', CLOUDINARY_PRESET);
       formData.append('folder', `real-mpc/avatars/${currentUser.uid}`);
 
@@ -2938,15 +3600,57 @@ body {
 
       const avatarUrl = data.secure_url;
 
+      // Update Firestore
       await updateDoc(doc(db, 'users', currentUser.uid), { avatar: avatarUrl });
       currentUserData.avatar = avatarUrl;
 
       updateUserUI();
-      showToast('Berjaya! 📸', 'Gambar profil telah dikemaskini', 'success');
+
+      showToast('Berjaya! 📸', 'Gambar profil telah dikemas kini', 'success');
 
     } catch (err) {
-      console.error('Avatar upload error:', err);
+      console.error('Upload error:', err);
       showToast('Upload Gagal', err.message || 'Cuba lagi', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Upload Gambar';
+      originalFile = null;
+      document.getElementById('avatarInput').value = '';
+    }
+  };
+
+  // ═══════════════════════════════════════════
+  // 4. PADAM AVATAR
+  // ═══════════════════════════════════════════
+  window.handleDeleteAvatar = async function() {
+    if (!currentUserData.avatar) {
+      showToast('Tiada Gambar', 'Anda belum upload gambar profil', 'info');
+      return;
+    }
+
+    if (!confirm('Padam gambar profil anda? Anda boleh upload semula bila-bila masa.')) {
+      return;
+    }
+
+    const btn = document.getElementById('avatarDeleteBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    try {
+      // Update Firestore — set avatar to empty string
+      await updateDoc(doc(db, 'users', currentUser.uid), { avatar: '' });
+      currentUserData.avatar = '';
+
+      updateUserUI();
+
+      showToast('Berjaya! 🗑️', 'Gambar profil telah dipadam', 'success');
+
+    } catch (err) {
+      console.error('Delete avatar error:', err);
+      showToast('Ralat', 'Gagal memadam gambar profil', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-trash"></i>';
     }
   };
 
@@ -2961,7 +3665,6 @@ body {
     }
   };
 
-  // REFLECTIONS
   async function renderReflections() {
     const container = document.getElementById('reflectionsList');
 
@@ -3012,7 +3715,6 @@ body {
     }
   }
 
-  // PORTFOLIO
   function renderPortfolio() {
     const container = document.getElementById('portfolioContent');
     const completed = Object.values(userProgress).filter(p => p.status === 'completed').length;
@@ -3066,7 +3768,6 @@ body {
     `;
   }
 
-  // AUTH
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
@@ -3079,7 +3780,7 @@ body {
   });
 
   console.log('%c REAL-MPC · Murid Dashboard ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
-  console.log('🎯 Bila taip kod kelas → preview dulu → baru join');
+  console.log('✨ Profile modal: Edit nama, tukar password, crop & padam gambar');
 </script>
 
 </body>
