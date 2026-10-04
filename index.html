@@ -214,554 +214,10 @@ body {
   50% { transform: translateY(-30px) rotate(8deg); }
 }
 
-/* ═══════════════════════════════════════════════════════
-   ANNOUNCEMENT BAR — PAPAN IKLAN TEKS BERJALAN
-   ═══════════════════════════════════════════════════════ */
-.announcement-bar {
-  position: sticky;
-  top: 0;
-  z-index: 101;
-  background: linear-gradient(90deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
-  color: #fff;
-  overflow: hidden;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  border-bottom: 2px solid var(--gold);
-  box-shadow: 0 4px 20px rgba(11, 46, 78, 0.3);
-}
-
-.announcement-label {
-  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
-  color: var(--navy);
-  padding: 0 1.2rem;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 3;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-  padding-right: 1.8rem;
-  box-shadow: 4px 0 12px rgba(0,0,0,0.2);
-}
-
-.announcement-label i {
-  font-size: 0.85rem;
-  animation: bellShake 2s ease-in-out infinite;
-}
-@keyframes bellShake {
-  0%, 100% { transform: rotate(0); }
-  10%, 30% { transform: rotate(-12deg); }
-  20%, 40% { transform: rotate(12deg); }
-  50% { transform: rotate(0); }
-}
-
-.announcement-track {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
-}
-
-.announcement-marquee {
-  display: flex;
-  gap: 4rem;
-  animation: marqueeScroll 40s linear infinite;
-  white-space: nowrap;
-  padding-left: 2rem;
-  will-change: transform;
-}
-
-.announcement-marquee:hover {
-  animation-play-state: paused;
-}
-
-@keyframes marqueeScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.announcement-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #fff;
-  flex-shrink: 0;
-  transition: color 0.25s;
-  text-decoration: none;
-}
-
-.announcement-item:hover {
-  color: var(--gold);
-}
-
-.announcement-item i {
-  color: var(--gold);
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-
-.announcement-item .announcement-badge {
-  background: rgba(244, 196, 48, 0.2);
-  border: 1px solid rgba(244, 196, 48, 0.4);
-  color: var(--gold);
-  padding: 0.15rem 0.55rem;
-  border-radius: 50px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.announcement-divider {
-  color: var(--gold);
-  opacity: 0.5;
-  font-size: 0.7rem;
-  flex-shrink: 0;
-}
-
-.announcement-empty {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.6);
-  font-style: italic;
-  padding-left: 1rem;
-}
-
-.announcement-loading {
-  display: inline-block;
-  width: 300px;
-  height: 16px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
-  background-size: 200% 100%;
-  border-radius: 4px;
-  animation: shimmer 1.5s infinite;
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ═══════════════════════════════════════════════════════
-   IKLAN KOTAK KHAS — MEDIA BANNER BOX
-   Satu kotak besar khas untuk gambar/video iklan
-   ═══════════════════════════════════════════════════════ */
-.iklan-section {
-  position: relative;
-  z-index: 1;
-  max-width: 1320px;
-  margin: 1.5rem auto 0;
-  padding: 0 1.5rem;
-  display: none; /* Auto-show via JS bila ada iklan */
-}
-
-.iklan-section.active {
-  display: block;
-}
-
-.iklan-box {
-  position: relative;
-  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
-  border-radius: 28px;
-  overflow: hidden;
-  box-shadow:
-    0 24px 60px -12px rgba(11, 46, 78, 0.35),
-    0 0 0 1px rgba(244, 196, 48, 0.15),
-    inset 0 1px 0 rgba(255,255,255,0.1);
-  isolation: isolate;
-}
-
-/* Header kotak iklan */
-.iklan-header {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  z-index: 5;
-  padding: 0.85rem 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  background: linear-gradient(180deg, rgba(11, 46, 78, 0.9) 0%, rgba(11, 46, 78, 0) 100%);
-  pointer-events: none;
-}
-
-.iklan-header-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
-  color: var(--navy);
-  padding: 0.35rem 0.85rem;
-  border-radius: 50px;
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
-  pointer-events: auto;
-}
-.iklan-header-label i {
-  font-size: 0.75rem;
-  animation: bellShake 2.5s ease-in-out infinite;
-}
-
-.iklan-counter {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.35rem 0.85rem;
-  border-radius: 50px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #fff;
-  font-family: 'JetBrains Mono', monospace;
-}
-.iklan-counter i { color: var(--gold); font-size: 0.65rem; }
-
-/* Slideshow container */
-.iklan-slideshow {
-  position: relative;
-  width: 100%;
-  height: 380px;
-  overflow: hidden;
-  background: #0B2E4E;
-}
-
-@media (max-width: 900px) {
-  .iklan-slideshow { height: 300px; }
-}
-@media (max-width: 600px) {
-  .iklan-slideshow { height: 220px; }
-}
-
-.iklan-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: scale(1.08);
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.iklan-slide.active {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-  z-index: 2;
-}
-
-.iklan-slide img,
-.iklan-slide video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Overlay gradient pada gambar/video */
-.iklan-slide::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(11, 46, 78, 0.85) 0%,
-    rgba(11, 46, 78, 0.3) 40%,
-    rgba(11, 46, 78, 0.15) 70%,
-    rgba(11, 46, 78, 0.4) 100%
-  );
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* Caption overlay di bahagian bawah */
-.iklan-caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 4;
-  padding: 1.5rem 1.8rem;
-  color: #fff;
-  pointer-events: none;
-}
-
-.iklan-caption-inner {
-  max-width: 720px;
-  animation: captionFade 0.8s ease-out;
-}
-
-@keyframes captionFade {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.iklan-caption-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
-  color: var(--navy);
-  padding: 0.25rem 0.75rem;
-  border-radius: 50px;
-  font-size: 0.68rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.7rem;
-  box-shadow: 0 4px 12px rgba(244, 196, 48, 0.4);
-}
-
-.iklan-caption-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  margin-bottom: 0.4rem;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-  background: linear-gradient(120deg, #fff 0%, var(--gold) 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shineText 4s linear infinite;
-}
-
-.iklan-caption-sub {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.5;
-  font-weight: 500;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  max-width: 600px;
-}
-
-@media (max-width: 600px) {
-  .iklan-caption { padding: 1rem; }
-  .iklan-caption-title { font-size: 1.1rem; }
-  .iklan-caption-sub { font-size: 0.78rem; }
-  .iklan-caption-badge { font-size: 0.6rem; padding: 0.2rem 0.6rem; margin-bottom: 0.5rem; }
-}
-
-/* Butang CTA pada caption */
-.iklan-caption-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.6rem 1.3rem;
-  background: linear-gradient(135deg, var(--red), var(--maroon));
-  color: #fff;
-  border-radius: 50px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.3s;
-  box-shadow: 0 8px 20px rgba(200, 16, 46, 0.4);
-  pointer-events: auto;
-  cursor: none;
-}
-.iklan-caption-cta:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 12px 28px rgba(200, 16, 46, 0.6);
-}
-.iklan-caption-cta i {
-  font-size: 0.75rem;
-  transition: transform 0.3s;
-}
-.iklan-caption-cta:hover i {
-  transform: translateX(4px);
-}
-
-/* Dots indicator */
-.iklan-dots {
-  position: absolute;
-  bottom: 1.2rem;
-  right: 1.5rem;
-  display: flex;
-  gap: 0.5rem;
-  z-index: 6;
-  padding: 0.5rem 0.7rem;
-  background: rgba(11, 46, 78, 0.7);
-  backdrop-filter: blur(12px);
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.iklan-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  border: none;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0;
-  position: relative;
-}
-
-.iklan-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
-  transform: scale(1.2);
-}
-
-.iklan-dot.active {
-  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
-  width: 30px;
-  border-radius: 5px;
-  box-shadow: 0 0 16px var(--gold);
-}
-
-@media (max-width: 600px) {
-  .iklan-dots { bottom: 0.6rem; right: 0.8rem; padding: 0.35rem 0.5rem; gap: 0.35rem; }
-  .iklan-dot { width: 7px; height: 7px; }
-  .iklan-dot.active { width: 22px; }
-}
-
-/* Nav arrows */
-.iklan-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(11, 46, 78, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1.5px solid rgba(244, 196, 48, 0.5);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 6;
-  font-size: 1rem;
-  opacity: 0;
-}
-
-.iklan-box:hover .iklan-nav {
-  opacity: 1;
-}
-
-.iklan-nav:hover {
-  background: linear-gradient(135deg, var(--red), var(--maroon));
-  border-color: var(--gold);
-  transform: translateY(-50%) scale(1.15);
-  box-shadow: 0 12px 28px rgba(200, 16, 46, 0.5);
-}
-.iklan-nav.prev { left: 1.2rem; }
-.iklan-nav.next { right: 1.2rem; }
-
-@media (max-width: 600px) {
-  .iklan-nav { width: 38px; height: 38px; font-size: 0.85rem; opacity: 1; }
-  .iklan-nav.prev { left: 0.6rem; }
-  .iklan-nav.next { right: 0.6rem; }
-}
-
-/* Progress bar */
-.iklan-progress {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 4px;
-  width: 0%;
-  background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
-  z-index: 7;
-  transition: width 0.1s linear;
-  box-shadow: 0 0 16px var(--gold);
-  border-radius: 0 4px 4px 0;
-}
-
-/* Thumbnail strip (mini preview) */
-.iklan-thumbs {
-  display: flex;
-  gap: 0.6rem;
-  padding: 1rem 1.2rem;
-  background: linear-gradient(180deg, rgba(11, 46, 78, 0) 0%, rgba(11, 46, 78, 0.6) 100%);
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--gold) transparent;
-}
-.iklan-thumbs::-webkit-scrollbar { height: 4px; }
-.iklan-thumbs::-webkit-scrollbar-thumb {
-  background: var(--gold);
-  border-radius: 4px;
-}
-
-.iklan-thumb {
-  flex-shrink: 0;
-  width: 80px;
-  height: 55px;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s;
-  position: relative;
-  background: #0B2E4E;
-}
-.iklan-thumb img,
-.iklan-thumb video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.iklan-thumb:hover {
-  border-color: var(--gold);
-  transform: translateY(-3px);
-}
-.iklan-thumb.active {
-  border-color: var(--gold);
-  box-shadow: 0 0 16px var(--gold);
-  transform: translateY(-3px);
-}
-.iklan-thumb::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(11, 46, 78, 0.3);
-  transition: background 0.3s;
-}
-.iklan-thumb.active::after {
-  background: transparent;
-}
-.iklan-thumb .thumb-type-icon {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: rgba(11, 46, 78, 0.8);
-  color: var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.55rem;
-  z-index: 2;
-}
-
 /* NAVBAR */
 .navbar {
   position: sticky;
-  top: 44px;
+  top: 0;
   z-index: 100;
   background: rgba(253, 249, 240, 0.75);
   backdrop-filter: blur(24px) saturate(180%);
@@ -808,17 +264,6 @@ body {
   transition: transform 0.3s;
 }
 .nav-logo:hover { transform: rotate(-8deg) scale(1.05); }
-.nav-logo::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--gold), var(--red), var(--gold));
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.nav-logo:hover::after { opacity: 1; }
 .nav-brand-text {
   display: flex;
   flex-direction: column;
@@ -953,6 +398,471 @@ body {
   box-shadow: 0 16px 36px rgba(244, 196, 48, 0.55);
 }
 .btn-lg { padding: 1rem 2.2rem; font-size: 1rem; border-radius: 16px; }
+
+/* ═══════════════════════════════════════════════════════
+   ANNOUNCEMENT BAR — PAPAN IKLAN TEKS BERJALAN
+   ═══════════════════════════════════════════════════════ */
+.announcement-bar {
+  position: relative;
+  z-index: 99;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
+  color: #fff;
+  overflow: hidden;
+  height: 46px;
+  display: none;
+  align-items: center;
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 4px 20px rgba(11, 46, 78, 0.25);
+}
+.announcement-bar.active { display: flex; }
+
+.announcement-label {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  padding: 0 1.2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+  padding-right: 1.8rem;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.2);
+}
+
+.announcement-label i {
+  font-size: 0.85rem;
+  animation: bellShake 2s ease-in-out infinite;
+}
+@keyframes bellShake {
+  0%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(-12deg); }
+  20%, 40% { transform: rotate(12deg); }
+  50% { transform: rotate(0); }
+}
+
+.announcement-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 3%, #000 97%, transparent 100%);
+}
+
+.announcement-marquee {
+  display: flex;
+  gap: 4rem;
+  animation: marqueeScroll 40s linear infinite;
+  white-space: nowrap;
+  padding-left: 2rem;
+  will-change: transform;
+}
+
+.announcement-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.announcement-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.announcement-item i {
+  color: var(--gold);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.announcement-item .announcement-badge {
+  background: rgba(244, 196, 48, 0.2);
+  border: 1px solid rgba(244, 196, 48, 0.4);
+  color: var(--gold);
+  padding: 0.15rem 0.55rem;
+  border-radius: 50px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.announcement-divider {
+  color: var(--gold);
+  opacity: 0.5;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   IKLAN KOTAK KHAS — MEDIA BANNER BOX
+   Saiz auto ikut media asal
+   ═══════════════════════════════════════════════════════ */
+.iklan-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
+  margin: 1.5rem auto 0;
+  padding: 0 1.5rem;
+  display: none;
+}
+
+.iklan-section.active {
+  display: block;
+  animation: fadeInPage 0.6s ease;
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.iklan-box {
+  position: relative;
+  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 60px -12px rgba(11, 46, 78, 0.35),
+    0 0 0 1px rgba(244, 196, 48, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  isolation: isolate;
+}
+
+.iklan-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 5;
+  padding: 0.85rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(180deg, rgba(11, 46, 78, 0.9) 0%, rgba(11, 46, 78, 0) 100%);
+  pointer-events: none;
+}
+
+.iklan-header-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 16px rgba(244, 196, 48, 0.4);
+  pointer-events: auto;
+}
+.iklan-header-label i {
+  font-size: 0.75rem;
+  animation: bellShake 2.5s ease-in-out infinite;
+}
+
+.iklan-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+}
+.iklan-counter i { color: var(--gold); font-size: 0.65rem; }
+
+/* Slideshow container — auto size ikut media */
+.iklan-slideshow {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  max-height: 480px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iklan-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0;
+}
+
+.iklan-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+/* Gambar & video — kekalkan aspect ratio, saiz sedang */
+.iklan-slide img,
+.iklan-slide video {
+  max-width: 100%;
+  max-height: 480px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+}
+
+/* Overlay gradient — hanya di bahagian bawah untuk caption */
+.iklan-slide::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65%;
+  background: linear-gradient(
+    to top,
+    rgba(11, 46, 78, 0.92) 0%,
+    rgba(11, 46, 78, 0.5) 45%,
+    rgba(11, 46, 78, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Responsive — saiz sederhana */
+@media (max-width: 900px) {
+  .iklan-slideshow { max-height: 380px; min-height: 180px; }
+  .iklan-slide img,
+  .iklan-slide video { max-height: 380px; }
+}
+
+@media (max-width: 600px) {
+  .iklan-slideshow { max-height: 280px; min-height: 160px; }
+  .iklan-slide img,
+  .iklan-slide video { max-height: 280px; }
+}
+
+.iklan-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  padding: 1.5rem 1.8rem;
+  color: #fff;
+  pointer-events: none;
+}
+
+.iklan-caption-inner {
+  max-width: 720px;
+  animation: captionFade 0.8s ease-out;
+}
+
+@keyframes captionFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.iklan-caption-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--navy);
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.7rem;
+  box-shadow: 0 4px 12px rgba(244, 196, 48, 0.4);
+}
+
+.iklan-caption-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(120deg, #fff 0%, var(--gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.iklan-caption-sub {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  max-width: 600px;
+}
+
+@media (max-width: 600px) {
+  .iklan-caption { padding: 1rem; }
+  .iklan-caption-title { font-size: 1.1rem; }
+  .iklan-caption-sub { font-size: 0.78rem; }
+  .iklan-caption-badge { font-size: 0.6rem; padding: 0.2rem 0.6rem; margin-bottom: 0.5rem; }
+}
+
+.iklan-caption-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.3rem;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(200, 16, 46, 0.4);
+  pointer-events: auto;
+  cursor: none;
+}
+.iklan-caption-cta:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(200, 16, 46, 0.6);
+}
+.iklan-caption-cta i {
+  font-size: 0.75rem;
+  transition: transform 0.3s;
+}
+.iklan-caption-cta:hover i {
+  transform: translateX(4px);
+}
+
+.iklan-dots {
+  position: absolute;
+  bottom: 1.2rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 6;
+  padding: 0.5rem 0.7rem;
+  background: rgba(11, 46, 78, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.iklan-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  position: relative;
+}
+
+.iklan-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
+}
+
+.iklan-dot.active {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  width: 30px;
+  border-radius: 5px;
+  box-shadow: 0 0 16px var(--gold);
+}
+
+@media (max-width: 600px) {
+  .iklan-dots { bottom: 0.6rem; right: 0.8rem; padding: 0.35rem 0.5rem; gap: 0.35rem; }
+  .iklan-dot { width: 7px; height: 7px; }
+  .iklan-dot.active { width: 22px; }
+}
+
+.iklan-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(11, 46, 78, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(244, 196, 48, 0.5);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 6;
+  font-size: 1rem;
+  opacity: 0;
+}
+
+.iklan-box:hover .iklan-nav {
+  opacity: 1;
+}
+
+.iklan-nav:hover {
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  border-color: var(--gold);
+  transform: translateY(-50%) scale(1.15);
+  box-shadow: 0 12px 28px rgba(200, 16, 46, 0.5);
+}
+.iklan-nav.prev { left: 1.2rem; }
+.iklan-nav.next { right: 1.2rem; }
+
+@media (max-width: 600px) {
+  .iklan-nav { width: 38px; height: 38px; font-size: 0.85rem; opacity: 1; }
+  .iklan-nav.prev { left: 0.6rem; }
+  .iklan-nav.next { right: 0.6rem; }
+}
+
+.iklan-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--red), var(--gold));
+  z-index: 7;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 16px var(--gold);
+  border-radius: 0 4px 4px 0;
+}
 
 /* PAGE WRAP */
 .page-wrap {
@@ -1868,8 +1778,7 @@ body {
   .section { margin-top: 4rem; }
   .announcement-label { padding: 0 0.8rem; padding-right: 1.4rem; font-size: 0.65rem; }
   .announcement-item { font-size: 0.82rem; }
-  .navbar { top: 44px; }
-  .iklan-section { padding: 0 1rem; }
+  .iklan-section { padding: 0 1rem; margin-top: 1rem; }
 }
 @media (max-width: 500px) {
   .nav-brand-text span { display: none; }
@@ -1913,67 +1822,6 @@ body {
 <div class="floating-formula ff-5">θ</div>
 <div class="floating-formula ff-6">Δ</div>
 
-<!-- ═══════════════════════════════════════════════════════
-     ANNOUNCEMENT BAR — PAPAN IKLAN TEKS BERJALAN
-     ═══════════════════════════════════════════════════════ -->
-<div class="announcement-bar">
-  <div class="announcement-label">
-    <i class="fas fa-bullhorn"></i>
-    <span>Pengumuman</span>
-  </div>
-  <div class="announcement-track">
-    <div class="announcement-marquee" id="announcementMarquee">
-      <span class="announcement-loading"></span>
-      <span class="announcement-loading"></span>
-      <span class="announcement-loading"></span>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════
-     IKLAN KOTAK KHAS — MEDIA BANNER BOX
-     Auto-show bila ada gambar/video iklan
-     ═══════════════════════════════════════════════════════ -->
-<section class="iklan-section" id="iklanSection">
-  <div class="iklan-box" id="iklanBox">
-    
-    <!-- Header -->
-    <div class="iklan-header">
-      <div class="iklan-header-label">
-        <i class="fas fa-star"></i>
-        <span>Iklan Pilihan</span>
-      </div>
-      <div class="iklan-counter" id="iklanCounter">
-        <i class="fas fa-image"></i>
-        <span id="iklanCounterText">0 / 0</span>
-      </div>
-    </div>
-
-    <!-- Slideshow -->
-    <div class="iklan-slideshow" id="iklanSlideshow">
-      <!-- Slides akan dijana oleh JS -->
-    </div>
-
-    <!-- Nav arrows -->
-    <button class="iklan-nav prev" id="iklanPrev" aria-label="Sebelum">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button class="iklan-nav next" id="iklanNext" aria-label="Seterusnya">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-
-    <!-- Dots -->
-    <div class="iklan-dots" id="iklanDots"></div>
-
-    <!-- Progress bar -->
-    <div class="iklan-progress" id="iklanProgress"></div>
-
-  </div>
-
-  <!-- Thumbnail strip (jika lebih dari 1 iklan) -->
-  <div class="iklan-thumbs" id="iklanThumbs" style="display: none; background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%); border-radius: 0 0 28px 28px; margin-top: -28px; padding-top: 2.5rem; position: relative; z-index: -1;"></div>
-</section>
-
 <!-- NAVBAR -->
 <nav class="navbar" id="navbar">
   <div class="nav-container">
@@ -2002,6 +1850,56 @@ body {
     </div>
   </div>
 </nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     ANNOUNCEMENT BAR — PAPAN IKLAN TEKS BERJALAN
+     ═══════════════════════════════════════════════════════ -->
+<div class="announcement-bar" id="announcementBar">
+  <div class="announcement-label">
+    <i class="fas fa-bullhorn"></i>
+    <span>Pengumuman</span>
+  </div>
+  <div class="announcement-track">
+    <div class="announcement-marquee" id="announcementMarquee">
+      <span class="announcement-item">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Memuatkan pengumuman...</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     IKLAN KOTAK KHAS — MEDIA BANNER BOX
+     ═══════════════════════════════════════════════════════ -->
+<section class="iklan-section" id="iklanSection">
+  <div class="iklan-box" id="iklanBox">
+
+    <div class="iklan-header">
+      <div class="iklan-header-label">
+        <i class="fas fa-star"></i>
+        <span>Iklan Pilihan</span>
+      </div>
+      <div class="iklan-counter" id="iklanCounter">
+        <i class="fas fa-image"></i>
+        <span id="iklanCounterText">0 / 0</span>
+      </div>
+    </div>
+
+    <div class="iklan-slideshow" id="iklanSlideshow"></div>
+
+    <button class="iklan-nav prev" id="iklanPrev" aria-label="Sebelum">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="iklan-nav next" id="iklanNext" aria-label="Seterusnya">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div class="iklan-dots" id="iklanDots"></div>
+    <div class="iklan-progress" id="iklanProgress"></div>
+
+  </div>
+</section>
 
 <!-- PAGE CONTENT -->
 <div class="page-wrap">
@@ -2365,8 +2263,7 @@ body {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, collection, getDocs, query, orderBy, where, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAiMT00_b_vJ5RVPv8KBwVzYh41HVzKt_w",
@@ -2382,8 +2279,6 @@ body {
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  try { getAnalytics(app); } catch(e) {}
-
   // ═════════════════════════════════════════════════
   // PRELOADER
   // ═════════════════════════════════════════════════
@@ -2392,7 +2287,6 @@ body {
       document.getElementById('preloader').classList.add('hidden');
     }, 1800);
   });
-
   setTimeout(() => {
     document.getElementById('preloader').classList.add('hidden');
   }, 3500);
@@ -2408,46 +2302,51 @@ body {
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    cursorDot.style.left = mouseX + 'px';
-    cursorDot.style.top = mouseY + 'px';
+    if (cursorDot) {
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    }
   });
 
   function animateRing() {
     ringX += (mouseX - ringX) * 0.15;
     ringY += (mouseY - ringY) * 0.15;
-    cursorRing.style.left = ringX + 'px';
-    cursorRing.style.top = ringY + 'px';
+    if (cursorRing) {
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+    }
     requestAnimationFrame(animateRing);
   }
   animateRing();
 
   const hoverables = document.querySelectorAll('a, button, .submodul-card, .feature-card, .stat-box, .step-card');
   hoverables.forEach(el => {
-    el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+    el.addEventListener('mouseenter', () => cursorRing && cursorRing.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursorRing && cursorRing.classList.remove('hover'));
   });
 
   // ═════════════════════════════════════════════════
   // HERO PARTICLES
   // ═════════════════════════════════════════════════
   const particlesContainer = document.getElementById('heroParticles');
-  const particleCount = 25;
-
-  for (let i = 0; i < particleCount; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 12) + 's';
-    p.style.animationDelay = Math.random() * 8 + 's';
-    p.style.opacity = 0.3 + Math.random() * 0.5;
-    const size = 2 + Math.random() * 4;
-    p.style.width = size + 'px';
-    p.style.height = size + 'px';
-    if (Math.random() > 0.7) {
-      p.style.background = '#fff';
-      p.style.boxShadow = '0 0 12px #fff';
+  if (particlesContainer) {
+    const particleCount = 25;
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay = Math.random() * 8 + 's';
+      p.style.opacity = 0.3 + Math.random() * 0.5;
+      const size = 2 + Math.random() * 4;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      if (Math.random() > 0.7) {
+        p.style.background = '#fff';
+        p.style.boxShadow = '0 0 12px #fff';
+      }
+      particlesContainer.appendChild(p);
     }
-    particlesContainer.appendChild(p);
   }
 
   // ═════════════════════════════════════════════════
@@ -2462,7 +2361,6 @@ body {
       }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
-
   revealEls.forEach(el => revealObserver.observe(el));
 
   // ═════════════════════════════════════════════════
@@ -2503,7 +2401,6 @@ body {
       }
     });
   }, { threshold: 0.5 });
-
   counterEls.forEach(el => counterObserver.observe(el));
 
   // ═════════════════════════════════════════════════
@@ -2532,7 +2429,8 @@ body {
   // NAVBAR SCROLL
   // ═════════════════════════════════════════════════
   window.addEventListener('scroll', () => {
-    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+    const navbar = document.getElementById('navbar');
+    if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 30);
   });
 
   // ═════════════════════════════════════════════════
@@ -2555,6 +2453,7 @@ body {
   // ═════════════════════════════════════════════════
   window.showToast = function(title, message, type = 'success') {
     const container = document.getElementById('toastContainer');
+    if (!container) return;
     const icons = { success: 'fa-check', error: 'fa-times', info: 'fa-info', warning: 'fa-exclamation' };
     const toast = document.createElement('div');
     toast.className = 'toast ' + type;
@@ -2573,100 +2472,126 @@ body {
   };
 
   // ═════════════════════════════════════════════════
-  // 📢 PAPAN IKLAN TEKS BERJALAN
+  // 📢 LOAD SEMUA IKLAN — TANPA orderBy (elak composite index)
   // ═════════════════════════════════════════════════
-  async function loadAnnouncements() {
-    const marquee = document.getElementById('announcementMarquee');
-    if (!marquee) return;
-
+  async function loadAllAnnouncements() {
     try {
       const q = query(
         collection(db, 'announcements'),
-        where('active', '==', true),
-        orderBy('createdAt', 'desc'),
-        limit(20)
+        where('active', '==', true)
       );
 
       const snap = await getDocs(q);
 
-      if (snap.empty) {
-        marquee.innerHTML = `
-          <span class="announcement-empty">
-            <i class="fas fa-info-circle" style="color: var(--gold);"></i>
-            Belum ada pengumuman buat masa ini. Nantikan berita terkini!
-          </span>
-        `;
-        return;
-      }
-
-      const textItems = [];
+      const allItems = [];
       snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const text = data.text || '';
-        const icon = data.icon || 'fa-bullhorn';
-        const badge = data.badge || '';
-        const mediaUrl = data.mediaUrl || data.imageUrl || '';
-        const mediaType = data.mediaType || (data.imageUrl ? 'image' : '');
-
-        if (mediaUrl && mediaType) return;
-        if (!text) return;
-
-        let itemHTML = `<span class="announcement-item">`;
-        itemHTML += `<i class="fas ${icon}"></i>`;
-        if (badge) {
-          itemHTML += `<span class="announcement-badge">${badge}</span>`;
-        }
-        itemHTML += `<span>${text}</span>`;
-        itemHTML += `</span>`;
-
-        textItems.push(itemHTML);
+        allItems.push({ id: docSnap.id, ...docSnap.data() });
       });
 
-      if (textItems.length === 0) {
-        marquee.innerHTML = `
-          <span class="announcement-empty">
-            <i class="fas fa-info-circle" style="color: var(--gold);"></i>
-            Belum ada pengumuman teks. Nantikan berita terkini!
-          </span>
-        `;
-        return;
-      }
+      // Sort client-side: terbaru dulu
+      allItems.sort((a, b) => {
+        const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+        const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+        return bTime - aTime;
+      });
 
-      const separator = `<span class="announcement-divider">✦</span>`;
-      const content = textItems.join(separator);
+      console.log(`✅ Total ${allItems.length} iklan aktif dijumpai`);
 
-      marquee.innerHTML = `
-        ${content}
-        ${separator}
-        ${content}
-        ${separator}
-      `;
+      const textIklan = allItems.filter(i => !i.mediaUrl || !i.mediaType);
+      const mediaIklan = allItems.filter(i => i.mediaUrl && i.mediaType);
 
-      const totalLength = marquee.scrollWidth;
-      const duration = Math.max(30, totalLength / 50);
-      marquee.style.animationDuration = duration + 's';
+      console.log(`   → ${textIklan.length} iklan teks, ${mediaIklan.length} iklan media`);
 
-      console.log(`✅ ${textItems.length} pengumuman teks dimuatkan`);
+      renderAnnouncementBar(textIklan);
+      renderIklanBox(mediaIklan);
 
     } catch (err) {
-      console.warn('⚠️ Gagal memuat pengumuman teks:', err);
-      marquee.innerHTML = `
-        <span class="announcement-item">
-          <i class="fas fa-bullhorn"></i>
-          <span>Selamat datang ke REAL-MPC Digital — Platform Pembelajaran Interaktif!</span>
-        </span>
-        <span class="announcement-divider">✦</span>
-        <span class="announcement-item">
-          <i class="fas fa-star"></i>
-          <span>12 aktiviti interaktif merentas 3 submodul psikologi menanti anda.</span>
-        </span>
-        <span class="announcement-divider">✦</span>
-      `;
+      console.error('❌ Gagal memuat iklan:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+
+      try {
+        console.log('🔄 Cuba fallback...');
+        const snap = await getDocs(collection(db, 'announcements'));
+        const allItems = [];
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.active === true) {
+            allItems.push({ id: docSnap.id, ...data });
+          }
+        });
+
+        allItems.sort((a, b) => {
+          const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+          const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+          return bTime - aTime;
+        });
+
+        console.log(`✅ Fallback berjaya: ${allItems.length} iklan`);
+
+        const textIklan = allItems.filter(i => !i.mediaUrl || !i.mediaType);
+        const mediaIklan = allItems.filter(i => i.mediaUrl && i.mediaType);
+
+        renderAnnouncementBar(textIklan);
+        renderIklanBox(mediaIklan);
+      } catch (err2) {
+        console.error('❌ Fallback pun gagal:', err2);
+        document.getElementById('announcementBar').style.display = 'none';
+        document.getElementById('iklanSection').classList.remove('active');
+      }
     }
   }
 
   // ═════════════════════════════════════════════════
-  // 🎬 IKLAN KOTAK KHAS — MEDIA SLIDESHOW
+  // 📢 RENDER PAPAN IKLAN TEKS BERJALAN
+  // ═════════════════════════════════════════════════
+  function renderAnnouncementBar(textItems) {
+    const bar = document.getElementById('announcementBar');
+    const marquee = document.getElementById('announcementMarquee');
+    if (!bar || !marquee) return;
+
+    if (textItems.length === 0) {
+      bar.style.display = 'none';
+      console.log('ℹ️ Tiada iklan teks');
+      return;
+    }
+
+    bar.style.display = 'flex';
+
+    const itemsHTML = textItems.map(data => {
+      const text = data.text || '';
+      const icon = data.icon || 'fa-bullhorn';
+      const badge = data.badge || '';
+
+      let itemHTML = `<span class="announcement-item">`;
+      itemHTML += `<i class="fas ${icon}"></i>`;
+      if (badge) {
+        itemHTML += `<span class="announcement-badge">${badge}</span>`;
+      }
+      itemHTML += `<span>${text}</span>`;
+      itemHTML += `</span>`;
+      return itemHTML;
+    });
+
+    const separator = `<span class="announcement-divider">✦</span>`;
+    const content = itemsHTML.join(separator);
+
+    marquee.innerHTML = `
+      ${content}
+      ${separator}
+      ${content}
+      ${separator}
+    `;
+
+    const totalLength = marquee.scrollWidth;
+    const duration = Math.max(30, totalLength / 50);
+    marquee.style.animationDuration = duration + 's';
+
+    console.log(`✅ ${textItems.length} iklan teks dirender`);
+  }
+
+  // ═════════════════════════════════════════════════
+  // 🎬 RENDER KOTAK IKLAN MEDIA — SAiz auto ikut media
   // ═════════════════════════════════════════════════
   let iklanSlides = [];
   let currentIklan = 0;
@@ -2675,178 +2600,155 @@ body {
   let iklanProgressStart = 0;
   const IKLAN_DURATION = 6000;
 
-  async function loadIklanBox() {
+  function renderIklanBox(mediaItems) {
     const section = document.getElementById('iklanSection');
     const slideshow = document.getElementById('iklanSlideshow');
     const dots = document.getElementById('iklanDots');
-    const thumbs = document.getElementById('iklanThumbs');
     const counterText = document.getElementById('iklanCounterText');
-    
+
     if (!section || !slideshow) return;
 
-    try {
-      const q = query(
-        collection(db, 'announcements'),
-        where('active', '==', true),
-        orderBy('createdAt', 'desc'),
-        limit(20)
-      );
-
-      const snap = await getDocs(q);
-
-      // Filter: hanya media (image/video)
-      iklanSlides = [];
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const mediaUrl = data.mediaUrl || data.imageUrl || '';
-        const mediaType = data.mediaType || (data.imageUrl ? 'image' : '');
-
-        if (mediaUrl && mediaType) {
-          iklanSlides.push({
-            url: mediaUrl,
-            type: mediaType,
-            title: data.text || data.title || '',
-            subtitle: data.subtitle || '',
-            badge: data.badge || '',
-            linkUrl: data.linkUrl || ''
-          });
-        }
-      });
-
-      if (iklanSlides.length === 0) {
-        section.classList.remove('active');
-        console.log('ℹ️ Tiada iklan media');
-        return;
-      }
-
-      // Aktifkan section
-      section.classList.add('active');
-
-      // Render slides
-      slideshow.innerHTML = '';
-      iklanSlides.forEach((slide, idx) => {
-        const slideEl = document.createElement('div');
-        slideEl.className = 'iklan-slide' + (idx === 0 ? ' active' : '');
-        slideEl.dataset.index = idx;
-
-        let mediaHTML = '';
-        if (slide.type === 'video') {
-          mediaHTML = `<video src="${slide.url}" muted loop playsinline preload="metadata" ${idx === 0 ? 'autoplay' : ''}></video>`;
-        } else {
-          mediaHTML = `<img src="${slide.url}" alt="${slide.title || 'Iklan'}" loading="${idx === 0 ? 'eager' : 'lazy'}">`;
-        }
-
-        // Caption
-        let captionHTML = '';
-        if (slide.title || slide.subtitle || slide.badge || slide.linkUrl) {
-          captionHTML = `
-            <div class="iklan-caption">
-              <div class="iklan-caption-inner">
-                ${slide.badge ? `<span class="iklan-caption-badge">${slide.badge}</span>` : ''}
-                ${slide.title ? `<h3 class="iklan-caption-title">${slide.title}</h3>` : ''}
-                ${slide.subtitle ? `<p class="iklan-caption-sub">${slide.subtitle}</p>` : ''}
-                ${slide.linkUrl ? `
-                  <a href="${slide.linkUrl}" target="_blank" rel="noopener" class="iklan-caption-cta">
-                    <span>Ketahui Lebih Lanjut</span>
-                    <i class="fas fa-arrow-right"></i>
-                  </a>
-                ` : ''}
-              </div>
-            </div>
-          `;
-        }
-
-        slideEl.innerHTML = mediaHTML + captionHTML;
-        slideshow.appendChild(slideEl);
-      });
-
-      // Counter
-      if (counterText) {
-        counterText.textContent = `1 / ${iklanSlides.length}`;
-      }
-
-      // Dots
-      if (dots) {
-        dots.innerHTML = '';
-        if (iklanSlides.length > 1) {
-          iklanSlides.forEach((_, idx) => {
-            const dot = document.createElement('button');
-            dot.className = 'iklan-dot' + (idx === 0 ? ' active' : '');
-            dot.dataset.index = idx;
-            dot.setAttribute('aria-label', `Iklan ${idx + 1}`);
-            dot.addEventListener('click', () => {
-              goToIklan(idx);
-              restartIklanTimer();
-            });
-            dots.appendChild(dot);
-          });
-          dots.style.display = 'flex';
-        } else {
-          dots.style.display = 'none';
-        }
-      }
-
-      // Thumbnails
-      if (thumbs) {
-        thumbs.innerHTML = '';
-        if (iklanSlides.length > 1) {
-          iklanSlides.forEach((slide, idx) => {
-            const thumb = document.createElement('div');
-            thumb.className = 'iklan-thumb' + (idx === 0 ? ' active' : '');
-            thumb.dataset.index = idx;
-            
-            let thumbMedia = '';
-            if (slide.type === 'video') {
-              thumbMedia = `
-                <video src="${slide.url}" muted preload="metadata"></video>
-                <div class="thumb-type-icon"><i class="fas fa-play"></i></div>
-              `;
-            } else {
-              thumbMedia = `<img src="${slide.url}" alt="Thumb ${idx + 1}" loading="lazy">`;
-            }
-            
-            thumb.innerHTML = thumbMedia;
-            thumb.addEventListener('click', () => {
-              goToIklan(idx);
-              restartIklanTimer();
-            });
-            thumbs.appendChild(thumb);
-          });
-          thumbs.style.display = 'flex';
-        } else {
-          thumbs.style.display = 'none';
-        }
-      }
-
-      // Tunjuk/sembunyi nav arrows
-      const prevBtn = document.getElementById('iklanPrev');
-      const nextBtn = document.getElementById('iklanNext');
-      if (iklanSlides.length <= 1) {
-        if (prevBtn) prevBtn.style.display = 'none';
-        if (nextBtn) nextBtn.style.display = 'none';
-      } else {
-        if (prevBtn) prevBtn.style.display = '';
-        if (nextBtn) nextBtn.style.display = '';
-      }
-
-      // Start slideshow
-      currentIklan = 0;
-      if (iklanSlides.length > 1) {
-        startIklanTimer();
-      }
-
-      console.log(`✅ ${iklanSlides.length} iklan media dimuatkan ke kotak khas`);
-
-    } catch (err) {
-      console.warn('⚠️ Gagal memuat iklan kotak:', err);
+    if (mediaItems.length === 0) {
       section.classList.remove('active');
+      console.log('ℹ️ Tiada iklan media');
+      return;
     }
+
+    section.classList.add('active');
+    iklanSlides = mediaItems;
+
+    // ⚡ Reset container dulu
+    slideshow.innerHTML = '';
+    slideshow.style.height = 'auto';
+    slideshow.style.minHeight = '220px';
+    slideshow.style.maxHeight = '480px';
+
+    // ⚡ Kira saiz container ikut media yang paling sesuai
+    // Kita load dulu media untuk dapatkan aspect ratio
+    mediaItems.forEach((slide, idx) => {
+      const slideEl = document.createElement('div');
+      slideEl.className = 'iklan-slide' + (idx === 0 ? ' active' : '');
+      slideEl.dataset.index = idx;
+
+      let mediaEl;
+      if (slide.mediaType === 'video') {
+        mediaEl = document.createElement('video');
+        mediaEl.src = slide.mediaUrl;
+        mediaEl.muted = true;
+        mediaEl.loop = true;
+        mediaEl.playsInline = true;
+        mediaEl.preload = 'metadata';
+        if (idx === 0) mediaEl.autoplay = true;
+
+        // Auto-adjust container height ikut video pertama
+        mediaEl.addEventListener('loadedmetadata', () => {
+          if (idx === 0) adjustContainerHeight(mediaEl.videoWidth, mediaEl.videoHeight);
+        });
+      } else {
+        mediaEl = document.createElement('img');
+        mediaEl.src = slide.mediaUrl;
+        mediaEl.alt = slide.text || 'Iklan';
+        mediaEl.loading = idx === 0 ? 'eager' : 'lazy';
+
+        // Auto-adjust container height ikut gambar pertama
+        mediaEl.addEventListener('load', () => {
+          if (idx === 0) adjustContainerHeight(mediaEl.naturalWidth, mediaEl.naturalHeight);
+        });
+      }
+
+      slideEl.appendChild(mediaEl);
+
+      // Caption
+      if (slide.text || slide.subtitle || slide.badge || slide.linkUrl) {
+        const captionEl = document.createElement('div');
+        captionEl.className = 'iklan-caption';
+        captionEl.innerHTML = `
+          <div class="iklan-caption-inner">
+            ${slide.badge ? `<span class="iklan-caption-badge">${slide.badge}</span>` : ''}
+            ${slide.text ? `<h3 class="iklan-caption-title">${slide.text}</h3>` : ''}
+            ${slide.subtitle ? `<p class="iklan-caption-sub">${slide.subtitle}</p>` : ''}
+            ${slide.linkUrl ? `
+              <a href="${slide.linkUrl}" target="_blank" rel="noopener" class="iklan-caption-cta">
+                <span>Ketahui Lebih Lanjut</span>
+                <i class="fas fa-arrow-right"></i>
+              </a>
+            ` : ''}
+          </div>
+        `;
+        slideEl.appendChild(captionEl);
+      }
+
+      slideshow.appendChild(slideEl);
+    });
+
+    if (counterText) {
+      counterText.textContent = `1 / ${mediaItems.length}`;
+    }
+
+    if (dots) {
+      dots.innerHTML = '';
+      if (mediaItems.length > 1) {
+        mediaItems.forEach((_, idx) => {
+          const dot = document.createElement('button');
+          dot.className = 'iklan-dot' + (idx === 0 ? ' active' : '');
+          dot.dataset.index = idx;
+          dot.setAttribute('aria-label', `Iklan ${idx + 1}`);
+          dot.addEventListener('click', () => {
+            goToIklan(idx);
+            restartIklanTimer();
+          });
+          dots.appendChild(dot);
+        });
+        dots.style.display = 'flex';
+      } else {
+        dots.style.display = 'none';
+      }
+    }
+
+    const prevBtn = document.getElementById('iklanPrev');
+    const nextBtn = document.getElementById('iklanNext');
+    if (mediaItems.length <= 1) {
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+    } else {
+      if (prevBtn) prevBtn.style.display = '';
+      if (nextBtn) nextBtn.style.display = '';
+    }
+
+    currentIklan = 0;
+    if (mediaItems.length > 1) {
+      startIklanTimer();
+    }
+
+    console.log(`✅ ${mediaItems.length} iklan media dirender`);
+  }
+
+  // ⚡ Auto-adjust container height ikut aspect ratio media
+  function adjustContainerHeight(naturalWidth, naturalHeight) {
+    const slideshow = document.getElementById('iklanSlideshow');
+    if (!slideshow || !naturalWidth || !naturalHeight) return;
+
+    const ratio = naturalHeight / naturalWidth;
+    const containerWidth = slideshow.offsetWidth || window.innerWidth - 60;
+
+    // Kira height yang sesuai
+    let targetHeight = containerWidth * ratio;
+
+    // Had: min 220px, max 480px (desktop)
+    let maxH = 480;
+    let minH = 220;
+    if (window.innerWidth <= 900) { maxH = 380; minH = 180; }
+    if (window.innerWidth <= 600) { maxH = 280; minH = 160; }
+
+    targetHeight = Math.max(minH, Math.min(maxH, targetHeight));
+
+    slideshow.style.height = targetHeight + 'px';
+    console.log(`📐 Container height set: ${Math.round(targetHeight)}px (ratio ${ratio.toFixed(2)})`);
   }
 
   function goToIklan(index) {
     const slides = document.querySelectorAll('.iklan-slide');
     const dots = document.querySelectorAll('.iklan-dot');
-    const thumbs = document.querySelectorAll('.iklan-thumb');
     const counterText = document.getElementById('iklanCounterText');
 
     if (slides.length === 0) return;
@@ -2868,7 +2770,6 @@ body {
     });
 
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
-    thumbs.forEach((t, i) => t.classList.toggle('active', i === index));
 
     if (counterText) {
       counterText.textContent = `${index + 1} / ${slides.length}`;
@@ -2878,19 +2779,12 @@ body {
     resetIklanProgress();
   }
 
-  function nextIklan() {
-    goToIklan(currentIklan + 1);
-  }
-
-  function prevIklan() {
-    goToIklan(currentIklan - 1);
-  }
+  function nextIklan() { goToIklan(currentIklan + 1); }
+  function prevIklan() { goToIklan(currentIklan - 1); }
 
   function startIklanTimer() {
     stopIklanTimer();
-    iklanTimer = setInterval(() => {
-      nextIklan();
-    }, IKLAN_DURATION);
+    iklanTimer = setInterval(() => { nextIklan(); }, IKLAN_DURATION);
     resetIklanProgress();
   }
 
@@ -2902,15 +2796,12 @@ body {
   }
 
   function restartIklanTimer() {
-    if (iklanSlides.length > 1) {
-      startIklanTimer();
-    }
+    if (iklanSlides.length > 1) startIklanTimer();
   }
 
   function resetIklanProgress() {
     const progress = document.getElementById('iklanProgress');
     if (!progress) return;
-
     if (iklanProgressRAF) cancelAnimationFrame(iklanProgressRAF);
     iklanProgressStart = performance.now();
     progress.style.width = '0%';
@@ -2919,7 +2810,6 @@ body {
       const elapsed = now - iklanProgressStart;
       const pct = Math.min((elapsed / IKLAN_DURATION) * 100, 100);
       progress.style.width = pct + '%';
-
       if (pct < 100) {
         iklanProgressRAF = requestAnimationFrame(animate);
       }
@@ -2945,31 +2835,37 @@ body {
     if (iklanSlides.length > 1) startIklanTimer();
   });
 
-  // ═════════════════════════════════════════════════
-  // LOAD SEMUA
-  // ═════════════════════════════════════════════════
-  loadAnnouncements();
-  loadIklanBox();
+  // Adjust on resize
+  window.addEventListener('resize', () => {
+    const firstSlide = document.querySelector('.iklan-slide.active');
+    if (!firstSlide) return;
+    const media = firstSlide.querySelector('img, video');
+    if (!media) return;
+    if (media.tagName === 'IMG') {
+      adjustContainerHeight(media.naturalWidth, media.naturalHeight);
+    } else if (media.tagName === 'VIDEO') {
+      adjustContainerHeight(media.videoWidth, media.videoHeight);
+    }
+  });
 
-  // Refresh setiap 5 minit
-  setInterval(() => {
-    loadAnnouncements();
-    loadIklanBox();
-  }, 300000);
+  // ═════════════════════════════════════════════════
+  // 🚀 START
+  // ═════════════════════════════════════════════════
+  loadAllAnnouncements();
+
+  setInterval(loadAllAnnouncements, 300000);
 
   // ═════════════════════════════════════════════════
   // AUTH STATE
   // ═════════════════════════════════════════════════
   onAuthStateChanged(auth, async (user) => {
     const navCtaBtn = document.getElementById('navCtaBtn');
-
     if (user) {
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         const role = userDoc.exists() ? userDoc.data().role : 'murid';
         const dashboardUrl = role === 'guru' ? 'dashboard-guru.html' : 'dashboard-murid.html';
         const dashboardText = role === 'guru' ? 'Dashboard Guru' : 'Dashboard';
-
         if (navCtaBtn) {
           navCtaBtn.href = dashboardUrl;
           navCtaBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${dashboardText}`;
@@ -2985,11 +2881,8 @@ body {
     }
   });
 
-  // INIT
   console.log('%c REAL-MPC Digital ', 'background:linear-gradient(135deg,#C8102E,#8B1E3F);color:#F4C430;font-weight:900;padding:6px 14px;border-radius:6px;font-size:14px;');
-  console.log('🚀 Landing page loaded');
-  console.log('📢 Papan iklan teks + kotak iklan media aktif');
-  console.log('✨ Button navbar dynamic — tak auto-redirect');
+  console.log('🚀 Landing page loaded — Auto-size media');
 </script>
 
 </body>
