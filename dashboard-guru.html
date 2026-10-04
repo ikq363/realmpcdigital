@@ -2340,10 +2340,7 @@ body {
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MODAL: STUDENT ACTIVITY DETAIL
-     Papar masa (timeSpent) + refleksi pelajar
-     ═══════════════════════════════════════════════════════ -->
+<!-- MODAL: STUDENT ACTIVITY DETAIL -->
 <div class="modal-overlay" id="activityDetailModal">
   <div class="modal" style="max-width: 560px;">
     <div class="modal-header">
@@ -2359,14 +2356,10 @@ body {
       </div>
     </div>
     <div class="modal-body">
-      <div class="activity-detail-stats" id="activityDetailStats">
-        <!-- Diisi oleh JS -->
-      </div>
+      <div class="activity-detail-stats" id="activityDetailStats"></div>
       <div class="form-block">
         <label class="form-block-label"><i class="fas fa-comment-dots"></i> Refleksi Pelajar</label>
-        <div id="activityDetailReflection">
-          <!-- Diisi oleh JS -->
-        </div>
+        <div id="activityDetailReflection"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -2547,41 +2540,37 @@ body {
   };
 
   // ═══════════════════════════════════════════════════════
-  // FORMAT TIME SPENT — tukar saat kepada format jam/minit/saat
+  // FORMAT TIME SPENT
+  // Tukar saat kepada format jam/minit/saat
   // ═══════════════════════════════════════════════════════
-  // Input: saat (number) — contoh: 104
-  // Output: { h, m, s, formatted, short } — contoh: "1 minit 44 saat"
   function formatTimeSpent(seconds) {
     if (!seconds || seconds < 0 || isNaN(seconds)) {
-      return { h: 0, m: 0, s: 0, formatted: '0 saat', short: '0s', raw: 0 };
+      return {
+        h: 0, m: 0, s: 0,
+        formatted: '0 saat',
+        short: '00:00',
+        hhmmss: '00:00:00',
+        raw: 0
+      };
     }
 
-    seconds = Math.floor(seconds); // pastikan integer
+    seconds = Math.floor(seconds);
 
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
 
-    // Bina bahagian-bahagian (Bahasa Melayu)
+    // Format Melayu
     const parts = [];
     if (h > 0) parts.push(`${h} jam`);
     if (m > 0) parts.push(`${m} minit`);
     if (s > 0 || parts.length === 0) parts.push(`${s} saat`);
 
-    // Short format (contoh: "01:44:00" atau "01:44")
-    let short = '';
-    if (h > 0) {
-      short = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
-    } else {
-      short = `${pad2(m)}:${pad2(s)}`;
-    }
-
     return {
-      h,
-      m,
-      s,
+      h, m, s,
       formatted: parts.join(' '),
-      short,
+      short: `${pad2(m)}:${pad2(s)}`,
+      hhmmss: `${pad2(h)}:${pad2(m)}:${pad2(s)}`,
       raw: seconds
     };
   }
@@ -2645,7 +2634,6 @@ body {
     if (page === 'iklan') loadAllIklan();
   };
 
-  // HELPER: Nama paparan
   function getDisplayName() {
     let name = currentUserData?.nama;
     if (!name || name.trim() === '' || name === 'Pengguna') {
@@ -2654,7 +2642,6 @@ body {
     return name;
   }
 
-  // LOAD TEACHER DATA
   async function loadTeacherData() {
     try {
       const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
@@ -2675,7 +2662,6 @@ body {
     }
   }
 
-  // GENERATE CLASS CODE
   function generateClassCode() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
@@ -2694,7 +2680,6 @@ body {
         const snap = await getDocs(q);
         if (snap.empty) return code;
       } catch (e) {
-        console.warn('Code check error:', e);
         return code;
       }
       attempts++;
@@ -2739,14 +2724,13 @@ body {
         });
       });
 
-      // Load progress + timeSpent untuk setiap student
+      // Load progress + timeSpent
       for (const student of allStudents) {
         try {
           const progressSnap = await getDocs(collection(db, 'progress', student.uid, 'activities'));
           const progress = {};
           progressSnap.forEach(d => {
-            const data = d.data();
-            progress[parseInt(d.id)] = data;
+            progress[parseInt(d.id)] = d.data();
           });
           student.progress = progress;
         } catch (e) {
@@ -2760,7 +2744,6 @@ body {
     }
   }
 
-  // RENDER DASHBOARD
   function renderDashboard() {
     const name = getDisplayName();
     document.getElementById('welcomeTitle').textContent = `Hai, ${name}! 👋`;
@@ -2923,7 +2906,6 @@ body {
       const date = r.completedAt?.toDate ? r.completedAt.toDate() : new Date(r.completedAt);
       const dateStr = date.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
-      // Format masa
       const time = formatTimeSpent(r.timeSpent);
       const timeStr = time.raw > 0 ? `⏱️ ${time.formatted}` : '';
 
@@ -2944,7 +2926,7 @@ body {
   }
 
   // ═══════════════════════════════════════════════════════
-  // BUKA DETAIL AKTIVITI — Papar masa & refleksi
+  // BUKA DETAIL AKTIVITI — papar timeSpent dalam format jam/minit/saat
   // ═══════════════════════════════════════════════════════
   window.openActivityDetail = async function(studentUid, activityId) {
     const student = allStudents.find(s => s.uid === studentUid);
@@ -2956,12 +2938,11 @@ body {
     const activity = ACTIVITIES.find(a => a.id === activityId);
     if (!activity) return;
 
-    // Pastikan progress pelajar ada
     if (!student.progress) student.progress = {};
 
     let progressData = student.progress[activityId];
 
-    // Jika progress belum dimuatkan, cuba load sekali lagi dari Firestore
+    // Jika belum load, cuba load on-demand
     if (!progressData) {
       try {
         const progressDoc = await getDoc(doc(db, 'progress', studentUid, 'activities', String(activityId)));
@@ -2986,7 +2967,7 @@ body {
     document.getElementById('activityDetailTitle').textContent = `${activity.icon} ${activity.tajuk}`;
     document.getElementById('activityDetailSub').textContent = `${student.nama || 'Murid'} · ${student.emel || ''}`;
 
-    // Ambil timeSpent (cuba pelbagai nama field)
+    // Baca timeSpent — cuba pelbagai nama field
     const rawTimeSpent = progressData.timeSpent 
       || progressData.time_spent 
       || progressData.timeSpentSeconds 
@@ -2994,18 +2975,17 @@ body {
       || 0;
     const time = formatTimeSpent(rawTimeSpent);
 
-    // Status & emosi
     const status = progressData.status === 'completed' ? 'Selesai' : 'Dalam Proses';
     const statusEmoji = progressData.status === 'completed' ? '✅' : '⏳';
     const emosiRaw = progressData.emosi || 3;
     const emosiEmoji = ['😢','😕','😐','🙂','😄'][emosiRaw - 1];
 
-    // Papar stat box
+    // Papar stat box — dengan format H:M:S
     document.getElementById('activityDetailStats').innerHTML = `
       <div class="activity-time-box">
         <div class="activity-time-label">
           <i class="fas fa-hourglass-half"></i>
-          <span>Masa Diambil (Time Spent)</span>
+          <span>Tempoh Masa Diambil</span>
         </div>
         <div class="activity-time-display">
           ${time.h > 0 ? `
@@ -3039,7 +3019,7 @@ body {
       </div>
     `;
 
-    // Papar refleksi
+    // Refleksi
     const reflectionText = progressData.refleksi 
       || progressData.reflection 
       || progressData.refleksiText 
@@ -3190,7 +3170,6 @@ body {
     `;
   }
 
-  // UPDATE USER UI
   function updateUserUI() {
     const name = getDisplayName();
     const email = currentUserData.emel || '';
@@ -3234,7 +3213,6 @@ body {
     }
   }
 
-  // CREATE CLASS
   window.openCreateClassModal = function() {
     document.getElementById('className').value = '';
     document.getElementById('classSubject').value = 'Matematik Tambahan';
@@ -3258,7 +3236,7 @@ body {
 
     try {
       const newCode = await generateUniqueClassCode();
-      const classRef = await addDoc(collection(db, 'classes'), {
+      await addDoc(collection(db, 'classes'), {
         nama: nama,
         subjek: subjek,
         guruId: currentUser.uid,
@@ -3287,7 +3265,6 @@ body {
     }
   };
 
-  // CLASS DETAIL
   window.openClassDetail = function(classId) {
     const c = teacherClasses.find(x => x.id === classId);
     if (!c) return;
@@ -3328,7 +3305,6 @@ body {
     openModal('classDetailModal');
   };
 
-  // COPY CLASS CODE
   window.copyClassCode = function() {
     if (!currentClassCode) return;
     navigator.clipboard.writeText(currentClassCode).then(() => {
@@ -3338,17 +3314,14 @@ body {
     });
   };
 
-  // STUDENT DETAIL — Redirect
   window.openStudentDetail = function(uid) {
     window.location.href = `student-detail.html?uid=${uid}`;
   };
 
-  // PROFILE MODAL
   window.openProfileModal = function() {
     openModal('profileModal');
   };
 
-  // AVATAR UPLOAD
   window.handleAvatarUpload = async function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -3386,10 +3359,7 @@ body {
     }
   };
 
-  // ═══════════════════════════════════════════════════════
   // PENGURUSAN IKLAN
-  // ═══════════════════════════════════════════════════════
-
   window.switchIklanTab = function(tab) {
     currentIklanTab = tab;
     document.querySelectorAll('.iklan-tab').forEach(t => {
@@ -3707,7 +3677,6 @@ body {
     }
   };
 
-  // LOGOUT
   window.handleLogout = async function() {
     try {
       await signOut(auth);
@@ -3718,7 +3687,6 @@ body {
     }
   };
 
-  // AUTH STATE
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
@@ -3732,7 +3700,7 @@ body {
   });
 
   console.log('%c REAL-MPC · Guru Dashboard ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
-  console.log('⏱️ Time Spent formatting aktif — klik aktiviti untuk lihat');
+  console.log('⏱️ Time Spent format aktif');
 </script>
 </body>
 </html>
