@@ -1198,10 +1198,170 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════
+   STUDENT ACTIVITY DETAIL — modal baharu
+   ═══════════════════════════════════════════════════════ */
+
+.activity-detail-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-bottom: 1.3rem;
+}
+
+.activity-time-box {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--maroon) 100%);
+  border-radius: 18px;
+  padding: 1.4rem 1.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(11, 46, 78, 0.3);
+}
+
+.activity-time-box::before {
+  content: "";
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(244,196,48,0.3), transparent 70%);
+  border-radius: 50%;
+  animation: pulseDeco 5s ease-in-out infinite;
+}
+
+.activity-time-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.activity-time-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.activity-time-display .time-part {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+}
+
+.activity-time-display .time-part small {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0;
+  margin-left: 0.15rem;
+}
+
+.activity-time-display .time-sep {
+  color: var(--gold);
+  font-size: 1.8rem;
+  opacity: 0.7;
+}
+
+.activity-time-raw {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.7);
+  position: relative;
+  z-index: 1;
+}
+.activity-time-raw strong {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.activity-mini-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem;
+  background: var(--paper);
+  border-radius: 14px;
+}
+.activity-mini-stat-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--maroon));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.activity-mini-stat-content small {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.activity-mini-stat-content strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.activity-reflection-box {
+  background: var(--paper);
+  border-radius: 14px;
+  padding: 1rem;
+  border-left: 3px solid var(--gold);
+  margin-bottom: 0.7rem;
+}
+.activity-reflection-box .emoji-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.activity-reflection-box .emoji-big {
+  font-size: 1.6rem;
+}
+.activity-reflection-box .emoji-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.activity-reflection-text {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  font-style: italic;
+}
+.activity-reflection-text.empty {
+  opacity: 0.5;
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════════════════
    PENGURUSAN IKLAN — SECTION
    ═══════════════════════════════════════════════════════ */
 
-/* Tab switcher */
 .iklan-tabs {
   display: flex;
   gap: 0.5rem;
@@ -1238,7 +1398,6 @@ body {
   box-shadow: 0 6px 16px rgba(200,16,46,0.3);
 }
 
-/* Upload area */
 .upload-zone {
   background: #fff;
   border-radius: 22px;
@@ -1302,7 +1461,6 @@ body {
 }
 .upload-zone-hint i { color: var(--gold); }
 
-/* Upload preview */
 .upload-preview {
   display: none;
   position: relative;
@@ -1359,7 +1517,6 @@ body {
   transform: scale(1.1);
 }
 
-/* Info box */
 .info-box {
   background: linear-gradient(135deg, rgba(244,196,48,0.12), rgba(200,16,46,0.06));
   border: 1px solid rgba(244,196,48,0.35);
@@ -1394,7 +1551,6 @@ body {
   line-height: 1.6;
 }
 
-/* List of iklan */
 .iklan-list {
   display: grid;
   gap: 0.8rem;
@@ -1554,7 +1710,6 @@ body {
   background: var(--danger);
 }
 
-/* Preview iklan bergerak */
 .iklan-preview-bar {
   background: linear-gradient(90deg, var(--navy) 0%, var(--maroon-dark) 50%, var(--maroon) 100%);
   border-radius: 16px;
@@ -1707,6 +1862,7 @@ body {
   .code-display { font-size: 1.5rem; letter-spacing: 0.2em; }
   .iklan-item-thumb { width: 60px; height: 46px; }
   .iklan-item-actions { flex-direction: column; }
+  .activity-time-display { font-size: 1.6rem; }
 }
 </style>
 </head>
@@ -1902,7 +2058,7 @@ body {
           <div class="section-head-left">
             <div class="section-label"><i class="fas fa-clock"></i> Aktiviti Terkini</div>
             <h2>Aktiviti Pelajar Terkini</h2>
-            <p>Aktiviti yang baru diselesaikan oleh pelajar anda</p>
+            <p>Klik aktiviti untuk lihat masa & refleksi pelajar</p>
           </div>
         </div>
         <div id="recentActivity"></div>
@@ -1955,12 +2111,9 @@ body {
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         PAGE: IKLAN & PENGUMUMAN
-         ═══════════════════════════════════════════════════════ -->
+    <!-- PAGE: IKLAN & PENGUMUMAN -->
     <div class="page" id="page-iklan">
 
-      <!-- Tab switcher -->
       <div class="iklan-tabs">
         <button class="iklan-tab active" data-tab="media" onclick="switchIklanTab('media')">
           <i class="fas fa-image"></i> Iklan Gambar/Video
@@ -2010,7 +2163,6 @@ body {
             </div>
           </div>
 
-          <!-- Form fields for media -->
           <div id="mediaFormFields" style="display: none; margin-top: 1.5rem;">
             <div class="form-block">
               <label class="form-block-label"><i class="fas fa-heading"></i> Tajuk Iklan</label>
@@ -2047,7 +2199,6 @@ body {
           </div>
         </div>
 
-        <!-- Live preview -->
         <div class="iklan-preview-bar">
           <div class="iklan-preview-label">
             <i class="fas fa-bullhorn"></i> Preview
@@ -2189,6 +2340,43 @@ body {
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: STUDENT ACTIVITY DETAIL
+     Papar masa (timeSpent) + refleksi pelajar
+     ═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="activityDetailModal">
+  <div class="modal" style="max-width: 560px;">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal('activityDetailModal')">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-header-inner">
+        <span class="modal-label" id="activityDetailLabel">
+          <i class="fas fa-book"></i> Detail Aktiviti
+        </span>
+        <h2 class="modal-title" id="activityDetailTitle">—</h2>
+        <p class="modal-sub" id="activityDetailSub">—</p>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="activity-detail-stats" id="activityDetailStats">
+        <!-- Diisi oleh JS -->
+      </div>
+      <div class="form-block">
+        <label class="form-block-label"><i class="fas fa-comment-dots"></i> Refleksi Pelajar</label>
+        <div id="activityDetailReflection">
+          <!-- Diisi oleh JS -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" style="flex: 1;" onclick="closeModal('activityDetailModal')">
+        Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: PROFILE -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal" style="max-width: 440px;">
@@ -2290,7 +2478,6 @@ body {
   let clockInterval = null;
   let currentClassCode = '';
 
-  // Iklan
   let mediaFile = null;
   let mediaFileType = null;
   let currentIklanTab = 'media';
@@ -2358,6 +2545,46 @@ body {
       setTimeout(() => toast.remove(), 400);
     }, 3500);
   };
+
+  // ═══════════════════════════════════════════════════════
+  // FORMAT TIME SPENT — tukar saat kepada format jam/minit/saat
+  // ═══════════════════════════════════════════════════════
+  // Input: saat (number) — contoh: 104
+  // Output: { h, m, s, formatted, short } — contoh: "1 minit 44 saat"
+  function formatTimeSpent(seconds) {
+    if (!seconds || seconds < 0 || isNaN(seconds)) {
+      return { h: 0, m: 0, s: 0, formatted: '0 saat', short: '0s', raw: 0 };
+    }
+
+    seconds = Math.floor(seconds); // pastikan integer
+
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    // Bina bahagian-bahagian (Bahasa Melayu)
+    const parts = [];
+    if (h > 0) parts.push(`${h} jam`);
+    if (m > 0) parts.push(`${m} minit`);
+    if (s > 0 || parts.length === 0) parts.push(`${s} saat`);
+
+    // Short format (contoh: "01:44:00" atau "01:44")
+    let short = '';
+    if (h > 0) {
+      short = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+    } else {
+      short = `${pad2(m)}:${pad2(s)}`;
+    }
+
+    return {
+      h,
+      m,
+      s,
+      formatted: parts.join(' '),
+      short,
+      raw: seconds
+    };
+  }
 
   // MODAL HELPERS
   window.closeModal = function(id) {
@@ -2512,12 +2739,14 @@ body {
         });
       });
 
+      // Load progress + timeSpent untuk setiap student
       for (const student of allStudents) {
         try {
           const progressSnap = await getDocs(collection(db, 'progress', student.uid, 'activities'));
           const progress = {};
           progressSnap.forEach(d => {
-            progress[parseInt(d.id)] = d.data();
+            const data = d.data();
+            progress[parseInt(d.id)] = data;
           });
           student.progress = progress;
         } catch (e) {
@@ -2662,7 +2891,8 @@ body {
             student: s,
             activityId: parseInt(id),
             completedAt: data.completedAt,
-            emosi: data.emosi
+            emosi: data.emosi,
+            timeSpent: data.timeSpent || data.time_spent || 0
           });
         }
       });
@@ -2674,7 +2904,7 @@ body {
       return bTime - aTime;
     });
 
-    const latest = recent.slice(0, 5);
+    const latest = recent.slice(0, 8);
 
     if (latest.length === 0) {
       container.innerHTML = `
@@ -2692,18 +2922,153 @@ body {
       const emoji = ['😢','😕','😐','🙂','😄'][(r.emosi || 3) - 1];
       const date = r.completedAt?.toDate ? r.completedAt.toDate() : new Date(r.completedAt);
       const dateStr = date.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+      // Format masa
+      const time = formatTimeSpent(r.timeSpent);
+      const timeStr = time.raw > 0 ? `⏱️ ${time.formatted}` : '';
+
       return `
-        <div class="student-card" onclick="openStudentDetail('${r.student.uid}')">
+        <div class="student-card" onclick="openActivityDetail('${r.student.uid}', ${r.activityId})">
           ${r.student.avatar ? `<img src="${r.student.avatar}" class="student-avatar">` : `<div class="student-avatar-fallback">${(r.student.nama || 'U').charAt(0).toUpperCase()}</div>`}
           <div class="student-info">
             <div class="student-name">${r.student.nama || 'Murid'}</div>
-            <div class="student-email">${a?.icon || '📘'} ${a?.tajuk || 'Aktiviti ' + r.activityId} ${emoji} · ${dateStr}</div>
+            <div class="student-email">${a?.icon || '📘'} ${a?.tajuk || 'Aktiviti ' + r.activityId} ${emoji}</div>
+            <div class="student-email" style="margin-bottom: 0; color: var(--maroon); font-weight: 600;">
+              ${timeStr ? `${timeStr} · ` : ''}${dateStr}
+            </div>
           </div>
           <div class="student-arrow"><i class="fas fa-chevron-right"></i></div>
         </div>
       `;
     }).join('');
   }
+
+  // ═══════════════════════════════════════════════════════
+  // BUKA DETAIL AKTIVITI — Papar masa & refleksi
+  // ═══════════════════════════════════════════════════════
+  window.openActivityDetail = async function(studentUid, activityId) {
+    const student = allStudents.find(s => s.uid === studentUid);
+    if (!student) {
+      showToast('Ralat', 'Pelajar tidak dijumpai', 'error');
+      return;
+    }
+
+    const activity = ACTIVITIES.find(a => a.id === activityId);
+    if (!activity) return;
+
+    // Pastikan progress pelajar ada
+    if (!student.progress) student.progress = {};
+
+    let progressData = student.progress[activityId];
+
+    // Jika progress belum dimuatkan, cuba load sekali lagi dari Firestore
+    if (!progressData) {
+      try {
+        const progressDoc = await getDoc(doc(db, 'progress', studentUid, 'activities', String(activityId)));
+        if (progressDoc.exists()) {
+          progressData = progressDoc.data();
+          student.progress[activityId] = progressData;
+        }
+      } catch (e) {
+        console.warn('Load progress detail error:', e);
+      }
+    }
+
+    if (!progressData) {
+      showToast('Tiada Data', 'Pelajar belum selesaikan aktiviti ini', 'warning');
+      return;
+    }
+
+    // Header
+    document.getElementById('activityDetailLabel').innerHTML = `
+      <i class="fas fa-book"></i> ${activity.konstruk}
+    `;
+    document.getElementById('activityDetailTitle').textContent = `${activity.icon} ${activity.tajuk}`;
+    document.getElementById('activityDetailSub').textContent = `${student.nama || 'Murid'} · ${student.emel || ''}`;
+
+    // Ambil timeSpent (cuba pelbagai nama field)
+    const rawTimeSpent = progressData.timeSpent 
+      || progressData.time_spent 
+      || progressData.timeSpentSeconds 
+      || progressData.duration 
+      || 0;
+    const time = formatTimeSpent(rawTimeSpent);
+
+    // Status & emosi
+    const status = progressData.status === 'completed' ? 'Selesai' : 'Dalam Proses';
+    const statusEmoji = progressData.status === 'completed' ? '✅' : '⏳';
+    const emosiRaw = progressData.emosi || 3;
+    const emosiEmoji = ['😢','😕','😐','🙂','😄'][emosiRaw - 1];
+
+    // Papar stat box
+    document.getElementById('activityDetailStats').innerHTML = `
+      <div class="activity-time-box">
+        <div class="activity-time-label">
+          <i class="fas fa-hourglass-half"></i>
+          <span>Masa Diambil (Time Spent)</span>
+        </div>
+        <div class="activity-time-display">
+          ${time.h > 0 ? `
+            <span class="time-part">${pad2(time.h)}<small>jam</small></span>
+            <span class="time-sep">:</span>
+          ` : ''}
+          <span class="time-part">${pad2(time.m)}<small>minit</small></span>
+          <span class="time-sep">:</span>
+          <span class="time-part">${pad2(time.s)}<small>saat</small></span>
+        </div>
+        <div class="activity-time-raw">
+          Jumlah: <strong>${time.formatted}</strong>
+          ${time.raw > 0 ? ` · (${time.raw} saat)` : ''}
+        </div>
+      </div>
+
+      <div class="activity-mini-stat">
+        <div class="activity-mini-stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="activity-mini-stat-content">
+          <small>Status</small>
+          <strong>${statusEmoji} ${status}</strong>
+        </div>
+      </div>
+
+      <div class="activity-mini-stat">
+        <div class="activity-mini-stat-icon"><i class="fas fa-smile"></i></div>
+        <div class="activity-mini-stat-content">
+          <small>Emosi</small>
+          <strong>${emosiEmoji} ${emosiRaw}/5</strong>
+        </div>
+      </div>
+    `;
+
+    // Papar refleksi
+    const reflectionText = progressData.refleksi 
+      || progressData.reflection 
+      || progressData.refleksiText 
+      || '';
+
+    const completedAt = progressData.completedAt?.toDate 
+      ? progressData.completedAt.toDate() 
+      : (progressData.completedAt ? new Date(progressData.completedAt) : null);
+    const completedStr = completedAt ? completedAt.toLocaleDateString('ms-MY', {
+      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    }) : '';
+
+    document.getElementById('activityDetailReflection').innerHTML = `
+      <div class="activity-reflection-box">
+        <div class="emoji-row">
+          <div class="emoji-big">${emosiEmoji}</div>
+          <div>
+            <div class="emoji-label">Refleksi Pelajar</div>
+            ${completedStr ? `<div style="font-size: 0.72rem; color: var(--ink-soft); opacity: 0.7;">${completedStr}</div>` : ''}
+          </div>
+        </div>
+        <div class="activity-reflection-text ${reflectionText ? '' : 'empty'}">
+          ${reflectionText ? `"${reflectionText}"` : 'Tiada teks refleksi.'}
+        </div>
+      </div>
+    `;
+
+    openModal('activityDetailModal');
+  };
 
   function renderAllStudents() {
     const container = document.getElementById('allStudentsList');
@@ -3025,7 +3390,6 @@ body {
   // PENGURUSAN IKLAN
   // ═══════════════════════════════════════════════════════
 
-  // Tab switching
   window.switchIklanTab = function(tab) {
     currentIklanTab = tab;
     document.querySelectorAll('.iklan-tab').forEach(t => {
@@ -3038,7 +3402,6 @@ body {
     if (tab === 'list') loadAllIklan();
   };
 
-  // Media upload — drag & drop
   const mediaZone = document.getElementById('mediaUploadZone');
   if (mediaZone) {
     ['dragenter', 'dragover'].forEach(ev => {
@@ -3083,7 +3446,6 @@ body {
     mediaFile = file;
     mediaFileType = isImage ? 'image' : 'video';
 
-    // Preview
     const preview = document.getElementById('mediaPreview');
     const previewContent = document.getElementById('mediaPreviewContent');
     const previewName = document.getElementById('mediaPreviewName');
@@ -3116,7 +3478,6 @@ body {
     document.getElementById('mediaLink').value = '';
   };
 
-  // Upload media iklan
   window.uploadMediaIklan = async function() {
     if (!mediaFile) {
       showToast('Tiada Fail', 'Sila pilih gambar atau video', 'error');
@@ -3136,7 +3497,6 @@ body {
     showToast('Memuat Naik...', 'Sila tunggu sebentar', 'info');
 
     try {
-      // Upload ke Cloudinary
       const formData = new FormData();
       formData.append('file', mediaFile);
       formData.append('upload_preset', CLOUDINARY_PRESET);
@@ -3154,7 +3514,6 @@ body {
       const data = await res.json();
       if (!data.secure_url) throw new Error('Cloudinary upload failed');
 
-      // Simpan ke Firestore
       await addDoc(collection(db, 'announcements'), {
         text: title,
         subtitle: subtitle,
@@ -3178,7 +3537,6 @@ body {
     }
   };
 
-  // Text preview update
   window.updateTextPreview = function() {
     const text = document.getElementById('textContent').value.trim();
     const icon = document.getElementById('textIcon').value;
@@ -3201,7 +3559,6 @@ body {
     marquee.innerHTML = item + '<span style="opacity: 0.4; margin: 0 1rem;">✦</span>' + item;
   };
 
-  // Upload text iklan
   window.uploadTextIklan = async function() {
     const text = document.getElementById('textContent').value.trim();
     const icon = document.getElementById('textIcon').value;
@@ -3236,7 +3593,6 @@ body {
     }
   };
 
-  // Load all iklan
   async function loadAllIklan() {
     const container = document.getElementById('iklanList');
     const badge = document.getElementById('iklanListBadge');
@@ -3256,7 +3612,6 @@ body {
         allIklan.push({ id: docSnap.id, ...docSnap.data() });
       });
 
-      // Update badges
       const activeCount = allIklan.filter(i => i.active).length;
       if (badge) badge.textContent = allIklan.length;
       if (sidebarBadge) sidebarBadge.textContent = activeCount;
@@ -3327,7 +3682,6 @@ body {
     }
   }
 
-  // Toggle iklan status
   window.toggleIklanStatus = async function(id, currentStatus) {
     try {
       await updateDoc(doc(db, 'announcements', id), {
@@ -3341,7 +3695,6 @@ body {
     }
   };
 
-  // Delete iklan
   window.deleteIklan = async function(id) {
     if (!confirm('Padam iklan ini? Tindakan ini tidak boleh dibatalkan.')) return;
     try {
@@ -3379,7 +3732,7 @@ body {
   });
 
   console.log('%c REAL-MPC · Guru Dashboard ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
-  console.log('🎯 Menu Iklan & Pengumuman ditambah');
+  console.log('⏱️ Time Spent formatting aktif — klik aktiviti untuk lihat');
 </script>
 </body>
 </html>
