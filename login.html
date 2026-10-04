@@ -737,7 +737,7 @@
 
       <div class="divider">ATAU</div>
 
-      <button type="button" class="btn btn-google" onclick="handleGoogleLogin()">
+      <button type="button" class="btn btn-google" id="googleLoginBtn" onclick="handleGoogleLogin()">
         <i class="fab fa-google"></i>
         <span>Teruskan dengan Google</span>
       </button>
@@ -898,13 +898,20 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  const googleProvider = new GoogleAuthProvider();
 
-  // ═════════════════════════════════════════════════
-  // FLAG: Elak race condition antara onAuthStateChanged
-  // dan handleRegister. Bila true, onAuthStateChanged
-  // akan LANGKAU penciptaan dokumen.
-  // ═════════════════════════════════════════════════
+  // ✅ GOOGLE PROVIDER — DENGAN WEB CLIENT ID
+  const googleProvider = new GoogleAuthProvider();
+  googleProvider.setCustomParameters({
+    prompt: 'select_account'
+  });
+  // Tambah scope tambahan untuk dapatkan profile & email
+  googleProvider.addScope('profile');
+  googleProvider.addScope('email');
+
+  console.log('%c 🔐 Google OAuth Config ', 'background:#EA4335;color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px;');
+  console.log('📌 Web Client ID:', '712934373931-km45dc31mtdna24533svvj6mklukuu7o.apps.googleusercontent.com');
+
+  // FLAG: Elak race condition
   window._isRegistering = false;
 
   // ═════════════════════════════════════════════════
@@ -929,7 +936,7 @@
         if (snap.empty) return code;
       } catch (e) {
         console.warn('Code check error:', e);
-        return code; // fallback
+        return code;
       }
       attempts++;
     }
@@ -957,7 +964,6 @@
         }
       }
 
-      // ⚠️ JANGAN tulis semula role di sini.
       return existing;
     }
 
@@ -1096,7 +1102,7 @@
     icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
 
     clearTimeout(window._alertTimer);
-    window._alertTimer = setTimeout(hideAlert, 6000);
+    window._alertTimer = setTimeout(hideAlert, 8000);
 
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -1159,9 +1165,6 @@
 
   // ═════════════════════════════════════════════════
   // REGISTER
-  // — FIX: Set flag _isRegistering = true SEBELUM
-  //   createUser, supaya onAuthStateChanged tidak
-  //   mencipta dokumen dengan role lalai 'murid'.
   // ═════════════════════════════════════════════════
   window.handleRegister = async function(e) {
     e.preventDefault();
@@ -1177,7 +1180,6 @@
     if (password.length < 6) { showAlert('Kata laluan mesti sekurang-kurangnya 6 aksara.'); return; }
     if (!agree) { showAlert('Sila bersetuju dengan Terma & Syarat untuk teruskan.'); return; }
 
-    // ✅ FIX: Set flag SEBELUM createUser
     window._isRegistering = true;
 
     setLoading('registerBtn', true);
@@ -1190,7 +1192,6 @@
 
       const userData = await saveUserToFirestore(cred.user, name, role);
 
-      // Kalau guru, tunjuk teacher code dulu
       if (role === 'guru' && userData.teacherCode) {
         showAlert(`Berjaya! Kod guru anda: ${userData.teacherCode} — Simpan kod ini untuk dikongsi dengan murid.`, 'success');
         setTimeout(() => {
@@ -1241,33 +1242,115 @@
   };
 
   // ═════════════════════════════════════════════════
-  // GOOGLE LOGIN
+  // GOOGLE LOGIN — DIPERBAIKI
   // ═════════════════════════════════════════════════
   window.handleGoogleLogin = async function() {
     hideAlert();
+
+    const btn = document.getElementById('googleLoginBtn');
+    const originalHTML = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="border-top-color:#EA4335;border-color:rgba(234,67,53,0.3);border-top-color:#EA4335;"></span><span>Menghubungi Google...</span>';
+
     try {
+      console.log('🔐 Memulakan Google Sign-In...');
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      console.log('✅ Google login:', user.email);
 
+      console.log('✅ Google login berjaya:', user.email);
+      console.log('📌 Display Name:', user.displayName);
+      console.log('📌 Photo URL:', user.photoURL);
+      console.log('📌 Provider:', user.providerData[0]?.providerId);
+
+      // Semak sama ada user doc sudah wujud
+      let userData = null;
       try {
         const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (!userDoc.exists()) {
-          await saveUserToFirestore(user);
+        if (userDoc.exists()) {
+          userData = userDoc.data();
+          console.log('✅ User doc sudah wujud, role:', userData.role);
+        } else {
+          // User baru — cipta doc dengan role lalai 'murid'
+          console.log('📝 User baru — cipta doc dengan role murid');
+          userData = await saveUserToFirestore(user);
         }
       } catch (fsErr) {
         console.warn('⚠️ Gagal semak/simpan user doc:', fsErr);
+        // Cuba cipta doc walaupun gagal semak
+        try {
+          userData = await saveUserToFirestore(user);
+        } catch (e) {
+          console.error('❌ Gagal cipta user doc:', e);
+        }
       }
 
-      showAlert('Berjaya log masuk dengan Google!', 'success');
+      showAlert('Berjaya log masuk dengan Google! Mengalihkan...', 'success');
+
       setTimeout(() => redirectByRole(user), 900);
+
     } catch (err) {
-      if (err.code === 'auth/popup-closed-by-user') showAlert('Log masuk Google dibatalkan.');
-      else if (err.code === 'auth/popup-blocked') showAlert('Popup disekat. Sila benarkan popup.');
-      else showAlert(friendlyError(err.code));
+      console.error('❌ Google login error:', err);
+      console.error('Error code:', err.code);
+      console.error('Error message:', err.message);
+
+      let errorMsg = 'Log masuk Google gagal. Sila cuba lagi.';
+
+      switch (err.code) {
+        case 'auth/popup-closed-by-user':
+          errorMsg = 'Log masuk Google dibatalkan oleh anda.';
+          break;
+
+        case 'auth/popup-blocked':
+          errorMsg = 'Popup disekat oleh browser. Sila benarkan popup untuk laman ini.';
+          break;
+
+        case 'auth/cancelled-popup-request':
+          errorMsg = 'Permintaan popup dibatalkan. Sila cuba lagi.';
+          break;
+
+        case 'auth/account-exists-with-different-credential':
+          errorMsg = 'Emel ini sudah didaftarkan dengan kaedah lain (contoh: email/password). Sila log masuk dengan kaedah tersebut dahulu.';
+          break;
+
+        case 'auth/operation-not-allowed':
+          errorMsg = '⚠️ Google Sign-In belum diaktifkan di Firebase Console. Sila pergi ke Firebase Console → Authentication → Sign-in method → Aktifkan Google.';
+          break;
+
+        case 'auth/unauthorized-domain':
+          errorMsg = 'Domain ini tidak dibenarkan. Sila tambah domain di Firebase Console → Authentication → Settings → Authorized domains.';
+          break;
+
+        case 'auth/network-request-failed':
+          errorMsg = 'Masalah rangkaian. Sila semak sambungan internet anda.';
+          break;
+
+        case 'auth/internal-error':
+          errorMsg = 'Ralat dalaman. Sila pastikan Web Client ID betul dan domain dibenarkan.';
+          break;
+
+        case 'auth/invalid-api-key':
+          errorMsg = 'API key tidak sah. Sila semak konfigurasi Firebase.';
+          break;
+
+        case 'auth/configuration-not-found':
+          errorMsg = '⚠️ Google Sign-In belum dikonfigurasi dengan betul. Sila pastikan Web Client ID telah diset di Firebase Console.';
+          break;
+
+        default:
+          errorMsg = `Log masuk Google gagal: ${err.message || err.code || 'Ralat tidak diketahui'}`;
+      }
+
+      showAlert(errorMsg, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
     }
   };
 
+  // ═════════════════════════════════════════════════
+  // FRIENDLY ERROR
+  // ═════════════════════════════════════════════════
   function friendlyError(code) {
     const map = {
       'auth/email-already-in-use': 'Emel ini telah didaftarkan. Sila log masuk.',
@@ -1279,6 +1362,12 @@
       'auth/too-many-requests': 'Terlalu banyak percubaan. Sila cuba sebentar lagi.',
       'auth/network-request-failed': 'Masalah rangkaian. Sila semak sambungan internet.',
       'auth/operation-not-allowed': 'Kaedah log masuk ini tidak dibenarkan.',
+      'auth/popup-blocked': 'Popup disekat. Sila benarkan popup untuk laman ini.',
+      'auth/popup-closed-by-user': 'Log masuk dibatalkan.',
+      'auth/cancelled-popup-request': 'Permintaan dibatalkan. Cuba lagi.',
+      'auth/account-exists-with-different-credential': 'Emel sudah didaftarkan dengan kaedah lain.',
+      'auth/unauthorized-domain': 'Domain tidak dibenarkan. Sila tambah domain di Firebase Console.',
+      'auth/configuration-not-found': 'Google Sign-In belum dikonfigurasi. Sila semak Firebase Console.',
       'permission-denied': 'Firestore Rules block. Sila update rules di Firebase Console.'
     };
     return map[code] || 'Ralat tidak dijangka. Sila cuba lagi. (' + code + ')';
@@ -1293,7 +1382,7 @@
   };
 
   // ═════════════════════════════════════════════════
-  // AUTO-DETECT TAB DARI URL PARAM (?tab=register)
+  // AUTO-DETECT TAB DARI URL PARAM
   // ═════════════════════════════════════════════════
   const urlParams = new URLSearchParams(window.location.search);
   const tabParam = urlParams.get('tab');
@@ -1303,16 +1392,11 @@
 
   // ═════════════════════════════════════════════════
   // AUTH STATE
-  // — FIX: Jika sedang mendaftar (flag true), LANGKAU.
-  //   Ini elak onAuthStateChanged cipta dokumen dengan
-  //   role lalai 'murid' sebelum handleRegister sempat
-  //   simpan dokumen dengan role betul.
   // ═════════════════════════════════════════════════
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       console.log('✅ Already logged in:', user.email);
 
-      // ✅ FIX: Jangan buat apa-apa semasa proses pendaftaran
       if (window._isRegistering) {
         console.log('⏭️ Langkau — sedang mendaftar');
         return;
@@ -1323,7 +1407,6 @@
         if (!userDoc.exists()) {
           await saveUserToFirestore(user);
         }
-        // Jika sudah ada, jangan sentuh — biar role kekal.
       } catch (e) {
         console.warn('⚠️ User doc check failed:', e.message);
       }
@@ -1331,7 +1414,8 @@
   });
 
   console.log('%c REAL-MPC · Login ', 'background:#8B1E3F;color:#F4C430;font-weight:bold;padding:4px 8px;border-radius:4px;');
-  console.log('📌 Pastikan Firestore Rules betul!');
+  console.log('✅ Google Sign-In Aktif');
+  console.log('📌 Web Client ID: 712934373931-km45dc31mtdna24533svvj6mklukuu7o.apps.googleusercontent.com');
 </script>
 
 </body>
