@@ -43,6 +43,8 @@ body {
   line-height: 1.65;
   overflow-x: hidden;
   min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 #preloader {
@@ -144,6 +146,8 @@ body {
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
   display: flex;
   flex-direction: column;
   z-index: 40;
@@ -211,6 +215,7 @@ body {
   width: 100%;
   text-align: left;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 .sidebar-item i {
   width: 22px;
@@ -436,6 +441,7 @@ body {
   justify-content: center;
   transition: all 0.25s;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 .mobile-menu-btn:hover { background: var(--paper); }
 
@@ -494,6 +500,7 @@ body {
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--red), var(--maroon));
@@ -1096,6 +1103,7 @@ body {
   flex-direction: column;
   gap: 0.7rem;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 .activity-card::before {
   content: ""; position: absolute;
@@ -1193,6 +1201,7 @@ body {
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(11, 46, 78, 0.7);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   z-index: 9999;
   display: flex;
@@ -1201,7 +1210,9 @@ body {
   padding: 1rem;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s;
+  transition: opacity 0.3s, visibility 0.3s;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
 }
 .modal-overlay.show { opacity: 1; visibility: visible; }
 
@@ -1212,6 +1223,8 @@ body {
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
   box-shadow: 0 40px 80px rgba(11, 46, 78, 0.4);
   transform: scale(0.9);
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1256,6 +1269,7 @@ body {
   transition: all 0.25s;
   z-index: 2;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 .modal-close:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
 
@@ -1310,6 +1324,7 @@ body {
   background: #fff;
   transition: all 0.25s;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 .form-input:focus {
   border-color: var(--red);
@@ -1437,9 +1452,7 @@ body {
   letter-spacing: 0.25em;
 }
 
-/* ═══════════════════════════════════════════════════
-   PROFILE MODAL — BAHARU (dengan edit & crop)
-   ═══════════════════════════════════════════════════ */
+/* PROFILE MODAL */
 .profile-hero {
   display: flex;
   flex-direction: column;
@@ -1492,6 +1505,7 @@ body {
   box-shadow: 0 4px 12px rgba(200,16,46,0.4);
   cursor: pointer;
   z-index: 2;
+  -webkit-tap-highlight-color: transparent;
 }
 .avatar-upload-btn:hover { transform: scale(1.15) rotate(-8deg); }
 
@@ -1511,11 +1525,11 @@ body {
   box-shadow: 0 4px 12px rgba(239,68,68,0.4);
   cursor: pointer;
   z-index: 2;
+  -webkit-tap-highlight-color: transparent;
 }
 .avatar-delete-btn.show { display: flex; }
 .avatar-delete-btn:hover { transform: scale(1.15) rotate(8deg); }
 
-/* Profile tabs */
 .profile-tabs {
   display: flex;
   gap: 0.4rem;
@@ -1540,6 +1554,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
+  -webkit-tap-highlight-color: transparent;
 }
 .profile-tab:hover { color: var(--maroon); }
 .profile-tab.active {
@@ -1736,10 +1751,12 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(11, 46, 78, 0.5);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   z-index: 39;
   opacity: 0;
   transition: opacity 0.3s;
+  -webkit-tap-highlight-color: transparent;
 }
 .sidebar-overlay.show { opacity: 1; }
 
@@ -1782,6 +1799,7 @@ body {
 .crop-modal-overlay {
   position: fixed; inset: 0;
   background: rgba(11, 46, 78, 0.85);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   z-index: 100000;
   display: flex;
@@ -1790,7 +1808,9 @@ body {
   padding: 1rem;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s;
+  transition: opacity 0.3s, visibility 0.3s;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
 }
 .crop-modal-overlay.show { opacity: 1; visibility: visible; }
 
@@ -1834,6 +1854,7 @@ body {
   padding: 1rem;
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: #1A1A1A;
   display: flex;
   align-items: center;
@@ -1855,7 +1876,6 @@ body {
   display: block;
 }
 
-/* Custom crop controls */
 .crop-controls {
   padding: 1rem 1.5rem;
   background: var(--paper);
@@ -1880,6 +1900,7 @@ body {
   cursor: pointer;
   font-family: inherit;
   transition: all 0.25s;
+  -webkit-tap-highlight-color: transparent;
 }
 .crop-control-btn:hover {
   border-color: var(--maroon);
@@ -1902,7 +1923,6 @@ body {
   gap: 0.7rem;
 }
 
-/* Aspect ratio selector */
 .crop-aspect-selector {
   display: flex;
   gap: 0.4rem;
@@ -1912,7 +1932,6 @@ body {
   background: var(--paper);
 }
 
-/* Override Cropper.js theme */
 .cropper-view-box,
 .cropper-face {
   border-radius: 50% !important;
@@ -2278,6 +2297,10 @@ body {
             placeholder="ABC123"
             maxlength="6"
             autocomplete="off"
+            autocorrect="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            inputmode="text"
             style="text-transform: uppercase;"
             oninput="onJoinCodeInput(event)"
           >
@@ -2306,9 +2329,7 @@ body {
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     MODAL: PROFILE — DENGAN EDIT NAMA & PASSWORD
-     ═══════════════════════════════════════════════════ -->
+<!-- MODAL: PROFILE -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal" style="max-width: 480px;">
     <div class="modal-header" style="padding: 1.8rem 1.5rem;">
@@ -2336,7 +2357,6 @@ body {
 
     <div class="modal-body">
 
-      <!-- Tab switcher -->
       <div class="profile-tabs">
         <button class="profile-tab active" data-ptab="info" onclick="switchProfileTab('info')">
           <i class="fas fa-info-circle"></i> Maklumat
@@ -2349,7 +2369,6 @@ body {
         </button>
       </div>
 
-      <!-- TAB: INFO -->
       <div class="profile-tab-content active" id="ptab-info">
         <div class="profile-info-row">
           <div class="profile-info-icon"><i class="fas fa-user-tag"></i></div>
@@ -2374,7 +2393,6 @@ body {
         </div>
       </div>
 
-      <!-- TAB: NAME -->
       <div class="profile-tab-content" id="ptab-name">
         <div class="form-block">
           <label class="form-block-label"><i class="fas fa-user"></i> Nama Penuh</label>
@@ -2395,7 +2413,6 @@ body {
         </button>
       </div>
 
-      <!-- TAB: PASSWORD -->
       <div class="profile-tab-content" id="ptab-password">
         <div class="form-block">
           <label class="form-block-label"><i class="fas fa-lock"></i> Kata Laluan Semasa</label>
@@ -2452,9 +2469,7 @@ body {
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     MODAL: CROP IMAGE (sebelum upload)
-     ═══════════════════════════════════════════════════ -->
+<!-- MODAL: CROP IMAGE -->
 <div class="crop-modal-overlay" id="cropModalOverlay">
   <div class="crop-modal">
     <div class="crop-modal-header">
@@ -2508,8 +2523,8 @@ body {
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Cropper.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<!-- Cropper.js — DENGAN defer supaya tak block rendering -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" defer></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -2564,7 +2579,6 @@ body {
 
   let previewClassDoc = null;
 
-  // Crop state
   let cropper = null;
   let originalFile = null;
 
@@ -2605,7 +2619,16 @@ body {
 
   startClock();
 
-  // TOAST
+  // Bind password strength
+  function bindPasswordStrength() {
+    const pwdInput = document.getElementById('inputNewPassword');
+    if (pwdInput && !pwdInput._bound) {
+      pwdInput._bound = true;
+      pwdInput.addEventListener('input', (e) => updateStrengthMeter(e.target.value));
+    }
+  }
+  bindPasswordStrength();
+
   window.showToast = function(title, message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const icons = { success: 'fa-check', error: 'fa-times', info: 'fa-info', warning: 'fa-exclamation' };
@@ -2638,11 +2661,12 @@ body {
     document.body.style.overflow = 'hidden';
   };
 
-  document.querySelectorAll('.modal-overlay').forEach(el => {
-    el.addEventListener('click', (e) => {
-      if (e.target === el) closeModal(el.id);
-    });
-  });
+  // Delegated event untuk modal overlay — lebih reliable di mobile
+  document.addEventListener('click', (e) => {
+    if (e.target.classList && e.target.classList.contains('modal-overlay')) {
+      closeModal(e.target.id);
+    }
+  }, { passive: true });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -2904,7 +2928,6 @@ body {
       if (deleteBtn) deleteBtn.classList.remove('show');
     }
 
-    // Fill name input
     const nameInput = document.getElementById('inputProfileName');
     if (nameInput) nameInput.value = currentUserData.nama || '';
   }
@@ -3019,10 +3042,7 @@ body {
     window.location.href = `activity-${padded}.html`;
   };
 
-  // ═══════════════════════════════════════════
   // JOIN CLASS
-  // ═══════════════════════════════════════════
-
   window.openJoinClassModal = function() {
     resetJoinModal();
     openModal('joinClassModal');
@@ -3247,10 +3267,7 @@ body {
     }
   };
 
-  // ═══════════════════════════════════════════════════════
-  // PROFILE MODAL — DENGAN EDIT NAMA, PASSWORD, CROP, DELETE
-  // ═══════════════════════════════════════════════════════
-
+  // PROFILE
   window.openProfileModal = function() {
     if (!currentUserData) return;
     updateUserUI();
@@ -3258,7 +3275,6 @@ body {
     openModal('profileModal');
   };
 
-  // Tab switching dalam profile
   window.switchProfileTab = function(tab) {
     document.querySelectorAll('.profile-tab').forEach(t => {
       t.classList.toggle('active', t.dataset.ptab === tab);
@@ -3268,13 +3284,11 @@ body {
     });
     document.getElementById('ptab-' + tab).classList.add('active');
 
-    // Fill name input bila buka tab name
     if (tab === 'name') {
       const inp = document.getElementById('inputProfileName');
       if (inp) inp.value = currentUserData?.nama || '';
     }
 
-    // Clear password fields bila buka tab password
     if (tab === 'password') {
       document.getElementById('inputCurrentPassword').value = '';
       document.getElementById('inputNewPassword').value = '';
@@ -3283,9 +3297,6 @@ body {
     }
   };
 
-  // ═══════════════════════════════════════════
-  // 1. EDIT NAMA
-  // ═══════════════════════════════════════════
   window.handleUpdateName = async function() {
     const nameInput = document.getElementById('inputProfileName');
     const btn = document.getElementById('btnUpdateName');
@@ -3305,20 +3316,14 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
 
     try {
-      // Update Firestore
       await updateDoc(doc(db, 'users', currentUser.uid), { nama: newName });
-
-      // Update Auth displayName
       await updateProfile(currentUser, { displayName: newName });
-
-      // Update local state
       currentUserData.nama = newName;
 
       updateUserUI();
       renderDashboard();
 
       showToast('Berjaya! ✨', 'Nama anda telah dikemas kini', 'success');
-
     } catch (err) {
       console.error('Update name error:', err);
       showToast('Ralat', 'Gagal mengemas kini nama', 'error');
@@ -3328,9 +3333,6 @@ body {
     }
   };
 
-  // ═══════════════════════════════════════════
-  // 2. TUKAR PASSWORD
-  // ═══════════════════════════════════════════
   window.handleUpdatePassword = async function() {
     const currPwd = document.getElementById('inputCurrentPassword').value;
     const newPwd = document.getElementById('inputNewPassword').value;
@@ -3361,21 +3363,16 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menukar...';
 
     try {
-      // Reauthenticate dulu (perlu untuk operasi sensitif)
       const credential = EmailAuthProvider.credential(currentUser.email, currPwd);
       await reauthenticateWithCredential(currentUser, credential);
-
-      // Update password
       await updatePassword(currentUser, newPwd);
 
-      // Clear fields
       document.getElementById('inputCurrentPassword').value = '';
       document.getElementById('inputNewPassword').value = '';
       document.getElementById('inputConfirmPassword').value = '';
       updateStrengthMeter('');
 
       showToast('Berjaya! 🔐', 'Kata laluan telah ditukar', 'success');
-
     } catch (err) {
       console.error('Update password error:', err);
 
@@ -3395,7 +3392,6 @@ body {
     }
   };
 
-  // Password strength meter
   window.updateStrengthMeter = function(pwd) {
     const bars = document.querySelectorAll('#ptab-password .strength-bar');
     const text = document.getElementById('strengthText');
@@ -3442,23 +3438,11 @@ body {
     }
   };
 
-  // Bind password input
-  document.addEventListener('DOMContentLoaded', () => {
-    const pwdInput = document.getElementById('inputNewPassword');
-    if (pwdInput) {
-      pwdInput.addEventListener('input', (e) => updateStrengthMeter(e.target.value));
-    }
-  });
-
-  // ═══════════════════════════════════════════
-  // 3. UPLOAD AVATAR DENGAN CROP
-  // ═══════════════════════════════════════════
-
+  // AVATAR
   window.handleAvatarSelected = function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate
     if (!file.type.startsWith('image/')) {
       showToast('Format Tidak Sah', 'Sila pilih fail gambar sahaja', 'error');
       e.target.value = '';
@@ -3471,24 +3455,25 @@ body {
       return;
     }
 
+    if (typeof Cropper === 'undefined') {
+      showToast('Ralat Sistem', 'Cropper belum dimuatkan. Sila cuba lagi.', 'error');
+      return;
+    }
+
     originalFile = file;
 
-    // Show crop modal
     const url = URL.createObjectURL(file);
     const cropImg = document.getElementById('cropImage');
     cropImg.src = url;
 
-    // Show overlay
     setTimeout(() => {
       document.getElementById('cropModalOverlay').classList.add('show');
 
-      // Destroy old cropper
       if (cropper) {
         cropper.destroy();
         cropper = null;
       }
 
-      // Init Cropper
       cropper = new Cropper(cropImg, {
         aspectRatio: 1,
         viewMode: 1,
@@ -3503,7 +3488,7 @@ body {
         toggleDragModeOnDblclick: false,
         background: false
       });
-    }, 100);
+    }, 150);
   };
 
   window.setCropAspect = function(ratio, btn) {
@@ -3519,21 +3504,10 @@ body {
     btn.classList.add('active');
   };
 
-  window.cropRotateLeft = function() {
-    if (cropper) cropper.rotate(-90);
-  };
-
-  window.cropRotateRight = function() {
-    if (cropper) cropper.rotate(90);
-  };
-
-  window.cropZoomIn = function() {
-    if (cropper) cropper.zoom(0.1);
-  };
-
-  window.cropZoomOut = function() {
-    if (cropper) cropper.zoom(-0.1);
-  };
+  window.cropRotateLeft = function() { if (cropper) cropper.rotate(-90); };
+  window.cropRotateRight = function() { if (cropper) cropper.rotate(90); };
+  window.cropZoomIn = function() { if (cropper) cropper.zoom(0.1); };
+  window.cropZoomOut = function() { if (cropper) cropper.zoom(-0.1); };
 
   window.cropReset = function() {
     if (cropper) {
@@ -3565,7 +3539,6 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
     try {
-      // Get cropped canvas
       const canvas = cropper.getCroppedCanvas({
         width: 400,
         height: 400,
@@ -3573,18 +3546,14 @@ body {
         imageSmoothingQuality: 'high'
       });
 
-      // Convert to blob
       const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
 
-      // Close crop modal
       document.getElementById('cropModalOverlay').classList.remove('show');
       cropper.destroy();
       cropper = null;
 
-      // Show uploading toast
       showToast('Memuat Naik...', 'Sedang upload gambar anda', 'info');
 
-      // Upload to Cloudinary
       const formData = new FormData();
       formData.append('file', blob, 'avatar.jpg');
       formData.append('upload_preset', CLOUDINARY_PRESET);
@@ -3600,14 +3569,12 @@ body {
 
       const avatarUrl = data.secure_url;
 
-      // Update Firestore
       await updateDoc(doc(db, 'users', currentUser.uid), { avatar: avatarUrl });
       currentUserData.avatar = avatarUrl;
 
       updateUserUI();
 
       showToast('Berjaya! 📸', 'Gambar profil telah dikemas kini', 'success');
-
     } catch (err) {
       console.error('Upload error:', err);
       showToast('Upload Gagal', err.message || 'Cuba lagi', 'error');
@@ -3619,9 +3586,6 @@ body {
     }
   };
 
-  // ═══════════════════════════════════════════
-  // 4. PADAM AVATAR
-  // ═══════════════════════════════════════════
   window.handleDeleteAvatar = async function() {
     if (!currentUserData.avatar) {
       showToast('Tiada Gambar', 'Anda belum upload gambar profil', 'info');
@@ -3637,14 +3601,12 @@ body {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
     try {
-      // Update Firestore — set avatar to empty string
       await updateDoc(doc(db, 'users', currentUser.uid), { avatar: '' });
       currentUserData.avatar = '';
 
       updateUserUI();
 
       showToast('Berjaya! 🗑️', 'Gambar profil telah dipadam', 'success');
-
     } catch (err) {
       console.error('Delete avatar error:', err);
       showToast('Ralat', 'Gagal memadam gambar profil', 'error');
@@ -3773,6 +3735,7 @@ body {
       currentUser = user;
       await loadUserData();
       renderDashboard();
+      bindPasswordStrength();
     } else {
       if (clockInterval) clearInterval(clockInterval);
       window.location.href = 'login.html';
