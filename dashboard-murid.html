@@ -47,6 +47,18 @@ body {
   touch-action: manipulation;
 }
 
+/* ⚠️ PENTING: Buang cursor:none di mobile supaya boleh interact */
+@media (hover: none) and (pointer: coarse) {
+  *, *::before, *::after {
+    cursor: auto !important;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+/* PRELOADER — dengan pointer-events none bila hidden supaya tak block */
 #preloader {
   position: fixed; inset: 0;
   background: linear-gradient(135deg, #0B2E4E 0%, #5C1329 100%);
@@ -54,8 +66,13 @@ body {
   display: flex; align-items: center; justify-content: center;
   flex-direction: column;
   transition: opacity 0.6s, visibility 0.6s;
+  pointer-events: auto;
 }
-#preloader.hidden { opacity: 0; visibility: hidden; }
+#preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 
 .preloader-logo {
   width: 100px; height: 100px;
@@ -147,10 +164,10 @@ body {
   height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  touch-action: manipulation;
+  touch-action: pan-y;
   display: flex;
   flex-direction: column;
-  z-index: 40;
+  z-index: 45;
 }
 .sidebar::-webkit-scrollbar { width: 4px; }
 .sidebar::-webkit-scrollbar-thumb { background: rgba(244,196,48,0.3); border-radius: 2px; }
@@ -216,12 +233,17 @@ body {
   text-align: left;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .sidebar-item i {
   width: 22px;
   font-size: 0.95rem;
   color: rgba(255,255,255,0.55);
   transition: color 0.25s;
+  pointer-events: none;
+}
+.sidebar-item span {
+  pointer-events: none;
 }
 .sidebar-item:hover {
   background: rgba(255,255,255,0.08);
@@ -245,6 +267,7 @@ body {
   border-radius: 50px;
   min-width: 22px;
   text-align: center;
+  pointer-events: none;
 }
 
 .sidebar-footer {
@@ -261,6 +284,8 @@ body {
   transition: all 0.25s;
   margin-bottom: 0.5rem;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .sidebar-user-card:hover { background: rgba(255,255,255,0.12); }
 
@@ -270,6 +295,7 @@ body {
   border: 2px solid var(--gold);
   object-fit: cover;
   flex-shrink: 0;
+  pointer-events: none;
 }
 .sidebar-avatar-fallback {
   width: 38px; height: 38px;
@@ -281,8 +307,9 @@ body {
   font-weight: 800;
   font-size: 0.95rem;
   flex-shrink: 0;
+  pointer-events: none;
 }
-.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-info { flex: 1; min-width: 0; pointer-events: none; }
 .sidebar-user-info strong {
   display: block;
   font-size: 0.82rem;
@@ -311,12 +338,14 @@ body {
 }
 .sidebar-logout i { color: rgba(255,150,150,0.85) !important; }
 
+/* MAIN — naikkan z-index supaya berada di atas sidebar overlay bila overlay hidden */
 .main {
   padding: 1.5rem 2rem 3rem;
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
-  z-index: 1;
+  z-index: 50;
+  pointer-events: auto;
 }
 
 .topbar {
@@ -442,6 +471,7 @@ body {
   transition: all 0.25s;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .mobile-menu-btn:hover { background: var(--paper); }
 
@@ -501,6 +531,7 @@ body {
   position: relative;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .btn-primary {
   background: linear-gradient(135deg, var(--red), var(--maroon));
@@ -514,6 +545,7 @@ body {
   width: 100%; height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
   transition: left 0.6s;
+  pointer-events: none;
 }
 .btn-primary:hover::before { left: 100%; }
 .btn-primary:hover {
@@ -1104,11 +1136,13 @@ body {
   gap: 0.7rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .activity-card::before {
   content: ""; position: absolute;
   top: 0; left: 0; right: 0;
   height: 4px;
+  pointer-events: none;
 }
 .activity-card.act-resilience::before { background: linear-gradient(90deg, var(--red), var(--maroon)); }
 .activity-card.act-efficacy::before { background: linear-gradient(90deg, var(--navy), var(--navy-mid)); }
@@ -1145,6 +1179,7 @@ body {
   font-size: 1.3rem;
   flex-shrink: 0;
   transition: transform 0.35s;
+  pointer-events: none;
 }
 .act-resilience .activity-icon { background: linear-gradient(135deg, rgba(200,16,46,0.12), rgba(139,30,63,0.15)); color: var(--red); }
 .act-efficacy .activity-icon { background: linear-gradient(135deg, rgba(11,46,78,0.1), rgba(26,74,110,0.15)); color: var(--navy); }
@@ -1160,6 +1195,7 @@ body {
   border-radius: 50px;
   background: var(--paper);
   color: var(--ink-soft);
+  pointer-events: none;
 }
 .act-resilience .activity-num { background: rgba(200,16,46,0.1); color: var(--red); }
 .act-efficacy .activity-num { background: rgba(11,46,78,0.08); color: var(--navy); }
@@ -1171,6 +1207,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 1.2px;
   color: var(--ink-soft);
+  pointer-events: none;
 }
 .activity-title {
   font-family: 'Playfair Display', serif;
@@ -1179,11 +1216,13 @@ body {
   color: var(--navy);
   line-height: 1.25;
   letter-spacing: -0.01em;
+  pointer-events: none;
 }
 .activity-topik {
   font-size: 0.76rem;
   color: var(--ink-soft);
   line-height: 1.4;
+  pointer-events: none;
 }
 .activity-status {
   display: flex; align-items: center; gap: 0.4rem;
@@ -1192,12 +1231,14 @@ body {
   padding-top: 0.6rem;
   border-top: 1px solid var(--line);
   margin-top: auto;
+  pointer-events: none;
 }
 .activity-status.status-completed { color: var(--success); }
 .activity-status.status-progress { color: var(--warning); }
 .activity-status.status-locked { color: var(--ink-soft); }
 .activity-status i { font-size: 0.8rem; }
 
+/* MODAL */
 .modal-overlay {
   position: fixed; inset: 0;
   background: rgba(11, 46, 78, 0.7);
@@ -1210,11 +1251,16 @@ body {
   padding: 1rem;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.3s, visibility 0.3s;
   -webkit-overflow-scrolling: touch;
   touch-action: manipulation;
 }
-.modal-overlay.show { opacity: 1; visibility: visible; }
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 
 .modal {
   background: #fff;
@@ -1224,11 +1270,12 @@ body {
   max-height: 90vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  touch-action: manipulation;
+  touch-action: pan-y;
   box-shadow: 0 40px 80px rgba(11, 46, 78, 0.4);
   transform: scale(0.9);
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  pointer-events: auto;
 }
 .modal-overlay.show .modal { transform: scale(1); }
 .modal::-webkit-scrollbar { width: 6px; }
@@ -1251,6 +1298,7 @@ body {
     linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
   background-size: 30px 30px;
+  pointer-events: none;
 }
 .modal-header-inner { position: relative; z-index: 1; }
 
@@ -1270,6 +1318,7 @@ body {
   z-index: 2;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .modal-close:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
 
@@ -1506,6 +1555,7 @@ body {
   cursor: pointer;
   z-index: 2;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .avatar-upload-btn:hover { transform: scale(1.15) rotate(-8deg); }
 
@@ -1526,6 +1576,7 @@ body {
   cursor: pointer;
   z-index: 2;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .avatar-delete-btn.show { display: flex; }
 .avatar-delete-btn:hover { transform: scale(1.15) rotate(8deg); }
@@ -1555,6 +1606,7 @@ body {
   justify-content: center;
   gap: 0.4rem;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .profile-tab:hover { color: var(--maroon); }
 .profile-tab.active {
@@ -1746,6 +1798,7 @@ body {
 .toast-content strong { display: block; color: var(--navy); font-size: 0.85rem; }
 .toast-content span { font-size: 0.78rem; color: var(--ink-soft); }
 
+/* SIDEBAR OVERLAY — dengan pointer-events none bila hidden */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -1755,10 +1808,14 @@ body {
   backdrop-filter: blur(4px);
   z-index: 39;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s;
   -webkit-tap-highlight-color: transparent;
 }
-.sidebar-overlay.show { opacity: 1; }
+.sidebar-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
 
 @media (max-width: 1024px) {
   .app-layout { grid-template-columns: 1fr; }
@@ -1808,11 +1865,16 @@ body {
   padding: 1rem;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.3s, visibility 0.3s;
   -webkit-overflow-scrolling: touch;
   touch-action: manipulation;
 }
-.crop-modal-overlay.show { opacity: 1; visibility: visible; }
+.crop-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 
 .crop-modal {
   background: #fff;
@@ -1826,6 +1888,7 @@ body {
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   flex-direction: column;
+  pointer-events: auto;
 }
 .crop-modal-overlay.show .crop-modal { transform: scale(1); }
 
@@ -1901,6 +1964,7 @@ body {
   font-family: inherit;
   transition: all 0.25s;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: auto;
 }
 .crop-control-btn:hover {
   border-color: var(--maroon);
@@ -1913,7 +1977,7 @@ body {
   color: #fff;
   border-color: var(--maroon);
 }
-.crop-control-btn i { font-size: 0.8rem; }
+.crop-control-btn i { font-size: 0.8rem; pointer-events: none; }
 
 .crop-modal-footer {
   padding: 1rem 1.5rem 1.3rem;
@@ -1991,17 +2055,17 @@ body {
     <div class="sidebar-section-label">Menu Utama</div>
     <nav class="sidebar-nav">
       <button class="sidebar-item active" data-page="dashboard" onclick="switchPage('dashboard')">
-        <i class="fas fa-home"></i> Dashboard
+        <i class="fas fa-home"></i> <span>Dashboard</span>
       </button>
       <button class="sidebar-item" data-page="activities" onclick="switchPage('activities')">
-        <i class="fas fa-cubes"></i> Aktiviti
+        <i class="fas fa-cubes"></i> <span>Aktiviti</span>
         <span class="badge-count" id="activitiesBadge">12</span>
       </button>
       <button class="sidebar-item" data-page="reflection" onclick="switchPage('reflection')">
-        <i class="fas fa-book"></i> Jurnal Refleksi
+        <i class="fas fa-book"></i> <span>Jurnal Refleksi</span>
       </button>
       <button class="sidebar-item" data-page="portfolio" onclick="switchPage('portfolio')">
-        <i class="fas fa-trophy"></i> Portfolio
+        <i class="fas fa-trophy"></i> <span>Portfolio</span>
       </button>
     </nav>
 
@@ -2015,7 +2079,7 @@ body {
         </div>
       </div>
       <button class="sidebar-item sidebar-logout" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> Log Keluar
+        <i class="fas fa-sign-out-alt"></i> <span>Log Keluar</span>
       </button>
     </div>
   </aside>
@@ -2523,7 +2587,7 @@ body {
 
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Cropper.js — DENGAN defer supaya tak block rendering -->
+<!-- Cropper.js — dengan defer supaya tak block rendering -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" defer></script>
 
 <script type="module">
@@ -2608,14 +2672,28 @@ body {
     clockInterval = setInterval(updateClock, 1000);
   }
 
+  // ⚠️ Hide preloader dengan fallback yang lebih agresif
+  function hidePreloader() {
+    const pre = document.getElementById('preloader');
+    if (pre && !pre.classList.contains('hidden')) {
+      pre.classList.add('hidden');
+      setTimeout(() => {
+        if (pre) pre.style.display = 'none';
+      }, 1000);
+    }
+  }
+
   window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('preloader').classList.add('hidden');
-    }, 1200);
+    setTimeout(hidePreloader, 1000);
   });
+  setTimeout(hidePreloader, 2000);
   setTimeout(() => {
-    document.getElementById('preloader').classList.add('hidden');
-  }, 2500);
+    const pre = document.getElementById('preloader');
+    if (pre) {
+      pre.classList.add('hidden');
+      pre.style.display = 'none';
+    }
+  }, 3500);
 
   startClock();
 
